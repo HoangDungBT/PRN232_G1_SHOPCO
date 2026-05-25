@@ -1,0 +1,95 @@
+﻿0. lệnh nuke bin, obj, ...
+- tại root solution
+Get-ChildItem -Include bin,obj -Recurse -Directory | Remove-Item -Force -Recurse
+
+1. Tổng hợp Code vào 1 file txt
+- mở terminal( powershell) trỏ vào thư mục cần tổng hợp để tạo file txt tổng hợp code
+Get-ChildItem -Filter *.cs | ForEach-Object { "// === File: $($_.Name) ==="; Get-Content $_.FullName; "" } | Out-File -FilePath TongHopCode.txt -Encoding utf8
+
+- hoặc cmd
+copy *.cs TongHopCode.txt 
+
+
+2. Các Code liên quan đến Database
+
+2.1 Tạo migration (dảm bảo entity, dbcontext và connectionstring)
+- Trỏ vào project Infrastructure 
+dotnet ef migrations add Init
+
+- Trỏ vào root solution
+dotnet ef migrations add Init --project SHOP.CO.Infrastructure --startup-project SHOP.CO.API
+
+2.2 Cập nhật Database
+- Trỏ vào project Infrastructure 
+dotnet ef database update Init
+
+- Trỏ vào root solution
+dotnet ef database update --project SHOP.CO.Infrastructure --startup-project SHOP.CO.API
+
+2.3 Xóa Database
+- Trỏ vào project Infrastructure 
+dotnet ef database drop
+
+- Trỏ vào root solution
+dotnet ef database drop --project SHOP.CO.Infrastructure --startup-project SHOP.CO.API -f
+
+=====Wombo Combo ====== Nhớ xóa thủ công Migration hoặc đổi tên  Init (vd: Init2)
+dotnet ef database drop --project SHOP.CO.Infrastructure --startup-project SHOP.CO.API -f
+dotnet ef migrations add Init --project SHOP.CO.Infrastructure --startup-project SHOP.CO.API
+dotnet ef database update --project SHOP.CO.Infrastructure --startup-project SHOP.CO.API
+
+
+
+
+2.4ex Dùng database first
+- trỏ vào 
+
+3. Lấy cây thư mục bằng powerShell
+-- trỏ vào root
+ function Show-Tree {
+ param([string]$Path = '.', [int]$Depth = 0, [string]$Prefix = '')
+ $excludeFolders = @('bin', 'obj', '.vs', '.git', 'node_modules', 'lib')
+$items = Get-ChildItem -Path $Path | Where-Object { $_.Name -notin $excludeFolders }
+$lastItem = $items[-1]
+foreach ($item in $items) {
+    $connector = if ($item -eq $lastItem) { '└── ' } else { '├── ' }
+    Write-Host "${Prefix}${connector}$($item.Name)"    
+    if ($item.PSIsContainer) {
+        $newPrefix = if ($item -eq $lastItem) { $Prefix + '    ' } else { $Prefix + '│   ' }
+            Show-Tree -Path $item.FullName -Depth ($Depth + 1) -Prefix $newPrefix
+        }
+    }
+}
+Show-Tree
+
+
+
+======================================================================================
+Cách dùng ai hiệu quả
+Context (Ngữ cảnh): Bức tranh toàn cảnh về đoạn code bạn tải lên.
+
+Task (Nhiệm vụ): Bạn muốn AI làm gì cụ thể? (Tìm lỗi, tối ưu, thêm tính năng...).
+
+Constraint (Ràng buộc): Những nguyên tắc AI phải tuân thủ (ví dụ: không đổi tên biến, giữ nguyên framework hiện tại).
+
+Output (Đầu ra): Bạn muốn AI trả lời dưới định dạng nào?
+
+Các Mẫu Prompt Thực Chiến
+Bạn có thể tải file .txt lên (hoặc copy toàn bộ nội dung dán vào khung chat), sau đó áp dụng một trong các mẫu dưới đây tùy theo mục đích:
+
+1. Mẫu Prompt Tìm Và Sửa Lỗi (Bug Fixing)
+"Tôi đính kèm một file tổng hợp gồm 12 file .cs trong dự án [tên dự án, ví dụ: Quản lý thư viện] của tôi.
+Hiện tại, tôi đang gặp lỗi [mô tả lỗi, ví dụ: không thể lưu dữ liệu vào database khi nhấn nút X].
+Hãy đóng vai trò là một Senior C# Developer, đọc hiểu luồng xử lý và tìm ra nguyên nhân gây lỗi.
+Chỉ ra file nào chứa đoạn code bị sai, giải thích ngắn gọn nguyên nhân và cung cấp đoạn code đã sửa lại."
+
+2. Mẫu Prompt Đánh Giá Và Tối Ưu Code (Code Review / Refactor)
+"Dưới đây là toàn bộ code backend cho tính năng [tên tính năng] được viết bằng C#.
+Hãy xem xét cấu trúc của 12 file này và đánh giá chất lượng code.
+Tìm các vị trí code bị lặp lại (DRY), vi phạm nguyên tắc SOLID, hoặc có thể gây chậm hiệu suất (performance bottleneck).
+Hãy lập bảng danh sách các điểm cần cải thiện, sau đó đưa ra gợi ý cấu trúc lại (refactor) cho phần quan trọng nhất."
+
+3. Mẫu Prompt Thêm Tính Năng Mới (Add Feature)
+"Đây là source code hiện tại của tôi (gồm 12 file .cs).
+Dựa trên kiến trúc đang có, tôi muốn thêm một tính năng mới là [mô tả chi tiết tính năng].
+Hãy phân tích xem tôi cần tạo thêm class nào mới, hoặc cần sửa đổi những file nào trong số 12 file hiện tại để tích hợp tính năng này một cách liền mạch nhất.

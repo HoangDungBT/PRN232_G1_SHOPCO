@@ -1,0 +1,23 @@
+﻿Infrastructure 
+dotnet add SHOP.CO.Infrastructure package Microsoft.EntityFrameworkCore.SqlServer --version "8.0.*"
+dotnet add SHOP.CO.Infrastructure package Microsoft.EntityFrameworkCore --version "8.0.*"
+
+===
+Application
+dotnet add SHOP.CO.Application/SHOP.CO.Application.csproj package Microsoft.Extensions.DependencyInjection.Abstractions -v "8.0.*"
+
+
+
+===
+API
+dotnet add SHOP.CO.API package Microsoft.EntityFrameworkCore.Design --version "8.0.*"
+dotnet add SHOP.CO.API package Microsoft.EntityFrameworkCore.Tools --version "8.0.*"
+
+# 1. Cài đặt thư viện xác thực JWT
+dotnet add SHOP.CO.API/SHOP.CO.API.csproj package Microsoft.AspNetCore.Authentication.JwtBearer -v "8.0.*"
+
+# 2. Cài đặt thư viện giao diện Swagger
+dotnet add SHOP.CO.API/SHOP.CO.API.csproj package Swashbuckle.AspNetCore -v "6.5.*"
+
+# 3. Cài đặt thư viện EPPlus để xử lý xuất/nhập Excel
+dotnet add SHOP.CO.API/SHOP.CO.API.csproj package EPPlus
