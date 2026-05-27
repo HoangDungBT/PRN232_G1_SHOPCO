@@ -1,32 +1,67 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using SHOP.CO.MVC.Models;
-using System.Diagnostics;
 
 namespace SHOP.CO.MVC.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly string apiUrl = "https://localhost:7196/api/products";
 
-        public HomeController(ILogger<HomeController> logger)
+        public async Task<IActionResult> Index()
         {
-            _logger = logger;
+            List<ProductVM> products = new();
+
+            using (HttpClient client = new HttpClient())
+            {
+                var response = await client.GetAsync(apiUrl);
+
+                var json = await response.Content.ReadAsStringAsync();
+
+                products = JsonConvert.DeserializeObject<List<ProductVM>>(json);
+            }
+
+            return View(products);
         }
 
-        public IActionResult Index()
+        // CATEGORY PAGE
+        public async Task<IActionResult> Category()
+        {
+            List<ProductVM> products = new();
+
+            using (HttpClient client = new HttpClient())
+            {
+                var response = await client.GetAsync(apiUrl);
+
+                var json = await response.Content.ReadAsStringAsync();
+
+                products = JsonConvert.DeserializeObject<List<ProductVM>>(json);
+            }
+
+            return View(products);
+        }
+
+        // PRODUCT DETAIL
+        public async Task<IActionResult> Detail(int id)
+        {
+            ProductVM product = new();
+
+            using (HttpClient client = new HttpClient())
+            {
+                var response = await client.GetAsync($"{apiUrl}/{id}");
+
+                var json = await response.Content.ReadAsStringAsync();
+
+                product = JsonConvert.DeserializeObject<ProductVM>(json);
+            }
+
+            return View(product);
+        }
+
+        // SHOPPING CART
+        public IActionResult Cart()
         {
             return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

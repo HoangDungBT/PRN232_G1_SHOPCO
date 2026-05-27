@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SHOP.CO.Application.Services;
-using System.Threading.Tasks;
 
 namespace SHOP.CO.API.Controllers
 {
@@ -15,26 +14,118 @@ namespace SHOP.CO.API.Controllers
             _productService = productService;
         }
 
-        #region 1. Lấy danh sách sản phẩm (Có phân trang & Tìm kiếm)
-        /// <summary>
-        /// API tìm kiếm sản phẩm theo tên/slug kết hợp phân trang
-        /// </summary>
-        /// <param name="keyword">Từ khóa tìm kiếm (Tên sản phẩm hoặc Slug)</param>
-        /// <param name="page">Số trang hiện tại (Mặc định là trang 1)</param>
-        /// <param name="size">Số lượng phần tử trên mỗi trang (Mặc định là 10)</param>
-        /// <returns>Trả về đối tượng PagedResult chứa danh sách ProductDto</returns>
+        // API thật của bạn
         [HttpGet("search")]
         public async Task<IActionResult> SearchProducts(
             [FromQuery] string? keyword,
             [FromQuery] int page = 1,
             [FromQuery] int size = 10)
         {
-            // Gọi tầng Service xử lý logic nghiệp vụ và map dữ liệu sang DTO
             var result = await _productService.GetProductsAsync(keyword, page, size);
 
-            // Trả về HTTP Status Code 200 kèm theo cục dữ liệu JSON chuẩn hóa
             return Ok(result);
         }
-        #endregion
+
+        // API test giao diện
+        [HttpGet]
+        public IActionResult GetProducts()
+        {
+            var products = new[]
+            {
+        new
+        {
+            Id = 1,
+            Name = "T-Shirt",
+            Price = 29,
+            Image = "/images/p1.jpg",
+            Description = "Premium cotton t-shirt.",
+            Category = "T-Shirts"
+        },
+
+        new
+        {
+            Id = 2,
+            Name = "Jeans",
+            Price = 59,
+            Image = "/images/p2.jpg",
+            Description = "Modern slim fit jeans.",
+            Category = "Jeans"
+        },
+
+        new
+        {
+            Id = 3,
+            Name = "Hoodie",
+            Price = 99,
+            Image = "/images/p3.jpg",
+            Description = "Warm fashion hoodie.",
+            Category = "Hoodies"
+        },
+
+        new
+        {
+            Id = 4,
+            Name = "Jacket",
+            Price = 120,
+            Image = "/images/p4.jpg",
+            Description = "Luxury winter jacket.",
+            Category = "Jackets"
+        }
+    };
+
+            return Ok(products);
+        }
+    
+
+    [HttpGet("{id}")]
+        public IActionResult GetProductById(int id)
+        {
+            var products = new[]
+            {
+        new
+        {
+            Id = 1,
+            Name = "T-Shirt",
+            Price = 29,
+            Image = "/images/p1.jpg",
+            Description = "Premium cotton t-shirt.",
+            Category = "T-Shirts"
+        },
+
+        new
+        {
+            Id = 2,
+            Name = "Jeans",
+            Price = 59,
+            Image = "/images/p2.jpg",
+            Description = "Modern slim fit jeans.",
+            Category = "Jeans"
+        },
+
+        new
+        {
+            Id = 3,
+            Name = "Hoodie",
+            Price = 99,
+            Image = "/images/p3.jpg",
+            Description = "Warm fashion hoodie.",
+            Category = "Hoodies"
+        },
+
+        new
+        {
+            Id = 4,
+            Name = "Jacket",
+            Price = 120,
+            Image = "/images/p4.jpg",
+            Description = "Luxury winter jacket.",
+            Category = "Jackets"
+        }
+    };
+
+            var product = products.FirstOrDefault(x => x.Id == id);
+
+            return Ok(product);
+        }
     }
 }

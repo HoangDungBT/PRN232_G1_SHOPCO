@@ -1,0 +1,27 @@
+﻿@model SHOP.CO.MVC.Models.ProductVM
+
+<div class="detail-page">
+
+    <div class="detail-image">
+
+        <img src="@Model.Image" />
+
+    </div>
+
+    <div class="detail-info">
+
+        <h1>@Model.Name</h1>
+
+        <h2>$@Model.Price</h2>
+
+        <p>
+            @Model.Description
+        </p>
+
+        <button>
+            Add To Cart
+        </button>
+
+    </div>
+
+</div>

@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "SHOP.CO.API\\SHOP.CO.API.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "SHOP.CO.MVC\\SHOP.CO.MVC.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

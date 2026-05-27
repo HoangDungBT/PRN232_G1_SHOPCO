@@ -1,8 +1,197 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model List<SHOP.CO.MVC.Models.ProductVM>
+
+@{
+    ViewData["Title"] = "SHOP.CO";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- HERO -->
+
+<section class="hero">
+
+    <div class="hero-left">
+
+        <h1>
+            FIND CLOTHES THAT MATCHES YOUR STYLE
+        </h1>
+
+        <p>
+            Browse through our diverse range of meticulously crafted garments.
+        </p>
+
+        <button>
+            Shop Now
+        </button>
+
+        <div class="hero-stats">
+
+            <div>
+
+                <h2>200+</h2>
+
+                <p>International Brands</p>
+
+            </div>
+
+            <div>
+
+                <h2>2,000+</h2>
+
+                <p>High Quality Products</p>
+
+            </div>
+
+            <div>
+
+                <h2>30,000+</h2>
+
+                <p>Happy Customers</p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="hero-right">
+
+        <img src="/images/heroimg.png" />
+
+    </div>
+
+</section>
+
+<!-- BRANDS -->
+
+<section class="brands">
+
+    <h2>VERSACE</h2>
+    <h2>ZARA</h2>
+    <h2>GUCCI</h2>
+    <h2>PRADA</h2>
+    <h2>Calvin Klein</h2>
+
+</section>
+
+<!-- PRODUCTS -->
+
+<section class="products-section">
+
+    <h2>NEW ARRIVALS</h2>
+
+    <div class="products">
+
+        @foreach (var item in Model)
+        {
+            <div class="card">
+
+                <a href="/Home/Detail/@item.Id">
+
+                    <img src="@item.Image" />
+
+                </a>
+
+                <h3>@item.Name</h3>
+
+                <p class="price">
+                    $@item.Price
+                </p>
+
+                <a class="add-btn"
+                   href="/Cart/AddToCart?id=@item.Id&name=@item.Name&price=@item.Price&image=@item.Image">
+
+                    Add To Cart
+
+                </a>
+
+            </div>
+        }
+
+    </div>
+
+</section>
+
+<!-- DRESS STYLE -->
+
+<section class="dress-style">
+
+    <h2>BROWSE BY DRESS STYLE</h2>
+
+    <div class="dress-grid">
+
+        <div class="dress-card">
+
+            <img src="/images/casual.jpg" />
+
+            <span>Casual</span>
+
+        </div>
+
+        <div class="dress-card">
+
+            <img src="/images/formal.jpg" />
+
+            <span>Formal</span>
+
+        </div>
+
+        <div class="dress-card">
+
+            <img src="/images/party.jpg" />
+
+            <span>Party</span>
+
+        </div>
+
+        <div class="dress-card">
+
+            <img src="/images/gym.jpg" />
+
+            <span>Gym</span>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- REVIEWS -->
+
+<section class="reviews">
+
+    <h2>OUR HAPPY CUSTOMERS</h2>
+
+    <div class="review-list">
+
+        <div class="review-card">
+
+            <h3>Sarah M.</h3>
+
+            <p>
+                Amazing quality and beautiful design.
+            </p>
+
+        </div>
+
+        <div class="review-card">
+
+            <h3>Alex K.</h3>
+
+            <p>
+                Fast shipping and premium products.
+            </p>
+
+        </div>
+
+        <div class="review-card">
+
+            <h3>James L.</h3>
+
+            <p>
+                One of the best fashion ecommerce websites.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>

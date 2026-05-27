@@ -1,0 +1,28 @@
+﻿@model List<SHOP.CO.MVC.Models.ProductVM>
+
+<div class="category-page">
+
+    <h1>ALL PRODUCTS</h1>
+
+    <div class="products">
+
+        @foreach (var item in Model)
+        {
+            <div class="card">
+
+                <a href="/Home/Detail/@item.Id">
+
+                    <img src="@item.Image" />
+
+                </a>
+
+                <h3>@item.Name</h3>
+
+                <p class="price">$@item.Price</p>
+
+            </div>
+        }
+
+    </div>
+
+</div>

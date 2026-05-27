@@ -21,3 +21,4 @@ dotnet add SHOP.CO.API/SHOP.CO.API.csproj package Swashbuckle.AspNetCore -v "6.5
 
 # 3. Cài đặt thư viện EPPlus để xử lý xuất/nhập Excel
 dotnet add SHOP.CO.API/SHOP.CO.API.csproj package EPPlus
+4. moi nguoi cai them nay Microsoft.AspNetCore.Mvc.NewtonsoftJson ở MVC

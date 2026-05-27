@@ -1,0 +1,17 @@
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Application\bin\Debug\net8.0\SHOP.CO.Application.deps.json
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Application\bin\Debug\net8.0\SHOP.CO.Application.dll
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Application\bin\Debug\net8.0\SHOP.CO.Application.pdb
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Application\bin\Debug\net8.0\SHOP.CO.Domain.dll
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Application\bin\Debug\net8.0\SHOP.CO.Infrastructure.dll
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Application\bin\Debug\net8.0\SHOP.CO.Infrastructure.pdb
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Application\bin\Debug\net8.0\SHOP.CO.Domain.pdb
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Application\obj\Debug\net8.0\SHOP.CO.Application.csproj.AssemblyReference.cache
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Application\obj\Debug\net8.0\SHOP.CO.Application.GeneratedMSBuildEditorConfig.editorconfig
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Application\obj\Debug\net8.0\SHOP.CO.Application.AssemblyInfoInputs.cache
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Application\obj\Debug\net8.0\SHOP.CO.Application.AssemblyInfo.cs
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Application\obj\Debug\net8.0\SHOP.CO.Application.csproj.CoreCompileInputs.cache
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Application\obj\Debug\net8.0\SHOP.CO..7BF11855.Up2Date
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Application\obj\Debug\net8.0\SHOP.CO.Application.dll
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Application\obj\Debug\net8.0\refint\SHOP.CO.Application.dll
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Application\obj\Debug\net8.0\SHOP.CO.Application.pdb
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Application\obj\Debug\net8.0\ref\SHOP.CO.Application.dll

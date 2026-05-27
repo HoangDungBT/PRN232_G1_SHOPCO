@@ -1,0 +1,15 @@
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Infrastructure\bin\Debug\net8.0\SHOP.CO.Infrastructure.deps.json
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Infrastructure\bin\Debug\net8.0\SHOP.CO.Infrastructure.dll
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Infrastructure\bin\Debug\net8.0\SHOP.CO.Infrastructure.pdb
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Infrastructure\bin\Debug\net8.0\SHOP.CO.Domain.dll
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Infrastructure\bin\Debug\net8.0\SHOP.CO.Domain.pdb
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Infrastructure\obj\Debug\net8.0\SHOP.CO.Infrastructure.csproj.AssemblyReference.cache
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Infrastructure\obj\Debug\net8.0\SHOP.CO.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Infrastructure\obj\Debug\net8.0\SHOP.CO.Infrastructure.AssemblyInfoInputs.cache
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Infrastructure\obj\Debug\net8.0\SHOP.CO.Infrastructure.AssemblyInfo.cs
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Infrastructure\obj\Debug\net8.0\SHOP.CO.Infrastructure.csproj.CoreCompileInputs.cache
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Infrastructure\obj\Debug\net8.0\SHOP.CO..929E8749.Up2Date
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Infrastructure\obj\Debug\net8.0\SHOP.CO.Infrastructure.dll
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Infrastructure\obj\Debug\net8.0\refint\SHOP.CO.Infrastructure.dll
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Infrastructure\obj\Debug\net8.0\SHOP.CO.Infrastructure.pdb
+D:\SU26\PRN232\SHOP.CO\SHOP.CO\SHOP.CO.Infrastructure\obj\Debug\net8.0\ref\SHOP.CO.Infrastructure.dll

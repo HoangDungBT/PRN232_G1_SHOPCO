@@ -1,0 +1,40 @@
+﻿@model List<SHOP.CO.MVC.Models.CartItemVM>
+
+@{
+    decimal total = Model.Sum(x => x.Price * x.Quantity);
+}
+
+<div class="cart-page">
+
+    <h1>Your Cart</h1>
+
+    @foreach (var item in Model)
+    {
+        <div class="cart-item">
+
+            <img src="@item.Image" />
+
+            <div>
+
+                <h3>@item.Name</h3>
+
+                <p>Quantity: @item.Quantity</p>
+
+                <p>$@item.Price</p>
+
+                <a href="/Cart/Remove/@item.Id">
+                    Remove
+                </a>
+
+            </div>
+
+        </div>
+    }
+
+    <h2>Total: $@total</h2>
+
+    <button class="checkout-btn">
+        Checkout
+    </button>
+
+</div>
