@@ -480,3 +480,12 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Bỏ qua file cấu hình chứa chuỗi kết nối và key nhạy cảm ở local
+appsettings.Development.json
+appsettings.Local.json
+.env
+
+# Bỏ qua thư mục chứa ảnh/files upload chạy ở local (để không đẩy rác lên Git)
+**/wwwroot/images/uploads/
+**/wwwroot/uploads/
