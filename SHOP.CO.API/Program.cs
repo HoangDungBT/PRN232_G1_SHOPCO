@@ -1,20 +1,43 @@
-﻿using System.Text;
-using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.OData;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OData.Edm;
+using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
-using SHOP.CO.Infrastructure;
 using SHOP.CO.Application;
+using SHOP.CO.Application.DTOs;
+using SHOP.CO.Infrastructure;
+using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-#region 1. Controllers & JSON Options
+#region 0. Odata Configuration
+static IEdmModel GetEdmModel()
+{
+    var odataBuilder = new ODataConventionModelBuilder();
+
+    odataBuilder.EntitySet<ProductDto>("Products").EntityType.HasKey(p => p.ProductId);
+    return odataBuilder.GetEdmModel();
+}
+#endregion
+
+#region 1. Controllers & JSON, Odata Options
 builder.Services.AddControllers()
     .AddJsonOptions(option =>
     {
         option.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         option.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.Never;
-    });
+    }).AddOData(options => options
+        .Select()       // Cho phép $select
+        .Filter()       // Cho phép $filter
+        .OrderBy()      // Cho phép $orderby
+        .SetMaxTop(100) // Giới hạn tối đa lấy 100 record/lần để chống DDoS
+        .SkipToken()
+        .Expand()       // Cho phép $expand (join bảng)
+        .Count()        // Cho phép đếm tổng số $count
+        .AddRouteComponents("odata", GetEdmModel()) // Prefix route là /odata
+    ); ;
 #endregion
 
 #region 2. Application & Infrastructure DI
