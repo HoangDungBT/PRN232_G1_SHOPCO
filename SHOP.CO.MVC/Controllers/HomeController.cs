@@ -1,61 +1,57 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc;
 using SHOP.CO.MVC.Models;
+using SHOP.CO.MVC.Services;
 
 namespace SHOP.CO.MVC.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly string apiUrl = "https://localhost:7196/api/products";
+        private readonly IProductApiClient _productApiClient;
+
+        public HomeController(IProductApiClient productApiClient)
+        {
+            _productApiClient = productApiClient;
+        }
 
         public async Task<IActionResult> Index()
         {
-            List<ProductVM> products = new();
-
-            using (HttpClient client = new HttpClient())
+            try
             {
-                var response = await client.GetAsync(apiUrl);
-
-                var json = await response.Content.ReadAsStringAsync();
-
-                products = JsonConvert.DeserializeObject<List<ProductVM>>(json);
+                var products = await _productApiClient.GetProductsAsync();
+                return View(products);
             }
-
-            return View(products);
+            catch (Exception)
+            {
+                return View(new List<ProductVM>());
+            }
         }
 
         // CATEGORY PAGE
         public async Task<IActionResult> Category()
         {
-            List<ProductVM> products = new();
-
-            using (HttpClient client = new HttpClient())
+            try
             {
-                var response = await client.GetAsync(apiUrl);
-
-                var json = await response.Content.ReadAsStringAsync();
-
-                products = JsonConvert.DeserializeObject<List<ProductVM>>(json);
+                var products = await _productApiClient.GetProductsAsync();
+                return View(products);
             }
-
-            return View(products);
+            catch (Exception)
+            {
+                return View(new List<ProductVM>());
+            }
         }
 
         // PRODUCT DETAIL
         public async Task<IActionResult> Detail(int id)
         {
-            ProductVM product = new();
-
-            using (HttpClient client = new HttpClient())
+            try
             {
-                var response = await client.GetAsync($"{apiUrl}/{id}");
-
-                var json = await response.Content.ReadAsStringAsync();
-
-                product = JsonConvert.DeserializeObject<ProductVM>(json);
+                var product = await _productApiClient.GetProductByIdAsync(id);
+                return View("Details", product);
             }
-
-            return View(product);
+            catch (Exception)
+            {
+                return View("Details", new ProductVM());
+            }
         }
 
         // SHOPPING CART

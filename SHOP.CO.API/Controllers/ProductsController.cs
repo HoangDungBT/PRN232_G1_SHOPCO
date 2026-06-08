@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using SHOP.CO.Application.Services;
 
 namespace SHOP.CO.API.Controllers
@@ -8,10 +8,12 @@ namespace SHOP.CO.API.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly IProductUiService _productUiService;
 
-        public ProductsController(IProductService productService)
+        public ProductsController(IProductService productService, IProductUiService productUiService)
         {
             _productService = productService;
+            _productUiService = productUiService;
         }
 
         // API thật của bạn
@@ -28,103 +30,20 @@ namespace SHOP.CO.API.Controllers
 
         // API test giao diện
         [HttpGet]
-        public IActionResult GetProducts()
+        public async Task<IActionResult> GetProducts()
         {
-            var products = new[]
-            {
-        new
-        {
-            Id = 1,
-            Name = "T-Shirt",
-            Price = 29,
-            Image = "/images/p1.jpg",
-            Description = "Premium cotton t-shirt.",
-            Category = "T-Shirts"
-        },
-
-        new
-        {
-            Id = 2,
-            Name = "Jeans",
-            Price = 59,
-            Image = "/images/p2.jpg",
-            Description = "Modern slim fit jeans.",
-            Category = "Jeans"
-        },
-
-        new
-        {
-            Id = 3,
-            Name = "Hoodie",
-            Price = 99,
-            Image = "/images/p3.jpg",
-            Description = "Warm fashion hoodie.",
-            Category = "Hoodies"
-        },
-
-        new
-        {
-            Id = 4,
-            Name = "Jacket",
-            Price = 120,
-            Image = "/images/p4.jpg",
-            Description = "Luxury winter jacket.",
-            Category = "Jackets"
-        }
-    };
-
+            var products = await _productUiService.GetUiProductsAsync();
             return Ok(products);
         }
-    
 
-    [HttpGet("{id}")]
-        public IActionResult GetProductById(int id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProductById(int id)
         {
-            var products = new[]
+            var product = await _productUiService.GetUiProductByIdAsync(id);
+            if (product == null)
             {
-        new
-        {
-            Id = 1,
-            Name = "T-Shirt",
-            Price = 29,
-            Image = "/images/p1.jpg",
-            Description = "Premium cotton t-shirt.",
-            Category = "T-Shirts"
-        },
-
-        new
-        {
-            Id = 2,
-            Name = "Jeans",
-            Price = 59,
-            Image = "/images/p2.jpg",
-            Description = "Modern slim fit jeans.",
-            Category = "Jeans"
-        },
-
-        new
-        {
-            Id = 3,
-            Name = "Hoodie",
-            Price = 99,
-            Image = "/images/p3.jpg",
-            Description = "Warm fashion hoodie.",
-            Category = "Hoodies"
-        },
-
-        new
-        {
-            Id = 4,
-            Name = "Jacket",
-            Price = 120,
-            Image = "/images/p4.jpg",
-            Description = "Luxury winter jacket.",
-            Category = "Jackets"
-        }
-    };
-
-            var product = products.FirstOrDefault(x => x.Id == id);
-
+                return NotFound();
+            }
             return Ok(product);
         }
     }
