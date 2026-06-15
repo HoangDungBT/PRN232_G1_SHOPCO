@@ -1,4 +1,4 @@
-﻿@model List<SHOP.CO.MVC.Models.ProductVM>
+@model List<SHOP.CO.MVC.Models.ProductVM>
 
 @{
     ViewData["Title"] = "SHOP.CO";
@@ -86,7 +86,7 @@
 
                 <a href="/Home/Detail/@item.Id">
 
-                    <img src="@item.Image" />
+                    <img src="@(string.IsNullOrEmpty(item.Image) ? "/images/heroimg.png" : item.Image)" onerror="this.onerror=null; this.src='/images/heroimg.png';" />
 
                 </a>
 
@@ -120,7 +120,7 @@
 
         <div class="dress-card">
 
-            <img src="/images/casual.jpg" />
+            <img src="/images/dressstyleimg1.png" />
 
             <span>Casual</span>
 
@@ -128,7 +128,7 @@
 
         <div class="dress-card">
 
-            <img src="/images/formal.jpg" />
+            <img src="/images/dressstyleimg2.png" />
 
             <span>Formal</span>
 
@@ -136,7 +136,7 @@
 
         <div class="dress-card">
 
-            <img src="/images/party.jpg" />
+            <img src="/images/dressstyleimg3.png" />
 
             <span>Party</span>
 
@@ -144,7 +144,7 @@
 
         <div class="dress-card">
 
-            <img src="/images/gym.jpg" />
+            <img src="/images/dressstyleimg4.png" />
 
             <span>Gym</span>
 

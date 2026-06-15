@@ -1,27 +1,230 @@
-﻿@model SHOP.CO.MVC.Models.ProductVM
+@model SHOP.CO.Application.DTOs.ProductDto
 
-<div class="detail-page">
+@{
+    ViewData["Title"] = Model.ProductName + " - Detail";
 
-    <div class="detail-image">
+    // Setup Gallery
+    var galleryImages = Model.Images?.OrderBy(img => img.SortOrder).Select(img => img.ImageUrl).ToList() ?? new List<string>();
+    if (galleryImages.Count == 0 && !string.IsNullOrEmpty(Model.ThumbnailUrl))
+    {
+        galleryImages.Add(Model.ThumbnailUrl);
+    }
+    var thumbnailImages = galleryImages.Take(3).ToList();
+    var mainImage = galleryImages.FirstOrDefault() ?? "/images/heroimg.png";
 
-        <img src="@Model.Image" />
+    // Setup Stars
+    var avgRating = Model.AverageRating;
+    int roundedStars = (int)Math.Round(avgRating);
 
+    // Setup Price & Discount
+    var priceToShow = Model.SalePrice ?? Model.BasePrice;
+    var hasDiscount = Model.SalePrice.HasValue && Model.SalePrice < Model.BasePrice;
+    var discountPercent = hasDiscount ? (int)Math.Round((1 - (Model.SalePrice!.Value / Model.BasePrice)) * 100) : 0;
+
+    // Setup Variants (Colors & Sizes)
+    var colorVariants = Model.Variants?
+        .Where(v => !string.IsNullOrEmpty(v.ColorHex))
+        .GroupBy(v => v.ColorHex)
+        .Select(g => g.First())
+        .ToList() ?? new List<SHOP.CO.Application.DTOs.ProductVariantDto>();
+
+    var sizeVariants = Model.Variants?
+        .Where(v => !string.IsNullOrEmpty(v.Size))
+        .Select(v => v.Size!)
+        .Distinct()
+        .ToList() ?? new List<string>();
+
+    // Setup Related Products
+    var relatedProducts = ViewBag.RelatedProducts as List<SHOP.CO.Application.DTOs.ProductDto> ?? new List<SHOP.CO.Application.DTOs.ProductDto>();
+}
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+    <a href="/">Home</a><span>&gt;</span>
+    <a href="/Home/Category">Shop</a><span>&gt;</span>
+    <a href="/Home/Category?categoryId=@Model.CategoryId">@(Model.CategoryName ?? "Category")</a><span>&gt;</span>
+    <span style="color: black; font-weight: 500;">@Model.ProductName</span>
+</div>
+
+<!-- PRODUCT DETAIL BOX -->
+<div class="product-detail-container">
+
+    <!-- LEFT GALLERY -->
+    <div class="product-gallery">
+        <div class="gallery-thumbnails">
+            @for (int i = 0; i < thumbnailImages.Count; i++)
+            {
+                var activeClass = i == 0 ? "active" : "";
+                <img class="@activeClass" src="@(string.IsNullOrEmpty(thumbnailImages[i]) ? "/images/heroimg.png" : thumbnailImages[i])" onerror="this.onerror=null; this.src='/images/heroimg.png';" onclick="changeMainImage(this)" alt="Preview image @(i + 1)" />
+            }
+        </div>
+        <div class="gallery-main-image">
+            <img id="mainImage" src="@(string.IsNullOrEmpty(mainImage) ? "/images/heroimg.png" : mainImage)" onerror="this.onerror=null; this.src='/images/heroimg.png';" alt="@Model.ProductName" />
+        </div>
     </div>
 
-    <div class="detail-info">
+    <!-- RIGHT INFO -->
+    <div class="product-detail-info">
+        <h1 class="product-title">@Model.ProductName</h1>
 
-        <h1>@Model.Name</h1>
+        <!-- Rating -->
+        <div class="product-rating">
+            <span class="stars">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    if (i <= roundedStars)
+                    {
+                        <text>★</text>
+                    }
+                    else
+                    {
+                        <text>☆</text>
+                    }
+                }
+            </span>
+            <span class="rating-value">@avgRating/5</span>
+            <span class="rating-count">(@Model.ReviewCount reviews)</span>
+        </div>
 
-        <h2>$@Model.Price</h2>
+        <!-- Prices -->
+        <div class="product-price-container">
+            <span class="current-price">$@priceToShow</span>
+            @if (hasDiscount)
+            {
+                <span class="original-price">$@Model.BasePrice</span>
+                <span class="discount-badge">-@discountPercent%</span>
+            }
+        </div>
 
-        <p>
+        <!-- Description -->
+        <p class="product-desc">
             @Model.Description
         </p>
 
-        <button>
-            Add To Cart
-        </button>
+        <!-- Color Options -->
+        @if (colorVariants.Any())
+        {
+            <div class="selector-section">
+                <div class="selector-title">Select Colors</div>
+                <div class="color-options">
+                    @for (int i = 0; i < colorVariants.Count; i++)
+                    {
+                        var activeClass = i == 0 ? "active" : "";
+                        <div class="color-dot @activeClass" style="background-color: @colorVariants[i].ColorHex;" data-color="@colorVariants[i].Color" title="@colorVariants[i].Color"></div>
+                    }
+                </div>
+            </div>
+        }
 
+        <!-- Size Options -->
+        @if (sizeVariants.Any())
+        {
+            <div class="selector-section">
+                <div class="selector-title">Choose Size</div>
+                <div class="size-options">
+                    @for (int i = 0; i < sizeVariants.Count; i++)
+                    {
+                        var activeClass = i == 0 ? "active" : "";
+                        <button class="size-btn @activeClass" data-size="@sizeVariants[i]">@sizeVariants[i]</button>
+                    }
+                </div>
+            </div>
+        }
+
+        <!-- Actions: Quantity & Add to Cart -->
+        <div class="action-section">
+            <div class="quantity-picker">
+                <button class="quantity-btn" id="btnMinus">-</button>
+                <span class="quantity-value" id="qtyValue">1</span>
+                <button class="quantity-btn" id="btnPlus">+</button>
+            </div>
+            <button class="btn-add-to-cart">Add to Cart</button>
+        </div>
     </div>
-
 </div>
+
+<!-- RELATED PRODUCTS -->
+@if (relatedProducts.Any())
+{
+    <section class="related-products-section">
+        <h2>You Might Also Like</h2>
+        <div class="products">
+            @foreach (var item in relatedProducts)
+            {
+                var priceToShowItem = item.SalePrice ?? item.BasePrice;
+                var hasDiscountItem = item.SalePrice.HasValue && item.SalePrice < item.BasePrice;
+                var discountPercentItem = hasDiscountItem ? (int)Math.Round((1 - (item.SalePrice!.Value / item.BasePrice)) * 100) : 0;
+                var roundedStarsItem = (int)Math.Round(item.AverageRating);
+                
+                <div class="card">
+                    <a href="/Home/Detail/@item.ProductId" style="text-decoration: none; color: inherit;">
+                        <img src="@(string.IsNullOrEmpty(item.ThumbnailUrl) ? "/images/heroimg.png" : item.ThumbnailUrl)" onerror="this.onerror=null; this.src='/images/heroimg.png';" alt="@item.ProductName" />
+                        <h3>@item.ProductName</h3>
+                        <div class="product-rating" style="margin-top: 5px; gap: 5px; font-size: 14px;">
+                            <span class="stars">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= roundedStarsItem)
+                                    {
+                                        <text>★</text>
+                                    }
+                                    else
+                                    {
+                                        <text>☆</text>
+                                    }
+                                }
+                            </span>
+                            <span class="rating-value" style="font-size: 12px;">@item.AverageRating/5</span>
+                        </div>
+                        <div class="product-price-container" style="margin-top: 10px; gap: 8px;">
+                            <span class="current-price" style="font-size: 20px;">$@priceToShowItem</span>
+                            @if (hasDiscountItem)
+                            {
+                                <span class="original-price" style="font-size: 16px;">$@item.BasePrice</span>
+                                <span class="discount-badge" style="padding: 2px 8px; font-size: 11px;">-@discountPercentItem%</span>
+                            }
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </section>
+}
+
+<!-- INTERACTION SCRIPT -->
+<script>
+    function changeMainImage(el) {
+        document.getElementById('mainImage').src = el.src;
+        document.querySelectorAll('.gallery-thumbnails img').forEach(img => img.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    // Color Selector
+    document.querySelectorAll('.color-dot').forEach(dot => {
+        dot.addEventListener('click', function() {
+            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // Size Selector
+    document.querySelectorAll('.size-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // Quantity Picker
+    const qtyValue = document.getElementById('qtyValue');
+    document.getElementById('btnMinus').addEventListener('click', function() {
+        let currentVal = parseInt(qtyValue.innerText);
+        if (currentVal > 1) {
+            qtyValue.innerText = currentVal - 1;
+        }
+    });
+    document.getElementById('btnPlus').addEventListener('click', function() {
+        let currentVal = parseInt(qtyValue.innerText);
+        qtyValue.innerText = currentVal + 1;
+    });
+</script>

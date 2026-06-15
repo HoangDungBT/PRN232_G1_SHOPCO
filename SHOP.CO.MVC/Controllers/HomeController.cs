@@ -1,42 +1,167 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SHOP.CO.MVC.Models;
+using SHOP.CO.Application.Helpers;
+using SHOP.CO.Application.DTOs;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace SHOP.CO.MVC.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly string apiUrl = "https://localhost:7196/api/products";
+        private readonly string apiUrl;
+        private readonly string odataApiUrl;
+
+        public HomeController(IConfiguration configuration)
+        {
+            var baseUrl = configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7196";
+            apiUrl = $"{baseUrl}/api/products";
+            odataApiUrl = $"{baseUrl}/odata/Products";
+        }
 
         public async Task<IActionResult> Index()
         {
             List<ProductVM> products = new();
 
-            using (HttpClient client = new HttpClient())
+            try
             {
-                var response = await client.GetAsync(apiUrl);
-
-                var json = await response.Content.ReadAsStringAsync();
-
-                products = JsonConvert.DeserializeObject<List<ProductVM>>(json);
+                using (HttpClient client = new HttpClient())
+                {
+                    var response = await client.GetAsync(apiUrl);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var json = await response.Content.ReadAsStringAsync();
+                        products = JsonConvert.DeserializeObject<List<ProductVM>>(json) ?? new();
+                    }
+                    else
+                    {
+                        Console.WriteLine($"API returned non-success status: {response.StatusCode}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error calling API in Index: " + ex.Message);
             }
 
             return View(products);
         }
 
-        // CATEGORY PAGE
-        public async Task<IActionResult> Category()
+        // CATEGORY PAGE WITH ODATA FILTER & PAGING
+        public async Task<IActionResult> Category(
+            int? categoryId,
+            string? brand,
+            decimal? minPrice,
+            decimal? maxPrice,
+            string? size,
+            string? color,
+            string? sortOrder,
+            int page = 1)
         {
             List<ProductVM> products = new();
+            int totalCount = 0;
+            const int pageSize = 9;
 
-            using (HttpClient client = new HttpClient())
+            var queryString = ODataQueryBuilder.Build(
+                categoryId,
+                brand,
+                minPrice,
+                maxPrice,
+                size,
+                color,
+                sortOrder,
+                page,
+                pageSize
+            );
+
+            string fullUrl = odataApiUrl + queryString;
+            string rawJson = "";
+            try
             {
-                var response = await client.GetAsync(apiUrl);
+                using (HttpClient client = new HttpClient())
+                {
+                    // Thiết lập Accept header chuẩn để yêu cầu JSON
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-                var json = await response.Content.ReadAsStringAsync();
+                    var response = await client.GetAsync(fullUrl);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        rawJson = await response.Content.ReadAsStringAsync();
+                        rawJson = rawJson.Trim();
 
-                products = JsonConvert.DeserializeObject<List<ProductVM>>(json);
+                        if (rawJson.StartsWith("["))
+                        {
+                            // API trả về mảng phẳng [...] do Content Negotiation hoặc custom routing
+                            var flatList = JsonConvert.DeserializeObject<List<ProductDto>>(rawJson);
+                            if (flatList != null)
+                            {
+                                totalCount = flatList.Count;
+                                products = flatList.Select(p => new ProductVM
+                                {
+                                    Id = p.ProductId,
+                                    Name = p.ProductName,
+                                    Price = p.SalePrice ?? p.BasePrice,
+                                    BasePrice = p.BasePrice,
+                                    SalePrice = p.SalePrice,
+                                    Image = p.ThumbnailUrl ?? "/images/heroimg.png",
+                                    Description = p.Description ?? "",
+                                    Category = p.CategoryName ?? ""
+                                }).ToList();
+                            }
+                        }
+                        else
+                        {
+                            // API trả về định dạng OData chuẩn {"value": [...], "Count": X}
+                            var odataResult = JsonConvert.DeserializeObject<ODataResponse<ProductDto>>(rawJson);
+                            if (odataResult != null)
+                            {
+                                totalCount = odataResult.Count;
+                                products = odataResult.Value.Select(p => new ProductVM
+                                {
+                                    Id = p.ProductId,
+                                    Name = p.ProductName,
+                                    Price = p.SalePrice ?? p.BasePrice,
+                                    BasePrice = p.BasePrice,
+                                    SalePrice = p.SalePrice,
+                                    Image = p.ThumbnailUrl ?? "/images/heroimg.png",
+                                    Description = p.Description ?? "",
+                                    Category = p.CategoryName ?? ""
+                                }).ToList();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"OData API returned non-success status: {response.StatusCode}");
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                // Ghi nhận lỗi chi tiết phục vụ debug
+                Console.WriteLine($"Error calling OData API. URL: {fullUrl}");
+                Console.WriteLine($"Raw JSON response: {rawJson}");
+                Console.WriteLine("Error Details: " + ex.ToString());
+            }
+
+            // Truyền các thông tin phân trang & bộ lọc xuống view
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalCount = totalCount;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+            ViewBag.CategoryId = categoryId;
+            ViewBag.Brand = brand;
+            ViewBag.MinPrice = minPrice;
+            ViewBag.MaxPrice = maxPrice;
+            ViewBag.Size = size;
+            ViewBag.Color = color;
+            ViewBag.SortOrder = sortOrder;
 
             return View(products);
         }
@@ -44,17 +169,39 @@ namespace SHOP.CO.MVC.Controllers
         // PRODUCT DETAIL
         public async Task<IActionResult> Detail(int id)
         {
-            ProductVM product = new();
+            ProductDto? product = null;
+            List<ProductDto> relatedProducts = new();
 
-            using (HttpClient client = new HttpClient())
+            try
             {
-                var response = await client.GetAsync($"{apiUrl}/{id}");
+                using (HttpClient client = new HttpClient())
+                {
+                    var response = await client.GetAsync($"{apiUrl}/{id}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var json = await response.Content.ReadAsStringAsync();
+                        product = JsonConvert.DeserializeObject<ProductDto>(json);
+                    }
 
-                var json = await response.Content.ReadAsStringAsync();
-
-                product = JsonConvert.DeserializeObject<ProductVM>(json);
+                    var relatedResponse = await client.GetAsync($"{apiUrl}/{id}/related?limit=4");
+                    if (relatedResponse.IsSuccessStatusCode)
+                    {
+                        var jsonRelated = await relatedResponse.Content.ReadAsStringAsync();
+                        relatedProducts = JsonConvert.DeserializeObject<List<ProductDto>>(jsonRelated) ?? new();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error fetching product details: " + ex.Message);
             }
 
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.RelatedProducts = relatedProducts;
             return View(product);
         }
 

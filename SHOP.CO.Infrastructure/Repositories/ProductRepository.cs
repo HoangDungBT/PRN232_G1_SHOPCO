@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace SHOP.CO.Infrastructure.Repositories
 {
@@ -40,6 +41,35 @@ namespace SHOP.CO.Infrastructure.Repositories
             // trả dữ liệu
             return(items,  totalCount);
 
+        }
+
+        public IQueryable<Product> GetProductsQuery()
+        {
+            return _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.ProductVariants)
+                .Include(p => p.ProductImages)
+                .AsQueryable();
+        }
+
+        public async Task<Product?> GetProductByIdAsync(int id)
+        {
+            return await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.ProductVariants)
+                .Include(p => p.ProductImages)
+                .FirstOrDefaultAsync(p => p.ProductId == id);
+        }
+
+        public async Task<List<Product>> GetRelatedProductsAsync(int categoryId, int excludeProductId, int limit)
+        {
+            return await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.ProductImages)
+                .Where(p => p.IsActive && p.CategoryId == categoryId && p.ProductId != excludeProductId)
+                .OrderByDescending(p => p.CreatedAt)
+                .Take(limit)
+                .ToListAsync();
         }
     }
 }

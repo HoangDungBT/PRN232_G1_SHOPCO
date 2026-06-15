@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +9,8 @@ namespace SHOP.CO.Infrastructure.Repositories
     public interface IProductRepository
     {
         Task<(List<Product> Items, int TotalCount)> GetPagedProductAsync(string? searchTerm, int pageNumber, int pageSize);
-
+        IQueryable<Product> GetProductsQuery();
+        Task<Product?> GetProductByIdAsync(int id);
+        Task<List<Product>> GetRelatedProductsAsync(int categoryId, int excludeProductId, int limit);
     }
 }

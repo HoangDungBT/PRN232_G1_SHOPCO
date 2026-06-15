@@ -1,162 +1,127 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>@ViewData["Title"] - SHOP.CO</title>
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-
+    <link rel="stylesheet" href="~/SHOP.CO.MVC.styles.css" asp-append-version="true" />
 </head>
-
 <body>
-
     <!-- TOP BAR -->
-
     <div class="top-bar">
-
-        Sign up and get 20% off to your first order.
-
+        <span>Sign up and get 20% off to your first order. <a href="#" style="color: white; text-decoration: underline; font-weight: 600;">Sign Up Now</a></span>
+        <button class="top-bar-close" onclick="this.parentElement.style.display='none'">&times;</button>
     </div>
 
     <!-- NAVBAR -->
-
     <nav class="navbar">
-
         <div class="logo">
-            SHOP.CO
+            <a href="/" style="text-decoration: none; color: black; font-family: 'Poppins', sans-serif; font-weight: 800; letter-spacing: -0.5px;">SHOP.CO</a>
         </div>
 
         <ul class="nav-links">
-
-            <li>
-                <a href="/">Home</a>
+            <li class="dropdown">
+                <a href="/Home/Category">Shop <span style="font-size: 10px;">▼</span></a>
             </li>
-
-            <li>
-                <a href="/Home/Category">Shop</a>
-            </li>
-
             <li>
                 <a href="#">On Sale</a>
             </li>
-
             <li>
                 <a href="#">New Arrivals</a>
             </li>
-
             <li>
                 <a href="#">Brands</a>
             </li>
-
         </ul>
 
         <div class="search-box">
-
+            <span class="search-icon">🔍</span>
             <input type="text" placeholder="Search for products..." />
-
         </div>
 
         <div class="nav-icons">
-
-            <a href="/Home/Cart">🛒</a>
-
-            <span>👤</span>
-
+            <a href="/Home/Cart" class="nav-icon">🛒</a>
+            <a href="#" class="nav-icon">👤</a>
         </div>
-
     </nav>
 
     <!-- BODY -->
-    @RenderBody()
+    <main class="main-content">
+        @RenderBody()
+    </main>
 
     <!-- NEWSLETTER -->
-
     <section class="newsletter">
-
         <div class="newsletter-left">
-
-            <h2>
-                STAY UPTO DATE ABOUT OUR LATEST OFFERS
-            </h2>
-
+            <h2>STAY UPTO DATE ABOUT OUR LATEST OFFERS</h2>
         </div>
-
         <div class="newsletter-right">
-
-            <input type="email" placeholder="Enter your email address" />
-
-            <button>
-                Subscribe to Newsletter
-            </button>
-
+            <div class="input-with-icon">
+                <span class="email-icon">✉</span>
+                <input type="email" placeholder="Enter your email address" />
+            </div>
+            <button>Subscribe to Newsletter</button>
         </div>
-
     </section>
 
     <!-- FOOTER -->
-
     <footer class="footer">
-
         <div class="footer-top">
-
             <div class="footer-brand">
-
                 <h2>SHOP.CO</h2>
-
-                <p>
-                    We have clothes that suits your style and which you’re proud to wear.
-                </p>
-
+                <p>We have clothes that suits your style and which you're proud to wear. From women to men.</p>
+                <div class="social-links">
+                    <a href="#">🐦</a>
+                    <a href="#" class="social-active">📘</a>
+                    <a href="#">📷</a>
+                    <a href="#">🐙</a>
+                </div>
             </div>
-
             <div class="footer-links">
-
                 <div>
-
                     <h4>COMPANY</h4>
-
                     <a href="#">About</a>
                     <a href="#">Features</a>
                     <a href="#">Works</a>
-
+                    <a href="#">Career</a>
                 </div>
-
                 <div>
-
                     <h4>HELP</h4>
-
-                    <a href="#">Support</a>
-                    <a href="#">Delivery</a>
-                    <a href="#">Terms</a>
-
+                    <a href="#">Customer Support</a>
+                    <a href="#">Delivery Details</a>
+                    <a href="#">Terms & Conditions</a>
+                    <a href="#">Privacy Policy</a>
                 </div>
-
                 <div>
-
                     <h4>FAQ</h4>
-
                     <a href="#">Account</a>
+                    <a href="#">Manage Deliveries</a>
                     <a href="#">Orders</a>
                     <a href="#">Payments</a>
-
                 </div>
-
+                <div>
+                    <h4>RESOURCES</h4>
+                    <a href="#">Free eBooks</a>
+                    <a href="#">Development Tutorial</a>
+                    <a href="#">How to - Blog</a>
+                    <a href="#">Youtube Playlist</a>
+                </div>
             </div>
-
         </div>
-
         <div class="footer-bottom">
-
-            © 2026 SHOP.CO. All Rights Reserved.
-
+            <p>Shop.co © 2000-2023, All Rights Reserved</p>
+            <div class="payment-methods">
+                <span class="payment-card">Visa</span>
+                <span class="payment-card">Mastercard</span>
+                <span class="payment-card">PayPal</span>
+                <span class="payment-card">Apple Pay</span>
+                <span class="payment-card">Google Pay</span>
+            </div>
         </div>
-
     </footer>
-
 </body>
-
 </html>

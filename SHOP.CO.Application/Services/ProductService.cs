@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,23 +29,155 @@ namespace SHOP.CO.Application.Services
             var dtos = result.Items.Select(p => new ProductDto
             {
                 ProductId = p.ProductId,
+                CategoryId = p.CategoryId,
                 ProductName = p.ProductName,
                 Slug = p.Slug,
-                CategoryName = p.Category?.CategoryName,
                 BasePrice = p.BasePrice,
                 SalePrice = p.SalePrice,
+                CategoryName = p.Category?.CategoryName,
+                AverageRating = p.AverageRating,
+                ReviewCount = p.ReviewCount,
+                IsFeatured = p.IsFeatured,
+                IsBestSeller = p.IsBestSeller,
+                IsNewArrival = p.IsNewArrival,
+                IsActive = p.IsActive,
+                ThumbnailUrl = p.ProductImages.FirstOrDefault(img => img.IsThumbnail) != null 
+                    ? p.ProductImages.FirstOrDefault(img => img.IsThumbnail)!.ImageUrl 
+                    : p.ProductImages.OrderBy(img => img.SortOrder).Select(img => img.ImageUrl).FirstOrDefault()
             }).ToList();
 
             //trả kq
             return new PagedResult<ProductDto>
             { 
-                Items = dtos ,
-                TotalCount = dtos.Count,
+                Items = dtos,
+                TotalCount = result.TotalCount, // SỬA LỖI PAGING: Lấy tổng số lượng từ result thay vì dtos.Count
                 PageNumber = pageNumber,
                 PageSize = pageSize
-            
             };
+        }
 
+        public IQueryable<ProductDto> GetProductsQuery()
+        {
+            var query = _repository.GetProductsQuery();
+            
+            return query.Select(p => new ProductDto
+            {
+                ProductId = p.ProductId,
+                CategoryId = p.CategoryId,
+                ProductName = p.ProductName,
+                Slug = p.Slug,
+                Brand = p.Brand,
+                Description = p.Description,
+                Material = p.Material,
+                GenderTarget = p.GenderTarget,
+                BasePrice = p.BasePrice,
+                SalePrice = p.SalePrice,
+                AverageRating = p.AverageRating,
+                ReviewCount = p.ReviewCount,
+                ViewCount = p.ViewCount,
+                IsFeatured = p.IsFeatured,
+                IsBestSeller = p.IsBestSeller,
+                IsNewArrival = p.IsNewArrival,
+                IsActive = p.IsActive,
+                CategoryName = p.Category != null ? p.Category.CategoryName : null,
+                ThumbnailUrl = p.ProductImages.FirstOrDefault(img => img.IsThumbnail) != null 
+                    ? p.ProductImages.FirstOrDefault(img => img.IsThumbnail)!.ImageUrl 
+                    : p.ProductImages.OrderBy(img => img.SortOrder).Select(img => img.ImageUrl).FirstOrDefault(),
+                Variants = p.ProductVariants.Select(v => new ProductVariantDto
+                {
+                    VariantId = v.VariantId,
+                    ProductId = v.ProductId,
+                    Sku = v.Sku,
+                    Size = v.Size,
+                    Color = v.Color,
+                    ColorHex = v.ColorHex,
+                    ExtraPrice = v.ExtraPrice,
+                    OriginalPrice = v.OriginalPrice,
+                    StockQuantity = v.StockQuantity,
+                    LowStockThreshold = v.LowStockThreshold,
+                    Barcode = v.Barcode,
+                    WeightGram = v.WeightGram
+                }).ToList(),
+                Images = p.ProductImages.Select(img => new ProductImageDto
+                {
+                    ImageId = img.ImageId,
+                    ProductId = img.ProductId,
+                    VariantId = img.VariantId,
+                    ImageUrl = img.ImageUrl,
+                    AltText = img.AltText,
+                    IsThumbnail = img.IsThumbnail,
+                    SortOrder = img.SortOrder
+                }).ToList()
+            });
+        }
+
+        public async Task<ProductDto?> GetProductByIdAsync(int id)
+        {
+            var product = await _repository.GetProductByIdAsync(id);
+            if (product == null) return null;
+            return MapToDto(product);
+        }
+
+        public async Task<List<ProductDto>> GetRelatedProductsAsync(int productId, int limit)
+        {
+            var product = await _repository.GetProductByIdAsync(productId);
+            if (product == null) return new List<ProductDto>();
+
+            var related = await _repository.GetRelatedProductsAsync(product.CategoryId, productId, limit);
+            return related.Select(MapToDto).ToList();
+        }
+
+        private ProductDto MapToDto(SHOP.CO.Domain.Entities.Product p)
+        {
+            return new ProductDto
+            {
+                ProductId = p.ProductId,
+                CategoryId = p.CategoryId,
+                ProductName = p.ProductName,
+                Slug = p.Slug,
+                Brand = p.Brand,
+                Description = p.Description,
+                Material = p.Material,
+                GenderTarget = p.GenderTarget,
+                BasePrice = p.BasePrice,
+                SalePrice = p.SalePrice,
+                AverageRating = p.AverageRating,
+                ReviewCount = p.ReviewCount,
+                ViewCount = p.ViewCount,
+                IsFeatured = p.IsFeatured,
+                IsBestSeller = p.IsBestSeller,
+                IsNewArrival = p.IsNewArrival,
+                IsActive = p.IsActive,
+                CategoryName = p.Category != null ? p.Category.CategoryName : null,
+                ThumbnailUrl = p.ProductImages.FirstOrDefault(img => img.IsThumbnail) != null 
+                    ? p.ProductImages.FirstOrDefault(img => img.IsThumbnail)!.ImageUrl 
+                    : p.ProductImages.OrderBy(img => img.SortOrder).Select(img => img.ImageUrl).FirstOrDefault(),
+                Variants = p.ProductVariants != null ? p.ProductVariants.Select(v => new ProductVariantDto
+                {
+                    VariantId = v.VariantId,
+                    ProductId = v.ProductId,
+                    Sku = v.Sku,
+                    Size = v.Size,
+                    Color = v.Color,
+                    ColorHex = v.ColorHex,
+                    ExtraPrice = v.ExtraPrice,
+                    OriginalPrice = v.OriginalPrice,
+                    StockQuantity = v.StockQuantity,
+                    LowStockThreshold = v.LowStockThreshold,
+                    Barcode = v.Barcode,
+                    WeightGram = v.WeightGram
+                }).ToList() : new List<ProductVariantDto>(),
+                Images = p.ProductImages != null ? p.ProductImages.Select(img => new ProductImageDto
+                {
+                    ImageId = img.ImageId,
+                    ProductId = img.ProductId,
+                    VariantId = img.VariantId,
+                    ImageUrl = img.ImageUrl,
+                    AltText = img.AltText,
+                    IsThumbnail = img.IsThumbnail,
+                    SortOrder = img.SortOrder
+                }).ToList() : new List<ProductImageDto>()
+            };
         }
     }
 }
