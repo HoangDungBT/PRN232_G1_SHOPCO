@@ -159,6 +159,7 @@ namespace SHOP.CO.MVC.Controllers
         {
             ProductDto? product = null;
             List<ProductDto> relatedProducts = new();
+            List<ReviewDto> reviews = new();
 
             try
             {
@@ -177,6 +178,13 @@ namespace SHOP.CO.MVC.Controllers
                         var jsonRelated = await relatedResponse.Content.ReadAsStringAsync();
                         relatedProducts = JsonConvert.DeserializeObject<List<ProductDto>>(jsonRelated) ?? new();
                     }
+
+                    var reviewsResponse = await client.GetAsync($"{apiUrl}/{id}/reviews");
+                    if (reviewsResponse.IsSuccessStatusCode)
+                    {
+                        var jsonReviews = await reviewsResponse.Content.ReadAsStringAsync();
+                        reviews = JsonConvert.DeserializeObject<List<ReviewDto>>(jsonReviews) ?? new();
+                    }
                 }
             }
             catch (Exception ex)
@@ -190,7 +198,8 @@ namespace SHOP.CO.MVC.Controllers
             }
 
             ViewBag.RelatedProducts = relatedProducts;
-            return View(product);
+            ViewBag.Reviews = reviews;
+            return View("Details", product);
         }
 
         // SHOPPING CART

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SHOP.CO.Domain.Entities;
 
 namespace SHOP.CO.Infrastructure.Repositories
 {
@@ -12,6 +13,8 @@ namespace SHOP.CO.Infrastructure.Repositories
         IQueryable<Product> GetProductsQuery();
         Task<Product?> GetProductByIdAsync(int id);
         Task<List<Product>> GetRelatedProductsAsync(int categoryId, int excludeProductId, int limit);
+        Task<List<CustomerActivity>> GetReviewsByProductIdAsync(int productId);
+        Task AddReviewAsync(CustomerActivity review);
     }
 
     public interface ICartRepository

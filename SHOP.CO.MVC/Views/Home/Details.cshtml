@@ -1,4 +1,5 @@
 @model SHOP.CO.Application.DTOs.ProductDto
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 
 @{
     ViewData["Title"] = Model.ProductName + " - Detail";
@@ -143,6 +144,141 @@
     </div>
 </div>
 
+<!-- PRODUCT TABS & REVIEWS SECTION -->
+<div class="product-tabs-container">
+    <div class="tabs-header">
+        <button class="tab-btn" onclick="openTab(event, 'product-details-tab')">Product Details</button>
+        <button class="tab-btn active" onclick="openTab(event, 'rating-reviews-tab')">Rating & Reviews</button>
+        <button class="tab-btn" onclick="openTab(event, 'faqs-tab')">FAQs</button>
+    </div>
+
+    <!-- TAB CONTENTS -->
+    <div id="product-details-tab" class="tab-content" style="display: none;">
+        <div class="tab-inner-content">
+            <h3>Product Specification</h3>
+            <p style="margin-top: 15px;"><strong>Material:</strong> @Model.Material</p>
+            <p style="margin-top: 10px;"><strong>Brand:</strong> @Model.Brand</p>
+            <p style="margin-top: 10px;"><strong>Target:</strong> @(Model.GenderTarget ?? "Unisex")</p>
+            <p style="margin-top: 10px;"><strong>Description:</strong> @Model.Description</p>
+        </div>
+    </div>
+
+    <div id="rating-reviews-tab" class="tab-content">
+        <div class="reviews-section-header">
+            <div class="reviews-count-title">
+                <h2>All Reviews</h2>
+                <span class="total-reviews-span">(@(ViewBag.Reviews != null ? ((List<SHOP.CO.Application.DTOs.ReviewDto>)ViewBag.Reviews).Count : 0))</span>
+            </div>
+            <div class="reviews-header-actions">
+                <button class="filter-action-btn" title="Filter">🎛️</button>
+                <div class="sort-action-container">
+                    <select class="sort-select">
+                        <option>Latest</option>
+                        <option>Oldest</option>
+                    </select>
+                </div>
+                <button class="btn-write-review" onclick="openReviewModal()">Write a Review</button>
+            </div>
+        </div>
+
+        <div class="reviews-grid" id="reviewsGrid">
+            @if (ViewBag.Reviews != null && ((List<SHOP.CO.Application.DTOs.ReviewDto>)ViewBag.Reviews).Any())
+            {
+                var reviewList = (List<SHOP.CO.Application.DTOs.ReviewDto>)ViewBag.Reviews;
+                for (int i = 0; i < reviewList.Count; i++)
+                {
+                    var r = reviewList[i];
+                    var hiddenClass = i >= 6 ? "review-hidden" : "";
+                    <div class="review-card @hiddenClass">
+                        <div class="review-card-header">
+                            <div class="stars review-stars">
+                                @for (int s = 1; s <= 5; s++)
+                                {
+                                    if (s <= r.Rating)
+                                    {
+                                        <text>★</text>
+                                    }
+                                    else
+                                    {
+                                        <text>☆</text>
+                                    }
+                                }
+                            </div>
+                            <button class="review-menu-btn">•••</button>
+                        </div>
+                        <div class="reviewer-info">
+                            <h3 class="reviewer-name">@r.ReviewerName</h3>
+                            <span class="verified-badge" title="Verified Purchase">✔</span>
+                        </div>
+                        <p class="review-text">"@r.Comment"</p>
+                        <span class="review-date">Posted on @r.CreatedAt.ToString("MMMM dd, yyyy")</span>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="no-reviews-msg" style="grid-column: 1/-1; text-align: center; padding: 40px 0; color: rgba(0,0,0,0.5);">
+                    Chưa có đánh giá nào cho sản phẩm này. Hãy là người đầu tiên đánh giá!
+                </div>
+            }
+        </div>
+
+        @if (ViewBag.Reviews != null && ((List<SHOP.CO.Application.DTOs.ReviewDto>)ViewBag.Reviews).Count > 6)
+        {
+            <div class="load-more-container">
+                <button class="btn-load-more" id="btnLoadMore" onclick="loadMoreReviews()">Load More Reviews</button>
+            </div>
+        }
+    </div>
+
+    <div id="faqs-tab" class="tab-content" style="display: none;">
+        <div class="tab-inner-content">
+            <h3>Frequently Asked Questions</h3>
+            <div class="faq-item" style="margin-top: 20px;">
+                <h4 class="faq-question" style="font-weight: 600; margin-bottom: 5px;">Q: Hướng dẫn giặt và bảo quản sản phẩm?</h4>
+                <p class="faq-answer" style="color: rgba(0,0,0,0.6);">A: Nên giặt bằng nước lạnh với xà phòng trung tính, tránh phơi trực tiếp dưới ánh nắng gay gắt.</p>
+            </div>
+            <div class="faq-item" style="margin-top: 20px;">
+                <h4 class="faq-question" style="font-weight: 600; margin-bottom: 5px;">Q: Sản phẩm có hỗ trợ đổi size không?</h4>
+                <p class="faq-answer" style="color: rgba(0,0,0,0.6);">A: Shop hỗ trợ đổi size miễn phí trong vòng 7 ngày kể từ khi nhận hàng đối với sản phẩm còn nguyên tem mác.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- WRITE REVIEW MODAL -->
+<div id="reviewModal" class="review-modal-overlay">
+    <div class="review-modal-content">
+        <div class="modal-header">
+            <h2>Write a Review</h2>
+            <button class="btn-close-modal" onclick="closeReviewModal()">&times;</button>
+        </div>
+        <form id="reviewForm" onsubmit="submitReviewForm(event)">
+            <div class="form-group">
+                <label>Select Rating Stars</label>
+                <div class="star-rating-selector">
+                    <span class="star-select" data-value="1" onmouseover="hoverStars(1)" onmouseout="resetStars()" onclick="selectRating(1)">☆</span>
+                    <span class="star-select" data-value="2" onmouseover="hoverStars(2)" onmouseout="resetStars()" onclick="selectRating(2)">☆</span>
+                    <span class="star-select" data-value="3" onmouseover="hoverStars(3)" onmouseout="resetStars()" onclick="selectRating(3)">☆</span>
+                    <span class="star-select" data-value="4" onmouseover="hoverStars(4)" onmouseout="resetStars()" onclick="selectRating(4)">☆</span>
+                    <span class="star-select" data-value="5" onmouseover="hoverStars(5)" onmouseout="resetStars()" onclick="selectRating(5)">☆</span>
+                </div>
+                <input type="hidden" name="Rating" id="ratingInput" value="0" />
+                <span class="error-msg" id="ratingError"></span>
+            </div>
+            <div class="form-group">
+                <label for="reviewComment">Your Review</label>
+                <textarea id="reviewComment" name="Comment" rows="5" placeholder="Share your experience with this product..."></textarea>
+                <span class="error-msg" id="commentError"></span>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeReviewModal()">Cancel</button>
+                <button type="submit" class="btn-submit">Submit Review</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <!-- RELATED PRODUCTS -->
 @if (relatedProducts.Any())
 {
@@ -231,7 +367,148 @@
     // Add To Cart button redirect
     document.querySelector('.btn-add-to-cart').addEventListener('click', function() {
         var quantity = qtyValue.innerText;
-        // Gửi thông tin add to cart tới action AddToCart của CartController
         window.location.href = `/Cart/AddToCart?id=@Model.ProductId&name=@Uri.EscapeDataString(Model.ProductName)&price=@priceToShow&image=@Uri.EscapeDataString(mainImage)`;
     });
+
+    // Tab switcher
+    function openTab(evt, tabId) {
+        document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(tabId).style.display = 'block';
+        evt.currentTarget.classList.add('active');
+    }
+
+    // Review Modal toggle
+    function openReviewModal() {
+        document.getElementById('reviewModal').style.display = 'flex';
+        resetRatingSelector();
+    }
+
+    function closeReviewModal() {
+        document.getElementById('reviewModal').style.display = 'none';
+        document.getElementById('reviewForm').reset();
+        document.querySelectorAll('.error-msg').forEach(err => err.innerText = '');
+    }
+
+    // Interactive Star Rating inside Modal
+    let selectedRating = 0;
+    
+    function hoverStars(rating) {
+        const stars = document.querySelectorAll('.star-select');
+        for (let i = 0; i < stars.length; i++) {
+            if (i < rating) {
+                stars[i].innerText = '★';
+                stars[i].classList.add('hovered');
+            } else {
+                stars[i].innerText = '☆';
+                stars[i].classList.remove('hovered');
+            }
+        }
+    }
+
+    function resetStars() {
+        const stars = document.querySelectorAll('.star-select');
+        for (let i = 0; i < stars.length; i++) {
+            if (i < selectedRating) {
+                stars[i].innerText = '★';
+                stars[i].classList.add('selected');
+            } else {
+                stars[i].innerText = '☆';
+                stars[i].classList.remove('selected');
+            }
+            stars[i].classList.remove('hovered');
+        }
+    }
+
+    function selectRating(rating) {
+        selectedRating = rating;
+        document.getElementById('ratingInput').value = rating;
+        resetStars();
+    }
+
+    function resetRatingSelector() {
+        selectedRating = 0;
+        document.getElementById('ratingInput').value = 0;
+        const stars = document.querySelectorAll('.star-select');
+        stars.forEach(s => {
+            s.innerText = '☆';
+            s.classList.remove('selected', 'hovered');
+        });
+    }
+
+    // Submit Review via AJAX (POST)
+    function submitReviewForm(event) {
+        event.preventDefault();
+        
+        const rating = parseInt(document.getElementById('ratingInput').value);
+        const comment = document.getElementById('reviewComment').value.trim();
+        
+        let isValid = true;
+        document.querySelectorAll('.error-msg').forEach(err => err.innerText = '');
+
+        if (rating === 0) {
+            document.getElementById('ratingError').innerText = 'Vui lòng chọn số sao đánh giá.';
+            isValid = false;
+        }
+        if (comment === '') {
+            document.getElementById('commentError').innerText = 'Vui lòng nhập nhận xét của bạn.';
+            isValid = false;
+        }
+
+        if (!isValid) return;
+
+        const payload = {
+            rating: rating,
+            comment: comment
+        };
+
+        const apiBaseUrl = '@Configuration["ApiSettings:BaseUrl"]' || 'http://localhost:5035';
+        const productId = '@Model.ProductId';
+
+        fetch(`${apiBaseUrl}/api/products/${productId}/reviews`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(async response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                let errMsg = 'Lỗi gửi đánh giá';
+                try {
+                    const err = await response.json();
+                    errMsg = err.message || errMsg;
+                } catch (e) {
+                    // Phản hồi không phải dạng JSON (ví dụ trang lỗi HTML 500)
+                }
+                throw new Error(errMsg);
+            }
+        })
+        .then(data => {
+            alert('Cảm ơn bạn đã gửi đánh giá!');
+            closeReviewModal();
+            window.location.reload();
+        })
+        .catch(error => {
+            alert(error.message || 'Có lỗi xảy ra, vui lòng thử lại.');
+        });
+    }
+
+    // Load More Reviews logic (Client-side)
+    function loadMoreReviews() {
+        const hiddenReviews = document.querySelectorAll('.review-card.review-hidden');
+        let count = 0;
+        hiddenReviews.forEach(r => {
+            if (count < 6) {
+                r.classList.remove('review-hidden');
+                count++;
+            }
+        });
+
+        if (document.querySelectorAll('.review-card.review-hidden').length === 0) {
+            document.getElementById('btnLoadMore').style.display = 'none';
+        }
+    }
 </script>

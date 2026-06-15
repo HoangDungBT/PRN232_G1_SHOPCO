@@ -64,5 +64,37 @@ namespace SHOP.CO.API.Controllers
             var relatedProducts = await _productService.GetRelatedProductsAsync(id, limit);
             return Ok(relatedProducts);
         }
+
+        [HttpGet("{id}/reviews")]
+        public async Task<IActionResult> GetReviews(int id)
+        {
+            var reviews = await _productService.GetReviewsByProductIdAsync(id);
+            return Ok(reviews);
+        }
+
+        [HttpPost("{id}/reviews")]
+        public async Task<IActionResult> AddReview(int id, [FromBody] CreateReviewRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                int mockUserId = 1; // Giả lập tài khoản đang đăng nhập
+                await _productService.AddReviewAsync(id, mockUserId, request);
+                return Ok(new { message = "Đánh giá thành công!" });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception)
+            {
+                // Thực hiện ghi log lỗi tại đây nếu có Logger
+                return BadRequest(new { message = "Có lỗi xảy ra trong quá trình gửi đánh giá. Vui lòng thử lại sau." });
+            }
+        }
     }
 }

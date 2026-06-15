@@ -179,5 +179,41 @@ namespace SHOP.CO.Application.Services
                 }).ToList() : new List<ProductImageDto>()
             };
         }
+
+        public async Task<List<ReviewDto>> GetReviewsByProductIdAsync(int productId)
+        {
+            var reviews = await _repository.GetReviewsByProductIdAsync(productId);
+            return reviews.Select(r => new ReviewDto
+            {
+                ActivityId = r.ActivityId,
+                UserId = r.UserId,
+                ReviewerName = r.User != null ? r.User.FullName : "Khách hàng",
+                Rating = r.Rating ?? 0,
+                Comment = r.Comment ?? "",
+                CreatedAt = r.CreatedAt
+            }).ToList();
+        }
+
+        public async Task AddReviewAsync(int productId, int userId, CreateReviewRequest request)
+        {
+            var product = await _repository.GetProductByIdAsync(productId);
+            if (product == null)
+            {
+                throw new KeyNotFoundException($"Không tìm thấy sản phẩm với ID {productId}.");
+            }
+
+            var review = new SHOP.CO.Domain.Entities.CustomerActivity
+            {
+                ProductId = productId,
+                UserId = userId,
+                ActivityType = "Review",
+                Rating = request.Rating,
+                Comment = request.Comment,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await _repository.AddReviewAsync(review);
+        }
     }
 }

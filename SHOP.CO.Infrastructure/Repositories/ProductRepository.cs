@@ -71,6 +71,45 @@ namespace SHOP.CO.Infrastructure.Repositories
                 .Take(limit)
                 .ToListAsync();
         }
+
+        public async Task<List<CustomerActivity>> GetReviewsByProductIdAsync(int productId)
+        {
+            return await _context.CustomerActivities
+                .Include(a => a.User)
+                .Where(a => a.ProductId == productId && a.ActivityType == "Review" && a.IsActive)
+                .OrderByDescending(a => a.CreatedAt)
+                .Take(50)
+                .ToListAsync();
+        }
+
+        public async Task AddReviewAsync(CustomerActivity review)
+        {
+            // 1. Thêm đánh giá vào Tracker bộ nhớ của EF
+            await _context.CustomerActivities.AddAsync(review);
+
+            // 2. Truy vấn các rating hiện tại từ DB (chưa lưu đánh giá mới)
+            var ratings = await _context.CustomerActivities
+                .Where(a => a.ProductId == review.ProductId && a.ActivityType == "Review" && a.IsActive)
+                .Select(a => a.Rating)
+                .ToListAsync();
+
+            // 3. Đưa đánh giá mới đang ở bộ nhớ vào danh sách tính toán luôn
+            if (review.IsActive && review.ActivityType == "Review")
+            {
+                ratings.Add(review.Rating);
+            }
+
+            // 4. Tìm sản phẩm và cập nhật các chỉ số tổng hợp
+            var product = await _context.Products.FindAsync(review.ProductId);
+            if (product != null)
+            {
+                product.ReviewCount = ratings.Count;
+                product.AverageRating = ratings.Any() ? Math.Round((decimal)ratings.Average(r => r ?? 0), 2) : 0;
+            }
+
+            // 5. Lưu toàn bộ thay đổi trong một Transaction duy nhất
+            await _context.SaveChangesAsync();
+        }
     }
 }
 

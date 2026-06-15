@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SHOP.CO.Application.DTOs;
 
 namespace SHOP.CO.Application.Services
 {
@@ -15,6 +16,8 @@ namespace SHOP.CO.Application.Services
         IQueryable<ProductDto> GetProductsQuery();
         Task<ProductDto?> GetProductByIdAsync(int id);
         Task<List<ProductDto>> GetRelatedProductsAsync(int productId, int limit);
+        Task<List<ReviewDto>> GetReviewsByProductIdAsync(int productId);
+        Task AddReviewAsync(int productId, int userId, CreateReviewRequest request);
     }
 
     /// <summary>
