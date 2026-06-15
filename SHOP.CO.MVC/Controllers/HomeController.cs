@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using SHOP.CO.MVC.Services;
 
 namespace SHOP.CO.MVC.Controllers
 {
@@ -15,40 +16,27 @@ namespace SHOP.CO.MVC.Controllers
     {
         private readonly string apiUrl;
         private readonly string odataApiUrl;
+        private readonly IProductApiClient _productApiClient;
 
-        public HomeController(IConfiguration configuration)
+        public HomeController(IConfiguration configuration, IProductApiClient productApiClient)
         {
             var baseUrl = configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7196";
             apiUrl = $"{baseUrl}/api/products";
             odataApiUrl = $"{baseUrl}/odata/Products";
+            _productApiClient = productApiClient;
         }
 
         public async Task<IActionResult> Index()
         {
-            List<ProductVM> products = new();
-
             try
             {
-                using (HttpClient client = new HttpClient())
-                {
-                    var response = await client.GetAsync(apiUrl);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var json = await response.Content.ReadAsStringAsync();
-                        products = JsonConvert.DeserializeObject<List<ProductVM>>(json) ?? new();
-                    }
-                    else
-                    {
-                        Console.WriteLine($"API returned non-success status: {response.StatusCode}");
-                    }
-                }
+                var products = await _productApiClient.GetProductsAsync();
+                return View(products);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine("Error calling API in Index: " + ex.Message);
+                return View(new List<ProductVM>());
             }
-
-            return View(products);
         }
 
         // CATEGORY PAGE WITH ODATA FILTER & PAGING

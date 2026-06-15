@@ -227,4 +227,11 @@
         let currentVal = parseInt(qtyValue.innerText);
         qtyValue.innerText = currentVal + 1;
     });
+
+    // Add To Cart button redirect
+    document.querySelector('.btn-add-to-cart').addEventListener('click', function() {
+        var quantity = qtyValue.innerText;
+        // Gửi thông tin add to cart tới action AddToCart của CartController
+        window.location.href = `/Cart/AddToCart?id=@Model.ProductId&name=@Uri.EscapeDataString(Model.ProductName)&price=@priceToShow&image=@Uri.EscapeDataString(mainImage)`;
+    });
 </script>

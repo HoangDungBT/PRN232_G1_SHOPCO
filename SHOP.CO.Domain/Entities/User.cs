@@ -34,3 +34,4 @@ namespace SHOP.CO.Domain.Entities
         public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
     }
 }
+

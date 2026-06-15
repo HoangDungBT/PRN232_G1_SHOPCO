@@ -1,4 +1,4 @@
-﻿global using SHOP.CO.Domain.Entities;
+global using SHOP.CO.Domain.Entities;
 global using SHOP.CO.Infrastructure.Data;
 global using SHOP.CO.Infrastructure.Repositories;
 global using Microsoft.EntityFrameworkCore;
@@ -19,11 +19,10 @@ namespace SHOP.CO.Infrastructure
             {
                 options.UseSqlServer(connectionString, sqlOptions =>
                 {
-                    // Đặt tên Migration Assembly chỉ định về tầng API (nếu bạn muốn chạy lệnh migration ở API)
-                    // Hoặc để trống nếu bạn chạy migration trực tiếp trên Infrastructure
+                    // Đặt tên Migration Assembly chỉ định về tầng Infrastructure
                     sqlOptions.MigrationsAssembly("SHOP.CO.Infrastructure");
 
-                    // Cấu hình chịu lỗi (Resiliency) nếu db rớt kết nối tạm thời
+                    // Cấu hình chịu lỗi (Resiliency) nếu db mất kết nối tạm thời
                     sqlOptions.EnableRetryOnFailure(
                         maxRetryCount: 3,
                         maxRetryDelay: TimeSpan.FromSeconds(10),
@@ -31,15 +30,11 @@ namespace SHOP.CO.Infrastructure
                 });
             });
 
-
-            //đăng kí Repositories
+            // Đăng ký Repositories với vòng đời Scoped
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<ICartRepository, CartRepository>();
+            services.AddScoped<SHOP.CO.Domain.Repositories.IProductUiRepository, MockProductUiRepository>();
 
-            //đọc cấu hình Cloudinary từ appsettings.json
-            //services.Configure<CloudinarySettings>(options =>
-            //    {
-            //        configuration.GetSection("Cloudinary").Bind(options);
-            //    });
             return services;
         }
     }

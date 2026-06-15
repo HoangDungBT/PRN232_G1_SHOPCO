@@ -13,4 +13,16 @@ namespace SHOP.CO.Infrastructure.Repositories
         Task<Product?> GetProductByIdAsync(int id);
         Task<List<Product>> GetRelatedProductsAsync(int categoryId, int excludeProductId, int limit);
     }
+
+    public interface ICartRepository
+    {
+        Task AddToCartAsync(CartItem cartItem);
+        Task<List<CartItem>> GetCartByUserIdAsync(int userId);
+        Task<CartItem?> GetCartItemAsync(int userId, int variantId);
+        Task RemoveCartItemAsync(int cartItemId);
+        Task<ProductVariant?> GetProductVariantByIdAsync(int variantId);
+        Task<CartItem?> GetCartItemByIdAsync(int cartItemId);
+        Task<ProductVariant?> GetFirstVariantByProductIdAsync(int productId);
+        Task SaveChangesAsync();
+    }
 }

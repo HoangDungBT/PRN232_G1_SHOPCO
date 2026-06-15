@@ -1,40 +1,70 @@
-@model List<SHOP.CO.MVC.Models.CartItemVM>
+@model SHOP.CO.MVC.Models.CartViewModel
 
 @{
-    decimal total = Model.Sum(x => x.Price * x.Quantity);
+    ViewData["Title"] = "Shopping Cart";
 }
 
-<div class="cart-page">
+<div class="container mt-4">
+    <h1 class="mb-4">Your Shopping Cart</h1>
 
-    <h1>Your Cart</h1>
-
-    @foreach (var item in Model)
+    @if (TempData["Error"] != null)
     {
-        <div class="cart-item">
-
-            <img src="@(string.IsNullOrEmpty(item.Image) ? "/images/heroimg.png" : item.Image)" onerror="this.onerror=null; this.src='/images/heroimg.png';" />
-
-            <div>
-
-                <h3>@item.Name</h3>
-
-                <p>Quantity: @item.Quantity</p>
-
-                <p>$@item.Price</p>
-
-                <a href="/Cart/Remove/@item.Id">
-                    Remove
-                </a>
-
-            </div>
-
-        </div>
+        <div class="alert alert-danger">@TempData["Error"]</div>
     }
 
-    <h2>Total: $@total</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th class="text-center">Quantity</th>
+                    <th class="text-right">Unit Price</th>
+                    <th class="text-right">Subtotal</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Items != null && Model.Items.Any())
+                {
+                    foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td>@item.ProductName</td>
+                            <td class="text-center">@item.Quantity</td>
+                            <td class="text-right">@item.UnitPrice.ToString("C")</td>
+                            <td class="text-right">@item.Subtotal.ToString("C")</td>
+                            <td class="text-right">
+                                <form asp-action="Remove" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="cartItemId" value="@item.CartItemId" />
+                                    <input type="hidden" name="userId" value="@Model.UserId" />
+                                    <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5">Your cart is empty.</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td class="text-right"><strong>Total:</strong></td>
+                    <td class="text-right"><strong>@Model.TotalAmount.ToString("C")</strong></td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
 
-    <button class="checkout-btn">
-        Checkout
-    </button>
-
+    <div class="d-flex justify-content-end">
+        <a href="/" class="btn btn-primary">Continue Shopping</a>
+        <a href="#" class="btn btn-success ms-2">Proceed to Checkout</a>
+    </div>
 </div>

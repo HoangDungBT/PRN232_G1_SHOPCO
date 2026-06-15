@@ -10,10 +10,12 @@ namespace SHOP.CO.API.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly IProductUiService _productUiService;
 
-        public ProductsController(IProductService productService)
+        public ProductsController(IProductService productService, IProductUiService productUiService)
         {
             _productService = productService;
+            _productUiService = productUiService;
         }
 
         // OData API hỗ trợ dynamic query (lọc, sắp xếp, tìm kiếm nâng cao)
@@ -39,54 +41,11 @@ namespace SHOP.CO.API.Controllers
 
         // API test giao diện
         [HttpGet]
-        public IActionResult GetProductsMock()
+        public async Task<IActionResult> GetProductsUi()
         {
-            var products = new[]
-            {
-        new
-        {
-            Id = 1,
-            Name = "T-Shirt",
-            Price = 29,
-            Image = "/images/newarrivalimg1.png",
-            Description = "Premium cotton t-shirt.",
-            Category = "T-Shirts"
-        },
-
-        new
-        {
-            Id = 2,
-            Name = "Jeans",
-            Price = 59,
-            Image = "/images/newarrivalimg2.png",
-            Description = "Modern slim fit jeans.",
-            Category = "Jeans"
-        },
-
-        new
-        {
-            Id = 3,
-            Name = "Hoodie",
-            Price = 99,
-            Image = "/images/newarrivalimg3.png",
-            Description = "Warm fashion hoodie.",
-            Category = "Hoodies"
-        },
-
-        new
-        {
-            Id = 4,
-            Name = "Jacket",
-            Price = 120,
-            Image = "/images/newarrivalimg4.png",
-            Description = "Luxury winter jacket.",
-            Category = "Jackets"
-        }
-    };
-
+            var products = await _productUiService.GetUiProductsAsync();
             return Ok(products);
         }
-    
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductById(int id)
