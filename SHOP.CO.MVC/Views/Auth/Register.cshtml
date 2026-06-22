@@ -1,0 +1,45 @@
+﻿@model SHOP.CO.MVC.Models.RegisterVM
+@{
+    ViewData["Title"] = "Đăng Ký";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5 col-lg-4">
+            <div class="card shadow border-0 rounded-3">
+                <div class="card-body p-4 p-md-5">
+                    <h3 class="text-center mb-4 fw-bold">Đăng Ký</h3>
+
+                    @if (ViewBag.ErrorMessage != null)
+                    {
+                        <div class="alert alert-danger py-2">@ViewBag.ErrorMessage</div>
+                    }
+
+                    <form asp-action="Register" method="post">
+                        <div class="mb-3">
+                            <label class="form-label text-muted small">Họ và Tên</label>
+                            <input asp-for="FullName" class="form-control" placeholder="Nhập họ tên" />
+                            <span asp-validation-for="FullName" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-muted small">Email</label>
+                            <input asp-for="Email" class="form-control" placeholder="shopco@example.com" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label text-muted small">Mật khẩu</label>
+                            <input asp-for="Password" type="password" class="form-control" placeholder="Tối thiểu 8 ký tự" />
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+                        <button type="submit" class="btn btn-dark w-100 py-2 mb-3">ĐĂNG KÝ MỚI</button>
+                    </form>
+
+                    <div class="text-center small">
+                        <span class="text-muted">Đã có tài khoản?</span>
+                        <a href="/Auth/Login" class="text-decoration-none text-primary fw-bold"> Đăng nhập</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Quản Trị SHOP.CO</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- Sử dụng FontAwesome cho icon (nếu có mạng) -->
+    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)" />
+    <style>
+        .sidebar { min-height: 100vh; background-color: #343a40; color: white; }
+        .sidebar a { color: #cfd8dc; text-decoration: none; padding: 15px; display: block; border-bottom: 1px solid #4f5962; }
+        .sidebar a:hover { background-color: #495057; color: white; }
+        .main-content { background-color: #f8f9fa; }
+    </style>
+</head>
+<body>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <div class="sidebar flex-column p-0" style="width: 250px;">
+            <div class="p-3 text-center fs-4 fw-bold border-bottom">
+                SHOP.CO ADMIN
+            </div>
+            <a href="/Admin/Dashboard"><i class="fas fa-tachometer-alt me-2"></i> Tổng Quan</a>
+            <a href="/Admin/Products"><i class="fas fa-box me-2"></i> Quản Lý Sản Phẩm</a>
+            <a href="/Admin/Categories"><i class="fas fa-box me-2"></i> Quản Lý Danh mục</a>
+            <a href="/Admin/Orders"><i class="fas fa-shopping-cart me-2"></i> Quản Lý Đơn Hàng</a>
+            <a href="/Admin/Users"><i class="fas fa-users me-2"></i> Quản Lý Người Dùng</a>
+            <a href="/" class="text-warning"><i class="fas fa-arrow-left me-2"></i> Về Trang Cửa Hàng</a>
+            <a href="/Auth/Logout" class="text-danger"><i class="fas fa-sign-out-alt me-2"></i> Đăng Xuất</a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-grow-1 main-content">
+            <!-- Topbar (Optional) -->
+            <div class="bg-white shadow-sm p-3 mb-4 d-flex justify-content-between">
+                <h5 class="m-0">@ViewData["Title"]</h5>
+                <div>
+                    <span class="badge bg-primary">Admin/Staff Mode</span>
+                </div>
+            </div>
+
+            <!-- Page Content -->
+            <div class="container-fluid px-4">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

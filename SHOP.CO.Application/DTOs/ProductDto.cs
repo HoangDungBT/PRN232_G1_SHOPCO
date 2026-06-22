@@ -14,5 +14,7 @@ namespace SHOP.CO.Application.DTOs
         public decimal BasePrice { get; set; }
         public decimal? SalePrice { get; set; }
         public string? CategoryName { get; set; }
+        public bool IsActive { get; set; }
+
     }
 }

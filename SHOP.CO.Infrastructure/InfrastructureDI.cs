@@ -1,11 +1,10 @@
-﻿global using SHOP.CO.Domain.Entities;
-global using SHOP.CO.Infrastructure.Data;
+﻿global using SHOP.CO.Infrastructure.Persistence;
 global using SHOP.CO.Infrastructure.Repositories;
+global using SHOP.CO.Domain.Entities;
 global using Microsoft.EntityFrameworkCore;
-global using SHOP.CO.Infrastructure.Persistence;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using SHOP.CO.Infrastructure.Data; 
 namespace SHOP.CO.Infrastructure
 {
     public static class InfrastructureDI
@@ -19,8 +18,6 @@ namespace SHOP.CO.Infrastructure
             {
                 options.UseSqlServer(connectionString, sqlOptions =>
                 {
-                    // Đặt tên Migration Assembly chỉ định về tầng API (nếu bạn muốn chạy lệnh migration ở API)
-                    // Hoặc để trống nếu bạn chạy migration trực tiếp trên Infrastructure
                     sqlOptions.MigrationsAssembly("SHOP.CO.Infrastructure");
 
                     // Cấu hình chịu lỗi (Resiliency) nếu db rớt kết nối tạm thời
@@ -34,12 +31,10 @@ namespace SHOP.CO.Infrastructure
 
             //đăng kí Repositories
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
 
-            //đọc cấu hình Cloudinary từ appsettings.json
-            //services.Configure<CloudinarySettings>(options =>
-            //    {
-            //        configuration.GetSection("Cloudinary").Bind(options);
-            //    });
+
             return services;
         }
     }

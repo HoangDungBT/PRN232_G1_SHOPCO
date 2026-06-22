@@ -1,162 +1,116 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@using Microsoft.AspNetCore.Http
+@using SHOP.CO.MVC.Common
+@inject IHttpContextAccessor HttpContextAccessor
 
+@{
+    var token = HttpContextAccessor.HttpContext?.Session.GetString(MvcConstants.SessionToken);
+    var fullName = HttpContextAccessor.HttpContext?.Session.GetString(MvcConstants.SessionFullName);
+    var role = HttpContextAccessor.HttpContext?.Session.GetString(MvcConstants.SessionRole);
+}
+
+<!DOCTYPE html>
+<html lang="vi">
 <head>
-
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>@ViewData["Title"] - SHOP.CO</title>
-
+    <!-- CSS Bootstrap 5 -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-
 </head>
-
 <body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">SHOP.CO</a>
 
-    <!-- TOP BAR -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-    <div class="top-bar">
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <!-- Menu Trái -->
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="/Home/Index">Trang Chủ</a>
+                        </li>
+                    </ul>
 
-        Sign up and get 20% off to your first order.
+                    <!-- Menu Phải (Auth) -->
+                    <ul class="navbar-nav">
+                        @if (string.IsNullOrEmpty(token))
+                        {
+                            <!-- CHƯA LOGIN: Nút Đăng nhập -->
+                            <li class="nav-item">
+                                <a class="btn btn-outline-dark" href="/Auth/Login">Đăng Nhập</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <!-- ĐÃ LOGIN: Dropdown User -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark fw-bold" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Chào, @fullName
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="navbarDropdown">
+                                    @if (role == "Admin" || role == "Staff")
+                                    {
+                                        <li><a class="dropdown-item text-danger" href="/Admin/Dashboard">Khu Vực Quản Trị</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                    }
+                                    <li><a class="dropdown-item" href="/Profile">Trang Cá Nhân</a></li>
+                                    <li><a class="dropdown-item" href="/Cart">Giỏ Hàng</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item text-danger" href="/Auth/Logout">Đăng Xuất</a></li>
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
 
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
     </div>
 
-    <!-- NAVBAR -->
-
-    <nav class="navbar">
-
-        <div class="logo">
-            SHOP.CO
+    <footer class="border-top footer text-muted mt-5">
+        <div class="container text-center py-3">
+            &copy; 2026 - SHOP.CO
         </div>
-
-        <ul class="nav-links">
-
-            <li>
-                <a href="/">Home</a>
-            </li>
-
-            <li>
-                <a href="/Home/Category">Shop</a>
-            </li>
-
-            <li>
-                <a href="#">On Sale</a>
-            </li>
-
-            <li>
-                <a href="#">New Arrivals</a>
-            </li>
-
-            <li>
-                <a href="#">Brands</a>
-            </li>
-
-        </ul>
-
-        <div class="search-box">
-
-            <input type="text" placeholder="Search for products..." />
-
-        </div>
-
-        <div class="nav-icons">
-
-            <a href="/Home/Cart">🛒</a>
-
-            <span>👤</span>
-
-        </div>
-
-    </nav>
-
-    <!-- BODY -->
-    @RenderBody()
-
-    <!-- NEWSLETTER -->
-
-    <section class="newsletter">
-
-        <div class="newsletter-left">
-
-            <h2>
-                STAY UPTO DATE ABOUT OUR LATEST OFFERS
-            </h2>
-
-        </div>
-
-        <div class="newsletter-right">
-
-            <input type="email" placeholder="Enter your email address" />
-
-            <button>
-                Subscribe to Newsletter
-            </button>
-
-        </div>
-
-    </section>
-
-    <!-- FOOTER -->
-
-    <footer class="footer">
-
-        <div class="footer-top">
-
-            <div class="footer-brand">
-
-                <h2>SHOP.CO</h2>
-
-                <p>
-                    We have clothes that suits your style and which you’re proud to wear.
-                </p>
-
-            </div>
-
-            <div class="footer-links">
-
-                <div>
-
-                    <h4>COMPANY</h4>
-
-                    <a href="#">About</a>
-                    <a href="#">Features</a>
-                    <a href="#">Works</a>
-
-                </div>
-
-                <div>
-
-                    <h4>HELP</h4>
-
-                    <a href="#">Support</a>
-                    <a href="#">Delivery</a>
-                    <a href="#">Terms</a>
-
-                </div>
-
-                <div>
-
-                    <h4>FAQ</h4>
-
-                    <a href="#">Account</a>
-                    <a href="#">Orders</a>
-                    <a href="#">Payments</a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="footer-bottom">
-
-            © 2026 SHOP.CO. All Rights Reserved.
-
-        </div>
-
     </footer>
 
-</body>
+    <!-- BẮT BUỘC có JS Bootstrap để Dropdown chạy được -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- THÊM ĐOẠN SCRIPT NÀY VÀO CUỐI BODY -->
+    <script>
+        $(document).ready(function () {
+            // Lấy đường dẫn URL hiện tại
+            var currentPath = window.location.pathname;
+
+            // Tìm thẻ <a> trong sidebar có href khớp với đường dẫn hiện tại và thêm class 'active'
+            $('.sidebar a').each(function () {
+                var href = $(this).attr('href');
+                // Khớp chính xác hoặc URL bắt đầu bằng href (vd: /Admin/Products/Create)
+                if (href !== '/' && currentPath.startsWith(href)) {
+                    $(this).css({
+                        'background-color': '#495057',
+                        'color': '#fff',
+                        'border-left': '4px solid #0d6efd' // Thêm vạch xanh bên trái cho đẹp
+                    });
+                }
+            });
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
 </html>

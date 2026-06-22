@@ -1,0 +1,45 @@
+﻿@model SHOP.CO.MVC.Models.LoginVM
+@{
+    ViewData["Title"] = "Đăng Nhập";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5 col-lg-4">
+            <div class="card shadow border-0 rounded-3">
+                <div class="card-body p-4 p-md-5">
+                    <h3 class="text-center mb-4 fw-bold">Đăng Nhập</h3>
+
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success py-2">@TempData["SuccessMessage"]</div>
+                    }
+
+                    @if (ViewBag.ErrorMessage != null)
+                    {
+                        <div class="alert alert-danger py-2">@ViewBag.ErrorMessage</div>
+                    }
+
+                    <form asp-action="Login" method="post">
+                        <div class="mb-3">
+                            <label class="form-label text-muted small">Email</label>
+                            <input asp-for="Email" class="form-control" placeholder="shopco@example.com" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label text-muted small">Mật khẩu</label>
+                            <input asp-for="Password" type="password" class="form-control" placeholder="••••••••" />
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+                        <button type="submit" class="btn btn-dark w-100 py-2 mb-3">ĐĂNG NHẬP</button>
+                    </form>
+
+                    <div class="d-flex justify-content-between small">
+                        <a href="/Auth/Register" class="text-decoration-none text-primary">Tạo tài khoản mới</a>
+                        <a href="/Auth/ForgotPassword" class="text-decoration-none text-danger">Quên mật khẩu?</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
