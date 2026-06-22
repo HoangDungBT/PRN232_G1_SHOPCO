@@ -26,21 +26,33 @@
                 <!-- Categories Accordion -->
                 <div class="filter-section">
                     <ul class="category-filter-list">
-                        <li>
-                            <a href="javascript:void(0)" class="category-link @(ViewBag.CategoryId == 4 ? "active" : "")" data-id="4">T-shirts <span class="arrow">&gt;</span></a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)" class="category-link @(ViewBag.CategoryId == 5 ? "active" : "")" data-id="5">Jeans <span class="arrow">&gt;</span></a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)" class="category-link @(ViewBag.CategoryId == 6 ? "active" : "")" data-id="6">Dresses <span class="arrow">&gt;</span></a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)" class="category-link @(ViewBag.CategoryId == 7 ? "active" : "")" data-id="7">Shirts <span class="arrow">&gt;</span></a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)" class="category-link @(ViewBag.CategoryId == 3 ? "active" : "")" data-id="3">Unisex <span class="arrow">&gt;</span></a>
-                        </li>
+                        @if (ViewBag.Categories != null && ((List<SHOP.CO.Application.DTOs.CategoryDto>)ViewBag.Categories).Any())
+                        {
+                            foreach (var cat in (List<SHOP.CO.Application.DTOs.CategoryDto>)ViewBag.Categories)
+                            {
+                                <li>
+                                    <a href="javascript:void(0)" class="category-link @(ViewBag.CategoryId == cat.CategoryId ? "active" : "")" data-id="@cat.CategoryId">@cat.CategoryName <span class="arrow">&gt;</span></a>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li>
+                                <a href="javascript:void(0)" class="category-link @(ViewBag.CategoryId == 4 ? "active" : "")" data-id="4">T-shirts <span class="arrow">&gt;</span></a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" class="category-link @(ViewBag.CategoryId == 5 ? "active" : "")" data-id="5">Jeans <span class="arrow">&gt;</span></a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" class="category-link @(ViewBag.CategoryId == 6 ? "active" : "")" data-id="6">Dresses <span class="arrow">&gt;</span></a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" class="category-link @(ViewBag.CategoryId == 7 ? "active" : "")" data-id="7">Shirts <span class="arrow">&gt;</span></a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" class="category-link @(ViewBag.CategoryId == 3 ? "active" : "")" data-id="3">Unisex <span class="arrow">&gt;</span></a>
+                            </li>
+                        }
                     </ul>
                 </div>
 

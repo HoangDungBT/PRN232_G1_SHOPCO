@@ -110,6 +110,14 @@ namespace SHOP.CO.Infrastructure.Repositories
             // 5. Lưu toàn bộ thay đổi trong một Transaction duy nhất
             await _context.SaveChangesAsync();
         }
+
+        public async Task<List<Category>> GetActiveCategoriesAsync()
+        {
+            return await _context.Categories
+                .Where(c => c.IsActive)
+                .OrderBy(c => c.SortOrder)
+                .ToListAsync();
+        }
     }
 }
 

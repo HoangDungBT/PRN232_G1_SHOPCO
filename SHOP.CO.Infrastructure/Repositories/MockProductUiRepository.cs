@@ -12,7 +12,7 @@ namespace SHOP.CO.Infrastructure.Repositories
                 Id = 1,
                 Name = "T-Shirt",
                 Price = 29,
-                Image = "/images/p1.jpg",
+                Image = "/images/newarrivalimg1.png",
                 Description = "Premium cotton t-shirt.",
                 Category = "T-Shirts"
             },
@@ -21,7 +21,7 @@ namespace SHOP.CO.Infrastructure.Repositories
                 Id = 2,
                 Name = "Jeans",
                 Price = 59,
-                Image = "/images/p2.jpg",
+                Image = "/images/newarrivalimg2.png",
                 Description = "Modern slim fit jeans.",
                 Category = "Jeans"
             },
@@ -30,7 +30,7 @@ namespace SHOP.CO.Infrastructure.Repositories
                 Id = 3,
                 Name = "Hoodie",
                 Price = 99,
-                Image = "/images/p3.jpg",
+                Image = "/images/newarrivalimg3.png",
                 Description = "Warm fashion hoodie.",
                 Category = "Hoodies"
             },
@@ -39,7 +39,7 @@ namespace SHOP.CO.Infrastructure.Repositories
                 Id = 4,
                 Name = "Jacket",
                 Price = 120,
-                Image = "/images/p4.jpg",
+                Image = "/images/newarrivalimg4.png",
                 Description = "Luxury winter jacket.",
                 Category = "Jackets"
             }

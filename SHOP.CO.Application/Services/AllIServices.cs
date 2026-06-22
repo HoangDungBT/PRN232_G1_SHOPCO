@@ -18,6 +18,7 @@ namespace SHOP.CO.Application.Services
         Task<List<ProductDto>> GetRelatedProductsAsync(int productId, int limit);
         Task<List<ReviewDto>> GetReviewsByProductIdAsync(int productId);
         Task AddReviewAsync(int productId, int userId, CreateReviewRequest request);
+        Task<List<CategoryDto>> GetActiveCategoriesAsync();
     }
 
     /// <summary>

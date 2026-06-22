@@ -215,5 +215,19 @@ namespace SHOP.CO.Application.Services
 
             await _repository.AddReviewAsync(review);
         }
+
+        public async Task<List<CategoryDto>> GetActiveCategoriesAsync()
+        {
+            var categories = await _repository.GetActiveCategoriesAsync();
+            return categories.Select(c => new CategoryDto
+            {
+                CategoryId = c.CategoryId,
+                ParentCategoryId = c.ParentCategoryId,
+                CategoryName = c.CategoryName,
+                Slug = c.Slug,
+                SortOrder = c.SortOrder,
+                IsActive = c.IsActive
+            }).ToList();
+        }
     }
 }

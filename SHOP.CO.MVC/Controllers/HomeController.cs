@@ -54,6 +54,26 @@ namespace SHOP.CO.MVC.Controllers
             int totalCount = 0;
             const int pageSize = 9;
 
+            // Fetch dynamic categories
+            List<CategoryDto> categories = new();
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    var catResponse = await client.GetAsync($"{apiUrl.Replace("/products", "/categories")}");
+                    if (catResponse.IsSuccessStatusCode)
+                    {
+                        var catJson = await catResponse.Content.ReadAsStringAsync();
+                        categories = JsonConvert.DeserializeObject<List<CategoryDto>>(catJson) ?? new();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error fetching categories: " + ex.Message);
+            }
+            ViewBag.Categories = categories;
+
             var queryString = ODataQueryBuilder.Build(
                 categoryId,
                 brand,

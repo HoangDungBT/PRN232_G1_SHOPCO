@@ -15,6 +15,7 @@ namespace SHOP.CO.Infrastructure.Repositories
         Task<List<Product>> GetRelatedProductsAsync(int categoryId, int excludeProductId, int limit);
         Task<List<CustomerActivity>> GetReviewsByProductIdAsync(int productId);
         Task AddReviewAsync(CustomerActivity review);
+        Task<List<Category>> GetActiveCategoriesAsync();
     }
 
     public interface ICartRepository
