@@ -20,7 +20,7 @@ namespace SHOP.CO.MVC.Controllers
 
         public HomeController(IConfiguration configuration, IProductApiClient productApiClient)
         {
-            var baseUrl = configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7196";
+            var baseUrl = (configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7196").TrimEnd('/');
             apiUrl = $"{baseUrl}/api/products";
             odataApiUrl = $"{baseUrl}/odata/Products";
             _productApiClient = productApiClient;

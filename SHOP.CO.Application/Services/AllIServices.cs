@@ -7,19 +7,6 @@ using SHOP.CO.Application.DTOs;
 
 namespace SHOP.CO.Application.Services
 {
-    /// <summary>
-    /// Interface for Product Service - defines contract for product operations
-    /// </summary>
-    public interface IProductService
-    {
-        Task<PagedResult<ProductDto>> GetProductsAsync(string? searchTerm, int pageNumber, int pageSize);
-        IQueryable<ProductDto> GetProductsQuery();
-        Task<ProductDto?> GetProductByIdAsync(int id);
-        Task<List<ProductDto>> GetRelatedProductsAsync(int productId, int limit);
-        Task<List<ReviewDto>> GetReviewsByProductIdAsync(int productId);
-        Task AddReviewAsync(int productId, int userId, CreateReviewRequest request);
-        Task<List<CategoryDto>> GetActiveCategoriesAsync();
-    }
 
     /// <summary>
     /// Interface for Cart Service - defines contract for shopping cart operations

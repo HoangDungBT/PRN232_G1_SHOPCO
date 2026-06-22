@@ -18,11 +18,11 @@ namespace SHOP.CO.Application.Services
     }
     public class ProductService : IProductService
     {
-        private readonly IProductRepository _repo;
+        private readonly IProductRepository _repository;
 
         public ProductService(IProductRepository repository)
         {
-            _repo= repository;
+            _repository = repository;
         }
 
 
@@ -34,7 +34,7 @@ namespace SHOP.CO.Application.Services
             if (pageSize < 1 || pageSize > 100) pageSize = 10; // Chặn request lấy quá nhiều data
 
 
-            var result = await _repo.GetPagedProductAsync(searchTerm, pageNumber, pageSize);
+            var result = await _repository.GetPagedProductAsync(searchTerm, pageNumber, pageSize);
 
             // chuyển entity => dto
             var dtos = result.Items.Select(p => new ProductDto

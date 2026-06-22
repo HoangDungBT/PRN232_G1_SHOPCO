@@ -2,20 +2,6 @@ using System.Text.Json.Serialization;
 
 namespace SHOP.CO.MVC.Models
 {
-    /// <summary>
-    /// Generic API response wrapper used by SHOP.CO.API
-    /// </summary>
-    public class ApiResponse<T>
-    {
-        [JsonPropertyName("success")]
-        public bool Success { get; set; }
-
-        [JsonPropertyName("message")]
-        public string? Message { get; set; }
-
-        [JsonPropertyName("data")]
-        public T? Data { get; set; }
-    }
 
     /// <summary>
     /// View model representing a cart item for the MVC view
