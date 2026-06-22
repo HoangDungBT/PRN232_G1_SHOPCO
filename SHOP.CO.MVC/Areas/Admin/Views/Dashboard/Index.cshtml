@@ -1,0 +1,72 @@
+﻿@model SHOP.CO.MVC.Areas.Admin.Models.DashboardVM
+@{
+    ViewData["Title"] = "Thống Kê Tổng Quan";
+}
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+}
+
+<div class="row g-4">
+    <!-- Card Tổng Doanh Thu -->
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 border-start border-success border-4">
+            <div class="card-body">
+                <div class="text-muted small fw-bold">TỔNG DOANH THU</div>
+                <div class="fs-3 fw-bold text-success mt-2">
+                    @Model.TotalRevenue.ToString("N0") VNĐ
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Đơn Hàng -->
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 border-start border-primary border-4">
+            <div class="card-body">
+                <div class="text-muted small fw-bold">TỔNG ĐƠN HÀNG</div>
+                <div class="fs-3 fw-bold text-primary mt-2">
+                    @Model.TotalOrders
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Người Dùng -->
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 border-start border-info border-4">
+            <div class="card-body">
+                <div class="text-muted small fw-bold">KHÁCH HÀNG</div>
+                <div class="fs-3 fw-bold text-info mt-2">
+                    @Model.TotalUsers
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Cảnh báo Tồn kho -->
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 border-start border-danger border-4">
+            <div class="card-body">
+                <div class="text-muted small fw-bold">CẢNH BÁO SẮP HẾT HÀNG</div>
+                <div class="fs-3 fw-bold text-danger mt-2">
+                    @Model.LowStockProducts Sản phẩm
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white fw-bold">
+                Hoạt Động Gần Đây (Mở rộng sau)
+            </div>
+            <div class="card-body text-center text-muted py-5">
+                <p>Khu vực này dùng để gắn biểu đồ Chart.js thống kê doanh thu theo từng tháng.</p>
+            </div>
+        </div>
+    </div>
+</div>

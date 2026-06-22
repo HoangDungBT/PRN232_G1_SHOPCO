@@ -1,20 +1,23 @@
 ﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace SHOP.CO.Application.Services
 {
+    public interface IProductService
+    {
+        // test
+        Task<PagedResult<ProductDto>> GetProductsAsync(string? searchTerm, int pageNumber, int pageSize);
+        // test
+
+    }
     public class ProductService : IProductService
     {
-        private readonly IProductRepository _repository;
+        private readonly IProductRepository _repo;
 
         public ProductService(IProductRepository repository)
         {
-            _repository = repository;
+            _repo= repository;
         }
+
+
 
         public async Task<PagedResult<ProductDto>> GetProductsAsync(string? searchTerm, int pageNumber, int pageSize)
         {
@@ -23,7 +26,7 @@ namespace SHOP.CO.Application.Services
             if (pageSize < 1 || pageSize > 100) pageSize = 10; // Chặn request lấy quá nhiều data
 
 
-            var result = await _repository.GetPagedProductAsync(searchTerm, pageNumber, pageSize);
+            var result = await _repo.GetPagedProductAsync(searchTerm, pageNumber, pageSize);
 
             // chuyển entity => dto
             var dtos = result.Items.Select(p => new ProductDto

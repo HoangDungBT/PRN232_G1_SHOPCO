@@ -1,0 +1,169 @@
+﻿// === File: AuthSetting.cs ===
+
+namespace SHOP.CO.Application.DTOs
+{
+    public class JwtSettings
+    {
+        public string Key { get; set; } = string.Empty;
+        public string Issuer { get; set; } = string.Empty;
+        public string Audience { get; set; } = string.Empty;
+        public int AccessTokenExpirationMinutes { get; set; } = 30;
+        public int RefreshTokenExpirationDays { get; set; } = 7;
+    }
+
+    public class EmailSettings
+    {
+        public string Host { get; set; } = string.Empty;
+        public int Port { get; set; }
+        public bool EnableSSL { get; set; }
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+}
+
+// === File: EmailSender.cs ===
+
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using Microsoft.Extensions.Options;
+using MimeKit;
+
+namespace SHOP.CO.Application.Utilities
+{
+    public interface IEmailSender
+    {
+        Task SendEmailAsync(string toEmail, string subjet, string body);
+    }
+
+
+    public class EmailSender : IEmailSender
+    {
+        private readonly EmailSettings _emailSettings;
+        public EmailSender(IOptions<EmailSettings> emailSettings)
+        {
+            _emailSettings = emailSettings.Value;
+        }
+
+        public async Task SendEmailAsync(string toEmail, string subjet, string body)
+        {
+            var email = new MimeMessage();
+            email.From.Add(new MailboxAddress("SHOP.CO System", _emailSettings.Email));
+            email.To.Add(MailboxAddress.Parse(toEmail));
+            email.Subject = subjet;
+
+            var builder = new BodyBuilder { HtmlBody = body };
+            email.Body = builder.ToMessageBody();
+
+            using var smtp = new SmtpClient();
+
+            // connect via TLS
+            await smtp.ConnectAsync(_emailSettings.Host, _emailSettings.Port, SecureSocketOptions.StartTls);
+            await smtp.AuthenticateAsync(_emailSettings.Email, _emailSettings.Password);
+            await smtp.SendAsync(email);
+            await smtp.DisconnectAsync(true);
+
+        }
+    }
+}
+
+// === File: PasswordHasher.cs ===
+using BCrypt.Net;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+
+namespace SHOP.CO.Application.Utilities
+
+{
+    // Interface hash password
+    public interface IPasswordHasher
+    {
+        string HashPassword(string password);
+        bool VerifyPassword(string password, string hashedPassword);
+    }
+
+    #region Password Hash
+    public class PasswordHasher : IPasswordHasher
+    {
+        public string HashPassword(string password)
+        {
+            return BCrypt.Net.BCrypt.EnhancedHashPassword(password, hashType: HashType.SHA384);
+        }
+
+        public bool VerifyPassword(string password, string hashedPassword)
+        {
+            return BCrypt.Net.BCrypt.EnhancedVerify(password, hashedPassword, hashType: HashType.SHA384);
+        }
+    }
+    #endregion
+}
+
+// === File: TokenGenerator.cs ===
+using BCrypt.Net;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using SHOP.CO.Domain.Entities;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
+
+namespace SHOP.CO.Application.Utilities
+{
+    public interface ITokenGenerator 
+    {
+        string GenerateAccessToken(User user);
+        string GenerateRefreshToken();
+    }
+
+    public class TokenGenerator : ITokenGenerator
+    {
+        private readonly JwtSettings _jwtSettings;
+
+        public TokenGenerator(IOptions<JwtSettings> jwtSettings)
+        {
+            _jwtSettings = jwtSettings.Value;
+        }
+
+        public string GenerateAccessToken(User user)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.Name, user.FullName),
+                new Claim(ClaimTypes.Role, user.Role),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            };
+
+            var token = new JwtSecurityToken(
+                issuer: _jwtSettings.Issuer,
+                audience: _jwtSettings.Audience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.AccessTokenExpirationMinutes),
+                signingCredentials: creds
+                );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[64];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
+
+        }
+    }
+
+
+
+}
+
