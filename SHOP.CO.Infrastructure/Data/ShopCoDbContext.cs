@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SHOP.CO.Domain.Entities;
-
+﻿
 namespace SHOP.CO.Infrastructure.Persistence
 {
     public class ShopCoDbContext : DbContext

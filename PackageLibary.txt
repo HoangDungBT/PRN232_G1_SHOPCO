@@ -2,11 +2,21 @@
 dotnet add SHOP.CO.Infrastructure package Microsoft.EntityFrameworkCore.SqlServer --version "8.0.*"
 dotnet add SHOP.CO.Infrastructure package Microsoft.EntityFrameworkCore --version "8.0.*"
 
+dotnet add SHOP.CO.Infrastructure package BCrypt.Net-Next -v "4.0.*"
+dotnet add SHOP.CO.Infrastructure package MailKit -v "4.7.*"
+dotnet add SHOP.CO.Infrastructure package System.IdentityModel.Tokens.Jwt -v "8.0.*"
+
+
+
 ===
 Application
-dotnet add SHOP.CO.Application/SHOP.CO.Application.csproj package Microsoft.Extensions.DependencyInjection.Abstractions -v "8.0.*"
+# dotnet add SHOP.CO.Application/SHOP.CO.Application.csproj package Microsoft.Extensions.DependencyInjection.Abstractions -v "8.0.*"
 
-
+dotnet add SHOP.CO.Application package BCrypt.Net-Next -v "4.0.*"
+dotnet add SHOP.CO.Application package MailKit -v "4.7.*"
+dotnet add SHOP.CO.Application package System.IdentityModel.Tokens.Jwt -v "8.0.*"
+dotnet add SHOP.CO.Application package Microsoft.Extensions.Options.ConfigurationExtensions -v "8.0.*"
+dotnet add SHOP.CO.Application package Microsoft.AspNetCore.Http.Abstractions -v "8.0.*"
 
 ===
 API

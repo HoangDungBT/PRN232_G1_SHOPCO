@@ -1,10 +1,10 @@
-global using SHOP.CO.Domain.Entities;
-global using SHOP.CO.Infrastructure.Data;
-global using SHOP.CO.Infrastructure.Repositories;
-global using Microsoft.EntityFrameworkCore;
 global using SHOP.CO.Infrastructure.Persistence;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+global using SHOP.CO.Infrastructure.Repositories;
+global using SHOP.CO.Domain.Entities;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using SHOP.CO.Infrastructure.Data; 
 
 namespace SHOP.CO.Infrastructure
 {
@@ -34,6 +34,8 @@ namespace SHOP.CO.Infrastructure
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ICartRepository, CartRepository>();
             services.AddScoped<SHOP.CO.Domain.Repositories.IProductUiRepository, MockProductUiRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
 
             return services;
         }

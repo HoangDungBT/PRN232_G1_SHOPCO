@@ -1,9 +1,21 @@
+@using Microsoft.AspNetCore.Http
+@using SHOP.CO.MVC.Common
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    var token = HttpContextAccessor.HttpContext?.Session.GetString(MvcConstants.SessionToken);
+    var fullName = HttpContextAccessor.HttpContext?.Session.GetString(MvcConstants.SessionFullName);
+    var role = HttpContextAccessor.HttpContext?.Session.GetString(MvcConstants.SessionRole);
+}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - SHOP.CO</title>
+    <!-- CSS Bootstrap 5 (needed for grid, dropdowns, and admin forms) -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -13,7 +25,7 @@
 <body>
     <!-- TOP BAR -->
     <div class="top-bar">
-        <span>Sign up and get 20% off to your first order. <a href="#" style="color: white; text-decoration: underline; font-weight: 600;">Sign Up Now</a></span>
+        <span>Sign up and get 20% off to your first order. <a href="/Auth/Register" style="color: white; text-decoration: underline; font-weight: 600;">Sign Up Now</a></span>
         <button class="top-bar-close" onclick="this.parentElement.style.display='none'">&times;</button>
     </div>
 
@@ -45,7 +57,29 @@
 
         <div class="nav-icons">
             <a href="/Cart" class="nav-icon">🛒</a>
-            <a href="#" class="nav-icon">👤</a>
+            @if (string.IsNullOrEmpty(token))
+            {
+                <a href="/Auth/Login" class="nav-icon" title="Đăng nhập">👤</a>
+            }
+            else
+            {
+                <div class="dropdown d-inline-block">
+                    <a href="#" class="nav-icon dropdown-toggle text-dark" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none; font-size: 16px;">
+                        👤 <span style="font-size: 14px; font-weight: 500; font-family: 'Plus Jakarta Sans', sans-serif;">@fullName</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown" style="border-radius: 8px; border: 1px solid #eee; margin-top: 10px;">
+                        @if (role == "Admin" || role == "Staff")
+                        {
+                            <li><a class="dropdown-item text-danger fw-bold" href="/Admin/Dashboard">Khu Vực Quản Trị</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                        }
+                        <li><a class="dropdown-item" href="/Profile">Trang Cá Nhân</a></li>
+                        <li><a class="dropdown-item" href="/Cart">Giỏ Hàng</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="/Auth/Logout">Đăng Xuất</a></li>
+                    </ul>
+                </div>
+            }
         </div>
     </nav>
 
@@ -123,5 +157,30 @@
             </div>
         </div>
     </footer>
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    <script>
+        $(document).ready(function () {
+            // Lấy đường dẫn URL hiện tại
+            var currentPath = window.location.pathname;
+
+            // Tìm thẻ <a> trong sidebar có href khớp với đường dẫn hiện tại và thêm class 'active'
+            $('.sidebar a').each(function () {
+                var href = $(this).attr('href');
+                if (href !== '/' && currentPath.startsWith(href)) {
+                    $(this).css({
+                        'background-color': '#495057',
+                        'color': '#fff',
+                        'border-left': '4px solid #0d6efd'
+                    });
+                }
+            });
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

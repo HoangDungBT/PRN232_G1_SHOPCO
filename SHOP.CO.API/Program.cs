@@ -18,6 +18,10 @@ static IEdmModel GetEdmModel()
     var odataBuilder = new ODataConventionModelBuilder();
 
     odataBuilder.EntitySet<ProductDto>("Products").EntityType.HasKey(p => p.ProductId);
+
+    odataBuilder.EntitySet<ProductDto>("AdminProductsOdata").EntityType.HasKey(p => p.ProductId);
+    odataBuilder.EntitySet<CategoryDto>("AdminCategoriesOData").EntityType.HasKey(c => c.CategoryId);
+
     return odataBuilder.GetEdmModel();
 }
 #endregion
@@ -41,7 +45,7 @@ builder.Services.AddControllers()
 #endregion
 
 #region 2. Application & Infrastructure DI
-builder.Services.AddApplication();
+builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 #endregion
 
@@ -157,8 +161,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 
 // Kích hoạt CORS (Phải đặt trước Auth)
 app.UseCors("AllowBlazor");

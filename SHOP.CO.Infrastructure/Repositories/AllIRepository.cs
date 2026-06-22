@@ -7,17 +7,6 @@ using SHOP.CO.Domain.Entities;
 
 namespace SHOP.CO.Infrastructure.Repositories
 {
-    public interface IProductRepository
-    {
-        Task<(List<Product> Items, int TotalCount)> GetPagedProductAsync(string? searchTerm, int pageNumber, int pageSize);
-        IQueryable<Product> GetProductsQuery();
-        Task<Product?> GetProductByIdAsync(int id);
-        Task<List<Product>> GetRelatedProductsAsync(int categoryId, int excludeProductId, int limit);
-        Task<List<CustomerActivity>> GetReviewsByProductIdAsync(int productId);
-        Task AddReviewAsync(CustomerActivity review);
-        Task<List<Category>> GetActiveCategoriesAsync();
-    }
-
     public interface ICartRepository
     {
         Task AddToCartAsync(CartItem cartItem);
