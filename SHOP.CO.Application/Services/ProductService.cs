@@ -15,6 +15,8 @@ namespace SHOP.CO.Application.Services
         Task<List<ReviewDto>> GetReviewsByProductIdAsync(int productId);
         Task AddReviewAsync(int productId, int userId, CreateReviewRequest request);
         Task<List<CategoryDto>> GetActiveCategoriesAsync();
+        Task<bool> ToggleWishlistAsync(int productId, int userId);
+        Task<List<ProductDto>> GetWishlistAsync(int userId);
     }
     public class ProductService : IProductService
     {
@@ -239,6 +241,41 @@ namespace SHOP.CO.Application.Services
                 SortOrder = c.SortOrder,
                 IsActive = c.IsActive
             }).ToList();
+        }
+
+        public async Task<bool> ToggleWishlistAsync(int productId, int userId)
+        {
+            var product = await _repository.GetProductByIdAsync(productId);
+            if (product == null)
+            {
+                throw new KeyNotFoundException($"Không tìm thấy sản phẩm với ID {productId}.");
+            }
+
+            var item = await _repository.GetWishlistItemAsync(productId, userId);
+            if (item != null)
+            {
+                await _repository.RemoveWishlistItemAsync(item);
+                return false;
+            }
+            else
+            {
+                var wishlistActivity = new CustomerActivity
+                {
+                    ProductId = productId,
+                    UserId = userId,
+                    ActivityType = "Wishlist",
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow
+                };
+                await _repository.AddWishlistItemAsync(wishlistActivity);
+                return true;
+            }
+        }
+
+        public async Task<List<ProductDto>> GetWishlistAsync(int userId)
+        {
+            var products = await _repository.GetWishlistProductsAsync(userId);
+            return products.Select(MapToDto).ToList();
         }
     }
 }

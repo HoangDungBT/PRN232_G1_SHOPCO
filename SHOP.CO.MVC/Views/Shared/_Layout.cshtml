@@ -51,11 +51,12 @@
         </ul>
 
         <div class="search-box">
-            <span class="search-icon">🔍</span>
-            <input type="text" placeholder="Search for products..." />
+            <span class="search-icon" style="cursor: pointer;" onclick="triggerHeaderSearch()">🔍</span>
+            <input type="text" id="headerSearchInput" placeholder="Search for products..." value="@ViewBag.SearchTerm" onkeypress="handleSearchKeyPress(event)" />
         </div>
 
         <div class="nav-icons">
+            <a href="/Home/Wishlist" class="nav-icon" title="Danh sách yêu thích" style="text-decoration: none; font-size: 16px;">❤️</a>
             <a href="/Cart" class="nav-icon">🛒</a>
             @if (string.IsNullOrEmpty(token))
             {
@@ -162,6 +163,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <script>
         $(document).ready(function () {
@@ -180,6 +182,17 @@
                 }
             });
         });
+
+        function triggerHeaderSearch() {
+            var keyword = document.getElementById("headerSearchInput").value.trim();
+            window.location.href = "/Home/Category?searchTerm=" + encodeURIComponent(keyword);
+        }
+
+        function handleSearchKeyPress(event) {
+            if (event.key === "Enter") {
+                triggerHeaderSearch();
+            }
+        }
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

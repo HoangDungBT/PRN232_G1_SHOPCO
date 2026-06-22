@@ -15,12 +15,18 @@ namespace SHOP.CO.Application.Helpers
             string? color,
             string? sortOrder,
             int page,
-            int pageSize = 9)
+            int pageSize = 9,
+            string? searchTerm = null)
         {
             var filters = new List<string>();
 
             // Chỉ lấy các sản phẩm đang active
             filters.Add("IsActive eq true");
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                filters.Add($"(contains(tolower(ProductName), '{EscapeString(searchTerm.ToLower())}') or contains(tolower(Description), '{EscapeString(searchTerm.ToLower())}'))");
+            }
 
             if (categoryId.HasValue)
             {

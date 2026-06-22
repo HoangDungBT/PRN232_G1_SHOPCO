@@ -1,5 +1,7 @@
 @model SHOP.CO.Application.DTOs.ProductDto
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
 
 @{
     ViewData["Title"] = Model.ProductName + " - Detail";
@@ -132,14 +134,17 @@
             </div>
         }
 
-        <!-- Actions: Quantity & Add to Cart -->
-        <div class="action-section">
+        <!-- Actions: Quantity & Add to Cart & Wishlist -->
+        <div class="action-section" style="display: flex; gap: 15px; align-items: center;">
             <div class="quantity-picker">
                 <button class="quantity-btn" id="btnMinus">-</button>
                 <span class="quantity-value" id="qtyValue">1</span>
                 <button class="quantity-btn" id="btnPlus">+</button>
             </div>
-            <button class="btn-add-to-cart">Add to Cart</button>
+            <button class="btn-add-to-cart" style="flex-grow: 1;">Add to Cart</button>
+            <button type="button" class="btn-detail-wishlist" onclick="ajaxToggleDetailWishlist(@Model.ProductId)" style="border: 1px solid rgba(0,0,0,0.1); background: #FFFFFF; width: 52px; height: 52px; border-radius: 62px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease;" title="Yêu thích">
+                <span id="detailWishlistHeart" style="font-size: 24px; color: @(ViewBag.IsInWishlist == true ? "#FF3333" : "rgba(0,0,0,0.3)"); transition: color 0.2s ease;">♥</span>
+            </button>
         </div>
     </div>
 </div>
@@ -380,6 +385,24 @@
 
     // Review Modal toggle
     function openReviewModal() {
+        const token = '@HttpContextAccessor.HttpContext?.Session.GetString(SHOP.CO.MVC.Common.MvcConstants.SessionToken)';
+        if (!token) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Yêu cầu đăng nhập',
+                text: 'Vui lòng đăng nhập để viết đánh giá.',
+                showCancelButton: true,
+                confirmButtonColor: '#000',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Đăng nhập ngay',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/Auth/Login';
+                }
+            });
+            return;
+        }
         document.getElementById('reviewModal').style.display = 'flex';
         resetRatingSelector();
     }
@@ -464,11 +487,13 @@
 
         const apiBaseUrl = '@Configuration["ApiSettings:BaseUrl"]' || 'http://localhost:5035';
         const productId = '@Model.ProductId';
+        const token = '@HttpContextAccessor.HttpContext?.Session.GetString(SHOP.CO.MVC.Common.MvcConstants.SessionToken)';
 
         fetch(`${apiBaseUrl}/api/products/${productId}/reviews`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
             },
             body: JSON.stringify(payload)
         })
@@ -481,18 +506,28 @@
                     const err = await response.json();
                     errMsg = err.message || errMsg;
                 } catch (e) {
-                    // Phản hồi không phải dạng JSON (ví dụ trang lỗi HTML 500)
                 }
                 throw new Error(errMsg);
             }
         })
         .then(data => {
-            alert('Cảm ơn bạn đã gửi đánh giá!');
-            closeReviewModal();
-            window.location.reload();
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: 'Cảm ơn bạn đã gửi đánh giá!',
+                confirmButtonColor: '#000'
+            }).then(() => {
+                closeReviewModal();
+                window.location.reload();
+            });
         })
         .catch(error => {
-            alert(error.message || 'Có lỗi xảy ra, vui lòng thử lại.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: error.message || 'Có lỗi xảy ra, vui lòng thử lại.',
+                confirmButtonColor: '#000'
+            });
         });
     }
 
@@ -510,5 +545,74 @@
         if (document.querySelectorAll('.review-card.review-hidden').length === 0) {
             document.getElementById('btnLoadMore').style.display = 'none';
         }
+    }
+
+    function ajaxToggleDetailWishlist(productId) {
+        fetch('/Home/ToggleWishlist/' + productId, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                var heartSpan = document.getElementById('detailWishlistHeart');
+                if (heartSpan) {
+                    if (data.isAdded) {
+                        heartSpan.style.color = '#FF3333';
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Đã thêm vào yêu thích',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        heartSpan.style.color = 'rgba(0,0,0,0.3)';
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'info',
+                            title: 'Đã xóa khỏi yêu thích',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+                }
+            } else if (data.message === 'unauthorized') {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Yêu cầu đăng nhập',
+                    text: 'Vui lòng đăng nhập để sử dụng chức năng yêu thích.',
+                    showCancelButton: true,
+                    confirmButtonColor: '#000',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Đăng nhập ngay',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/Auth/Login';
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: data.message,
+                    confirmButtonColor: '#000'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error toggling wishlist:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi kết nối',
+                text: 'Lỗi kết nối máy chủ.',
+                confirmButtonColor: '#000'
+            });
+        });
     }
 </script>

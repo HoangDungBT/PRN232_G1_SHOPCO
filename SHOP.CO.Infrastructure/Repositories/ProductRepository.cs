@@ -27,6 +27,10 @@ namespace SHOP.CO.Infrastructure.Repositories
         Task<List<CustomerActivity>> GetReviewsByProductIdAsync(int productId);
         Task AddReviewAsync(CustomerActivity review);
         Task<List<Category>> GetActiveCategoriesAsync();
+        Task<CustomerActivity?> GetWishlistItemAsync(int productId, int userId);
+        Task AddWishlistItemAsync(CustomerActivity wishlistActivity);
+        Task RemoveWishlistItemAsync(CustomerActivity wishlistActivity);
+        Task<List<Product>> GetWishlistProductsAsync(int userId);
     }
     public class ProductRepository : IProductRepository
     {
@@ -183,6 +187,38 @@ namespace SHOP.CO.Infrastructure.Repositories
             return await _context.Categories
                 .Where(c => c.IsActive)
                 .OrderBy(c => c.SortOrder)
+                .ToListAsync();
+        }
+
+        public async Task<CustomerActivity?> GetWishlistItemAsync(int productId, int userId)
+        {
+            return await _context.CustomerActivities
+                .FirstOrDefaultAsync(a => a.ProductId == productId && a.UserId == userId && a.ActivityType == "Wishlist" && a.IsActive);
+        }
+
+        public async Task AddWishlistItemAsync(CustomerActivity wishlistActivity)
+        {
+            await _context.CustomerActivities.AddAsync(wishlistActivity);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveWishlistItemAsync(CustomerActivity wishlistActivity)
+        {
+            _context.CustomerActivities.Remove(wishlistActivity);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<Product>> GetWishlistProductsAsync(int userId)
+        {
+            return await _context.CustomerActivities
+                .Where(a => a.UserId == userId && a.ActivityType == "Wishlist" && a.IsActive && a.Product != null)
+                .Include(a => a.Product)
+                    .ThenInclude(p => p!.ProductImages)
+                .Include(a => a.Product)
+                    .ThenInclude(p => p!.ProductVariants)
+                .Include(a => a.Product)
+                    .ThenInclude(p => p!.Category)
+                .Select(a => a.Product!)
                 .ToListAsync();
         }
     }

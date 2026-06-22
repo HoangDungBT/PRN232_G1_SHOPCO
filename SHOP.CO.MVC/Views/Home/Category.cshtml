@@ -170,12 +170,19 @@
                         var hasDiscount = item.SalePrice.HasValue && item.SalePrice < item.BasePrice;
                         var discountPercent = hasDiscount ? (int)Math.Round((1 - (item.SalePrice!.Value / item.BasePrice)) * 100) : 0;
 
-                        <div class="product-card">
+                        <div class="product-card" style="position: relative;">
                             <a href="/Home/Detail/@item.Id" class="card-image-link">
-                                <div class="card-image-wrapper">
+                                <div class="card-image-wrapper" style="position: relative;">
                                     <img src="@(string.IsNullOrEmpty(item.Image) ? "/images/heroimg.png" : item.Image)" onerror="this.onerror=null; this.src='/images/heroimg.png';" alt="@item.Name" />
                                 </div>
                             </a>
+                            @{
+                                var wishlistProductIds = ViewBag.WishlistProductIds as HashSet<int> ?? new HashSet<int>();
+                                var isInWishlist = wishlistProductIds.Contains(item.Id);
+                            }
+                            <button type="button" class="btn-wishlist-toggle" onclick="ajaxToggleWishlist(event, @item.Id)" style="position: absolute; top: 12px; right: 12px; border: none; background: #FFFFFF; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer; transition: all 0.2s ease; z-index: 10;" title="Yêu thích">
+                                <span class="wishlist-heart-icon" id="heart-@item.Id" style="font-size: 18px; color: @(isInWishlist ? "#FF3333" : "rgba(0,0,0,0.3)"); transition: color 0.2s ease;">♥</span>
+                            </button>
                             <div class="card-details">
                                 <a href="/Home/Detail/@item.Id" style="text-decoration: none; color: inherit;">
                                     <h3 class="product-name">@item.Name</h3>
@@ -330,4 +337,71 @@
             }
         });
     });
+
+    function ajaxToggleWishlist(event, productId) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        fetch('/Home/ToggleWishlist/' + productId, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                var heartSpan = document.getElementById('heart-' + productId);
+                if (heartSpan) {
+                    if (data.isAdded) {
+                        heartSpan.style.color = '#FF3333';
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Đã thêm vào yêu thích',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        heartSpan.style.color = 'rgba(0,0,0,0.3)';
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'info',
+                            title: 'Đã xóa khỏi yêu thích',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+                }
+            } else if (data.message === 'unauthorized') {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Yêu cầu đăng nhập',
+                    text: 'Vui lòng đăng nhập để sử dụng chức năng yêu thích.',
+                    showCancelButton: true,
+                    confirmButtonColor: '#000',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Đăng nhập ngay',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/Auth/Login';
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: data.message,
+                    confirmButtonColor: '#000'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error toggling wishlist:', error);
+            alert('Lỗi kết nối máy chủ.');
+        });
+    }
 </script>

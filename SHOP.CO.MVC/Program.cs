@@ -18,24 +18,36 @@ builder.Services.AddHttpClient("ShopCoApi", client =>
 {
     client.BaseAddress = new Uri(apiBaseUrl);
     client.Timeout = TimeSpan.FromSeconds(30);
+}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+{
+    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
 });
 
 builder.Services.AddHttpClient("ShopApi", client =>
 {
     client.BaseAddress = new Uri(apiBaseUrl);
     client.Timeout = TimeSpan.FromSeconds(30);
+}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+{
+    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
 });
 
 builder.Services.AddHttpClient<IProductApiClient, ProductApiClient>(client =>
 {
     client.BaseAddress = new Uri(apiBaseUrl);
     client.Timeout = TimeSpan.FromSeconds(30);
+}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+{
+    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
 });
 
 builder.Services.AddHttpClient<ICartApiClient, CartApiClient>(client =>
 {
     client.BaseAddress = new Uri(apiBaseUrl);
     client.Timeout = TimeSpan.FromSeconds(30);
+}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+{
+    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
 });
 
 // Add services to the container.

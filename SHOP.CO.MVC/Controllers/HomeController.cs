@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SHOP.CO.MVC.Models;
+using SHOP.CO.MVC.Common;
 using SHOP.CO.Application.Helpers;
 using SHOP.CO.Application.DTOs;
 using System;
@@ -17,13 +18,15 @@ namespace SHOP.CO.MVC.Controllers
         private readonly string apiUrl;
         private readonly string odataApiUrl;
         private readonly IProductApiClient _productApiClient;
+        private readonly IHttpClientFactory _clientFactory;
 
-        public HomeController(IConfiguration configuration, IProductApiClient productApiClient)
+        public HomeController(IConfiguration configuration, IProductApiClient productApiClient, IHttpClientFactory clientFactory)
         {
             var baseUrl = (configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7196").TrimEnd('/');
             apiUrl = $"{baseUrl}/api/products";
             odataApiUrl = $"{baseUrl}/odata/Products";
             _productApiClient = productApiClient;
+            _clientFactory = clientFactory;
         }
 
         public async Task<IActionResult> Index()
@@ -48,6 +51,7 @@ namespace SHOP.CO.MVC.Controllers
             string? size,
             string? color,
             string? sortOrder,
+            string? searchTerm,
             int page = 1)
         {
             List<ProductVM> products = new();
@@ -58,9 +62,9 @@ namespace SHOP.CO.MVC.Controllers
             List<CategoryDto> categories = new();
             try
             {
-                using (HttpClient client = new HttpClient())
+                using (HttpClient client = _clientFactory.CreateClient("ShopCoApi"))
                 {
-                    var catResponse = await client.GetAsync($"{apiUrl.Replace("/products", "/categories")}");
+                    var catResponse = await client.GetAsync("api/categories");
                     if (catResponse.IsSuccessStatusCode)
                     {
                         var catJson = await catResponse.Content.ReadAsStringAsync();
@@ -83,7 +87,8 @@ namespace SHOP.CO.MVC.Controllers
                 color,
                 sortOrder,
                 page,
-                pageSize
+                pageSize,
+                searchTerm
             );
 
             string fullUrl = odataApiUrl + queryString;
@@ -170,6 +175,33 @@ namespace SHOP.CO.MVC.Controllers
             ViewBag.Size = size;
             ViewBag.Color = color;
             ViewBag.SortOrder = sortOrder;
+            ViewBag.SearchTerm = searchTerm;
+
+            // Fetch Wishlist Product IDs if logged in
+            HashSet<int> wishlistIds = new();
+            var token = HttpContext.Session.GetString(MvcConstants.SessionToken);
+            if (!string.IsNullOrEmpty(token))
+            {
+                try
+                {
+                    using (HttpClient client = _clientFactory.CreateClient("ShopCoApi"))
+                    {
+                        client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                        var response = await client.GetAsync("api/wishlist/me");
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var json = await response.Content.ReadAsStringAsync();
+                            var wishlistList = JsonConvert.DeserializeObject<List<ProductDto>>(json) ?? new();
+                            wishlistIds = new HashSet<int>(wishlistList.Select(p => p.ProductId));
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error fetching wishlist in Category: " + ex.Message);
+                }
+            }
+            ViewBag.WishlistProductIds = wishlistIds;
 
             return View(products);
         }
@@ -181,25 +213,50 @@ namespace SHOP.CO.MVC.Controllers
             List<ProductDto> relatedProducts = new();
             List<ReviewDto> reviews = new();
 
+            var token = HttpContext.Session.GetString(MvcConstants.SessionToken);
+            bool isInWishlist = false;
+            if (!string.IsNullOrEmpty(token))
+            {
+                try
+                {
+                    using (HttpClient client = _clientFactory.CreateClient("ShopCoApi"))
+                    {
+                        client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                        var response = await client.GetAsync("api/wishlist/me");
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var json = await response.Content.ReadAsStringAsync();
+                            var wishlist = JsonConvert.DeserializeObject<List<ProductDto>>(json) ?? new();
+                            isInWishlist = wishlist.Any(p => p.ProductId == id);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error checking wishlist in Detail: " + ex.Message);
+                }
+            }
+            ViewBag.IsInWishlist = isInWishlist;
+
             try
             {
-                using (HttpClient client = new HttpClient())
+                using (HttpClient client = _clientFactory.CreateClient("ShopCoApi"))
                 {
-                    var response = await client.GetAsync($"{apiUrl}/{id}");
+                    var response = await client.GetAsync($"api/products/{id}");
                     if (response.IsSuccessStatusCode)
                     {
                         var json = await response.Content.ReadAsStringAsync();
                         product = JsonConvert.DeserializeObject<ProductDto>(json);
                     }
 
-                    var relatedResponse = await client.GetAsync($"{apiUrl}/{id}/related?limit=4");
+                    var relatedResponse = await client.GetAsync($"api/products/{id}/related?limit=4");
                     if (relatedResponse.IsSuccessStatusCode)
                     {
                         var jsonRelated = await relatedResponse.Content.ReadAsStringAsync();
                         relatedProducts = JsonConvert.DeserializeObject<List<ProductDto>>(jsonRelated) ?? new();
                     }
 
-                    var reviewsResponse = await client.GetAsync($"{apiUrl}/{id}/reviews");
+                    var reviewsResponse = await client.GetAsync($"api/products/{id}/reviews");
                     if (reviewsResponse.IsSuccessStatusCode)
                     {
                         var jsonReviews = await reviewsResponse.Content.ReadAsStringAsync();
@@ -226,6 +283,82 @@ namespace SHOP.CO.MVC.Controllers
         public IActionResult Cart()
         {
             return View();
+        }
+
+        // WISHLIST PAGE
+        public async Task<IActionResult> Wishlist()
+        {
+            var token = HttpContext.Session.GetString(MvcConstants.SessionToken);
+            if (string.IsNullOrEmpty(token))
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            List<ProductVM> products = new();
+            try
+            {
+                using (HttpClient client = _clientFactory.CreateClient("ShopCoApi"))
+                {
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                    var response = await client.GetAsync("api/wishlist/me");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var json = await response.Content.ReadAsStringAsync();
+                        var flatList = JsonConvert.DeserializeObject<List<ProductDto>>(json) ?? new();
+                        products = flatList.Select(p => new ProductVM
+                        {
+                            Id = p.ProductId,
+                            Name = p.ProductName,
+                            Price = p.SalePrice ?? p.BasePrice,
+                            BasePrice = p.BasePrice,
+                            SalePrice = p.SalePrice,
+                            Image = p.ThumbnailUrl ?? "/images/heroimg.png",
+                            Description = p.Description ?? "",
+                            Category = p.CategoryName ?? ""
+                        }).ToList();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error calling Wishlist API: " + ex.Message);
+            }
+
+            return View(products);
+        }
+
+        // AJAX TOGGLE WISHLIST
+        [HttpPost]
+        public async Task<IActionResult> ToggleWishlist(int id)
+        {
+            var token = HttpContext.Session.GetString(MvcConstants.SessionToken);
+            if (string.IsNullOrEmpty(token))
+            {
+                return Json(new { success = false, message = "unauthorized" });
+            }
+
+            try
+            {
+                using (HttpClient client = _clientFactory.CreateClient("ShopCoApi"))
+                {
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                    var response = await client.PostAsync($"api/wishlist/{id}", null);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var json = await response.Content.ReadAsStringAsync();
+                        var result = JsonConvert.DeserializeAnonymousType(json, new { isAdded = false, message = "" });
+                        return Json(new { success = true, isAdded = result?.isAdded ?? false, message = result?.message ?? "" });
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "API returned error: " + response.StatusCode });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
     }
 }

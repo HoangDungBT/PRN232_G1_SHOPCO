@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.Authorization;
 using SHOP.CO.Application.Services;
 using SHOP.CO.Application.DTOs;
 
@@ -72,6 +73,7 @@ namespace SHOP.CO.API.Controllers
             return Ok(reviews);
         }
 
+        [Authorize]
         [HttpPost("{id}/reviews")]
         public async Task<IActionResult> AddReview(int id, [FromBody] CreateReviewRequest request)
         {
@@ -82,8 +84,12 @@ namespace SHOP.CO.API.Controllers
 
             try
             {
-                int mockUserId = 1; // Giả lập tài khoản đang đăng nhập
-                await _productService.AddReviewAsync(id, mockUserId, request);
+                var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("sub")?.Value;
+                if (!int.TryParse(userIdClaim, out int userId))
+                {
+                    return Unauthorized();
+                }
+                await _productService.AddReviewAsync(id, userId, request);
                 return Ok(new { message = "Đánh giá thành công!" });
             }
             catch (KeyNotFoundException ex)
