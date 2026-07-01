@@ -1,0 +1,32 @@
+﻿@model List<SHOP.CO.MVC.Models.NotificationViewModel>
+
+<div class="page-wrapper">
+    <h1 class="page-title">Trung tâm thông báo</h1>
+    <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px;">
+        @if (!Model.Any())
+        {
+            <div class="custom-card" style="text-align:center; color:#888;">Hiện tại không có thông báo nào.</div>
+        }
+        else
+        {
+            @foreach (var item in Model)
+            {
+                <div class="item-card custom-card" style="display: flex; justify-content: space-between; align-items: center; border-left: 4px solid @(item.IsRead ? "#ddd" : "#000");">
+                    <div>
+                        <h4 style="margin: 0 0 5px 0; @(item.IsRead ? "color:#777;" : "")">@item.Title</h4>
+                        <p style="margin: 0; font-size: 14px; @(item.IsRead ? "color:#999;" : "color:#333;")">@item.Message</p>
+                        <small style="color: #aaa;">@item.CreatedAt</small>
+                    </div>
+                    <div>
+                        @if (!item.IsRead)
+                        {
+                            <form asp-action="MarkRead" method="post" asp-route-id="@item.LogId">
+                                <button type="submit" style="padding: 8px 16px; border: 1px solid #000; background: #fff; border-radius: 20px; font-weight: 500; cursor: pointer;">Đánh dấu đã đọc</button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

@@ -32,5 +32,7 @@ namespace SHOP.CO.Domain.Entities
         public virtual ICollection<CustomerActivity> CustomerActivities { get; set; } = new List<CustomerActivity>();
         public virtual ICollection<CommerceRecord> CommerceRecords { get; set; } = new List<CommerceRecord>();
         public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
+
+        public bool IsNewsletterSubscribed { get; set; } = false;
     }
 }

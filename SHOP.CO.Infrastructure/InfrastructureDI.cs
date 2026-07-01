@@ -34,6 +34,10 @@ namespace SHOP.CO.Infrastructure
 
             //đăng kí Repositories
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<IContactRepository, ContactRepository>();
 
             //đọc cấu hình Cloudinary từ appsettings.json
             //services.Configure<CloudinarySettings>(options =>
