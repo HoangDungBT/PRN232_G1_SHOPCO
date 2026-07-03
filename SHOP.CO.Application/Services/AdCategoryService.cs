@@ -1,4 +1,5 @@
-﻿using SHOP.CO.Application.Common;
+﻿using Microsoft.EntityFrameworkCore;
+using SHOP.CO.Application.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace SHOP.CO.Application.Services
         Task<ResultModel<int>> CreateAsync(SaveCategoryRequestDto dto);
         Task<ResultModel<bool>> UpdateAsync(int id, SaveCategoryRequestDto dto);
         Task<ResultModel<bool>> SoftDeleteAsync(int id);
+        Task<ResultModel<bool>> ToggleCategoryStatusAsync(int id);
     }
 
     public class CategoryAdminService : ICategoryAdminService
@@ -133,7 +135,27 @@ namespace SHOP.CO.Application.Services
             }
             catch (Exception ex) { return ResultModel<bool>.Exception(ex); }
         }
+        public async Task<ResultModel<bool>> ToggleCategoryStatusAsync(int id)
+        {
+            try
+            {
+                var category = await _repo.GetByIdAsync(id);
+                if (category == null) return ResultModel<bool>.Error("Không tìm thấy danh mục", 404);
 
+                // Đảo ngược trạng thái: Đang hoạt động -> Khóa, Đã khóa -> Hoạt động
+                category.IsActive = !category.IsActive;
+                category.UpdatedAt = DateTime.UtcNow;
+
+                await _repo.UpdateAsync(category);
+
+                string msg = category.IsActive ? "Đã mở khóa danh mục!" : "Đã khóa danh mục!";
+                return ResultModel<bool>.Success(true, msg);
+            }
+            catch (Exception ex)
+            {
+                return ResultModel<bool>.Exception(ex);
+            }
+        }
         public async Task<ResultModel<bool>> SoftDeleteAsync(int id)
         {
             try
@@ -144,7 +166,13 @@ namespace SHOP.CO.Application.Services
                 // Validation: Nếu đang có danh mục con, không cho xóa để tránh mồ côi
                 if (await _repo.HasChildrenAsync(id))
                     return ResultModel<bool>.Error("Không thể khóa! Danh mục này đang chứa các danh mục con.", 400);
+                if(cat.IsActive == false) {
+                    cat.IsActive = true;
+                    cat.UpdatedAt = DateTime.UtcNow;
+                    await _repo.UpdateAsync(cat);
 
+                    return ResultModel<bool>.Success(true, "Đã mở khóa danh mục thành công!");
+                }
                 cat.IsActive = false; // Xóa mềm = Ẩn đi
                 cat.UpdatedAt = DateTime.UtcNow;
                 await _repo.UpdateAsync(cat);

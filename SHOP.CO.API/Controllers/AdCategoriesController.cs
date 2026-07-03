@@ -47,5 +47,12 @@ namespace SHOP.CO.API.Controllers
             var result = await _service.SoftDeleteAsync(id);
             return StatusCode(result.Code, result);
         }
+
+        [HttpPut("{id}/status")]
+        public async Task<IActionResult> ToggleStatus(int id)
+        {
+            var result = await _service.ToggleCategoryStatusAsync(id);
+            return StatusCode(result.Code, result);
+        }
     }
 }
