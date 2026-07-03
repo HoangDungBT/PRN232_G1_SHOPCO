@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using SHOP.CO.Application.Common;
 using SHOP.CO.Domain.Shared;
 using SHOP.CO.Infrastructure.Persistence;
@@ -20,7 +21,7 @@ namespace SHOP.CO.Application.Services
         Task<ResultModel<int>> CreateProductAsync(CreateProductRequestDto dto);
         Task<ResultModel<bool>> UpdateProductAsync(int id, UpdateProductRequestDto dto);
         Task<ResultModel<bool>> DeleteProductAsync(int id);
-
+        Task<ResultModel<bool>> DeleteProductImageAsync(int imageId);
         Task<ResultModel<ProductFormAttributesDto>> GetFormAttributesAsync();
     }
     public class ProductAdminService : IProductAdminService
@@ -28,12 +29,15 @@ namespace SHOP.CO.Application.Services
         private readonly IProductRepository _repo;
         private readonly ICategoryRepository _cateRepo;
         private readonly ShopCoDbContext _context;
+        private readonly IWebHostEnvironment _env;
 
-        public ProductAdminService(IProductRepository repository, ICategoryRepository cateRepo, ShopCoDbContext context)
+
+        public ProductAdminService(IProductRepository repository, ICategoryRepository cateRepo, ShopCoDbContext context,IWebHostEnvironment env )
         {
             _repo = repository;
             _cateRepo = cateRepo;
             _context = context;
+            _env = env;
         }
         // HÀM LẤY ATTRIBUTES(TỰ HỌC TỪ DATABASE) 🟢
         public async Task<ResultModel<ProductFormAttributesDto>> GetFormAttributesAsync()
@@ -84,6 +88,9 @@ namespace SHOP.CO.Application.Services
                 BasePrice = p.BasePrice,
                 CategoryName = p.Category != null ? p.Category.CategoryName : "Không có",
                 IsActive = p.IsActive,
+                ThumbnailUrl = p.ProductImages.Where(i => i.IsThumbnail).Select(i => i.ImageUrl).FirstOrDefault()
+                               ?? p.ProductImages.Select(i => i.ImageUrl).FirstOrDefault(),
+                HasLowStock = p.ProductVariants.Any(v => v.StockQuantity <= v.LowStockThreshold),
             });
         }
 
@@ -117,6 +124,12 @@ namespace SHOP.CO.Application.Services
                         ExtraPrice = pv.ExtraPrice,
                         StockQuantity = pv.StockQuantity,
                     }).ToList(),
+                    Images = product.ProductImages.Select(i => new ProductImageDto
+                    {
+                        ImageId = i.ImageId,
+                        ImageUrl = i.ImageUrl,
+                        IsThumbnail = i.IsThumbnail
+                    }).ToList()
 
                 };
                 return ResultModel<ProductDetailAdminDto>.Success(data);
@@ -172,6 +185,18 @@ namespace SHOP.CO.Application.Services
                     IsBestSeller = false,
                     IsNewArrival = true // Sản phẩm mới tạo mặc định là New Arrival
                 };
+                if (dto.ImageUrls != null && dto.ImageUrls.Count > 0)
+                {
+                    for (int i = 0; i < dto.ImageUrls.Count; i++)
+                    {
+                        newProduct.ProductImages.Add(new ProductImage
+                        {
+                            ImageUrl = dto.ImageUrls[i],
+                            IsThumbnail = (i == 0), // Ảnh đầu tiên được ưu tiên làm Thumbnail
+                            CreatedAt = DateTime.UtcNow
+                        });
+                    }
+                }
 
                 // 4. Khởi tạo danh sách Entity Variants (Biến thể)
                 foreach (var vDto in dto.Variants)
@@ -234,11 +259,86 @@ namespace SHOP.CO.Application.Services
                 product.IsActive = dto.IsActive;
                 product.UpdatedAt = DateTime.UtcNow;
 
+                if (dto.ImageUrls != null && dto.ImageUrls.Count > 0)
+                {
+                    // Bước A: Xóa bỏ các record ảnh cũ trong bảng ProductImages
+                    _context.ProductImages.RemoveRange(product.ProductImages);
+
+                    // Bước B: Thêm các record ảnh mới vào
+                    foreach (var url in dto.ImageUrls)
+                    {
+                        product.ProductImages.Add(new ProductImage
+                        {
+                            ProductId = product.ProductId,
+                            ImageUrl = url,
+                            IsThumbnail = (product.ProductImages.Count == 0), // Ảnh đầu tiên làm Thumbnail
+                            CreatedAt = DateTime.UtcNow
+                        });
+                    }
+                }
+
+                if (dto.Variants != null && dto.Variants.Any())
+                {
+                    var dtoSkus = dto.Variants.Select(v => v.Sku).ToList();
+
+                    var varianToRemove = product.ProductVariants.Where(v => !dtoSkus.Contains(v.Sku)).ToList();
+                    foreach (var v in varianToRemove)
+                    {
+                        v.IsActive = false;
+                    }
+
+                    foreach (var vDto in dto.Variants)
+                    {
+                        var existingVariant = product.ProductVariants.FirstOrDefault(v => v.Sku == vDto.Sku);
+                        if(existingVariant != null)
+                        {
+                            existingVariant.Size = vDto.Size;
+                            existingVariant.Color = vDto.Color;
+                            existingVariant.ExtraPrice = vDto.ExtraPrice;
+                            existingVariant.StockQuantity = vDto.StockQuantity;
+                            existingVariant.IsActive = true; // Kích hoạt lại nếu lỡ bị khóa trước đó
+                            existingVariant.UpdatedAt = DateTime.UtcNow;
+                        }
+                        else
+                        {
+                            if (await _repo.IsSkuExistsAsync(vDto.Sku))
+                            {
+                                return ResultModel<bool>.Error($"Mã SKU '{vDto.Sku}' đã tồn tại ở một sản phẩm khác. Vui lòng chọn mã khác!", 400);
+                            }
+                            // Thêm mới
+                            product.ProductVariants.Add(new ProductVariant
+                            {
+                                ProductId = product.ProductId,
+                                Sku = vDto.Sku,
+                                Size = vDto.Size,
+                                Color = vDto.Color,
+                                ExtraPrice = vDto.ExtraPrice,
+                                StockQuantity = vDto.StockQuantity,
+                                LowStockThreshold = 5,
+                                IsActive = true,
+                                CreatedAt = DateTime.UtcNow
+                            });
+                        }
+
+                    }
+
+
+                }
+                else
+                {
+                    return ResultModel<bool>.Error("Sản phẩm phải có ít nhất 1 biến thể!", 400);
+                }
+
+
+
                 await _repo.UpdateProductAsync(product);
                 return ResultModel<bool>.Success(true, "Cập nhật sản phẩm thành công!");
             }
             catch (Exception ex) { return ResultModel<bool>.Exception(ex); }
         }
+    
+
+
         public async Task<ResultModel<bool>> DeleteProductAsync(int id)
         {
             try
@@ -251,7 +351,46 @@ namespace SHOP.CO.Application.Services
             }
             catch (Exception ex) { return ResultModel<bool>.Exception(ex); }
         }
-      
+        public async Task<ResultModel<bool>> DeleteProductImageAsync(int imageId)
+        {
+            try
+            {
+                // Lấy ảnh từ Database
+                var image = await _context.ProductImages.FindAsync(imageId);
+                if (image == null) return ResultModel<bool>.Error("Không tìm thấy ảnh", 404);
+
+                // Xóa file vật lý trong thư mục wwwroot
+                if (!string.IsNullOrEmpty(image.ImageUrl))
+                {
+                    // Lấy WebRootPath, nếu rỗng thì tự build đường dẫn
+                    string webRootPath = _env.WebRootPath;
+                    if (string.IsNullOrWhiteSpace(webRootPath))
+                    {
+                        webRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                    }
+
+                    // Loại bỏ dấu '/' ở đầu ImageUrl để nối chuỗi cho chuẩn (VD: /uploads/products/anh.jpg -> uploads/products/anh.jpg)
+                    string imageRelativePath = image.ImageUrl.TrimStart('/');
+                    string exactFilePath = Path.Combine(webRootPath, imageRelativePath);
+
+                    // Xóa file nếu nó tồn tại trên ổ cứng
+                    if (System.IO.File.Exists(exactFilePath))
+                    {
+                        System.IO.File.Delete(exactFilePath);
+                    }
+                }
+
+                // Xóa dòng dữ liệu trong Database
+                _context.ProductImages.Remove(image);
+                await _context.SaveChangesAsync();
+
+                return ResultModel<bool>.Success(true, "Xóa ảnh thành công!");
+            }
+            catch (Exception ex)
+            {
+                return ResultModel<bool>.Exception(ex);
+            }
+        }
 
         // Hàm tiện ích nội bộ để tự tạo chữ không dấu làm đường dẫn (VD: "Áo Thun" -> "ao-thun")
         private string GenerateSlug(string phrase)

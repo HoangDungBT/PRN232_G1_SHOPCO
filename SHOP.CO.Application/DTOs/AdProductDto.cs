@@ -3,6 +3,31 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SHOP.CO.Application.DTOs
 {
+    public class ProductDto
+    {
+        public int ProductId { get; set; }
+        public string ProductName { get; set; } = null!;
+        public string Slug { get; set; } = null!;
+        public decimal BasePrice { get; set; }
+        public decimal? SalePrice { get; set; }
+        public string? CategoryName { get; set; }
+        public bool IsActive { get; set; }
+        public string? ThumbnailUrl { get; set; }
+        public bool HasLowStock { get; set; }
+
+    }
+    public class BulkUpdateStatusDto
+    {
+        public List<int> ProductIds { get; set; } = new List<int>();
+        public bool IsActive { get; set; }
+    }
+
+    public class BulkUpdateFeaturedDto
+    {
+        public List<int> ProductIds { get; set; } = new List<int>();
+        public bool IsFeatured { get; set; }
+    }
+
     // DTO Hứng dữ liệu Thêm mới sản phẩm
     public class CreateProductRequestDto
     {
@@ -23,9 +48,18 @@ namespace SHOP.CO.Application.DTOs
 
         public bool IsFeatured { get; set; }
         public bool IsActive { get; set; } = true;
+        public List<string>? ImageUrls { get; set; } = new List<string>();
 
         [MinLength(1, ErrorMessage = "Sản phẩm phải có ít nhất 1 biến thể (Size/Màu)")]
         public List<CreateVariantDto> Variants { get; set; } = new List<CreateVariantDto>();
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (BasePrice % 1000 != 0)
+                yield return new ValidationResult("Giá gốc phải chẵn hàng nghìn (VD: 150000)!", new[] { nameof(BasePrice) });
+
+            if (SalePrice.HasValue && SalePrice.Value % 1000 != 0)
+                yield return new ValidationResult("Giá khuyến mãi phải chẵn hàng nghìn!", new[] { nameof(SalePrice) });
+        }
     }
 
     public class CreateVariantDto
@@ -38,6 +72,14 @@ namespace SHOP.CO.Application.DTOs
         public decimal ExtraPrice { get; set; }
         [Range(0, int.MaxValue, ErrorMessage = "Tồn kho không hợp lệ")]
         public int StockQuantity { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (ExtraPrice % 1000 != 0)
+            {
+                yield return new ValidationResult("Giá thêm của biến thể phải chẵn hàng nghìn (VD: 1000, 50000)!", new[] { nameof(ExtraPrice) });
+            }
+        }
     }
 
     // DTO Hứng dữ liệu Cập nhật sản phẩm (Chỉ cập nhật thông tin cơ bản)
@@ -55,6 +97,19 @@ namespace SHOP.CO.Application.DTOs
         public bool IsBestSeller { get; set; }
         public bool IsNewArrival { get; set; }
         public bool IsActive { get; set; }
+        public List<string>? ImageUrls { get; set; } = new List<string>();
+
+        [MinLength(1, ErrorMessage = "Sản phẩm phải có ít nhất 1 biến thể (Size/Màu)")]
+        public List<CreateVariantDto> Variants { get; set; } = new List<CreateVariantDto>();
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (BasePrice % 1000 != 0)
+                yield return new ValidationResult("Giá gốc phải chẵn hàng nghìn (VD: 150000)!", new[] { nameof(BasePrice) });
+
+            if (SalePrice.HasValue && SalePrice.Value % 1000 != 0)
+                yield return new ValidationResult("Giá khuyến mãi phải chẵn hàng nghìn!", new[] { nameof(SalePrice) });
+        }
+
     }
 
     // DTO Trả về chi tiết Sản phẩm để binding lên Form Sửa
@@ -73,10 +128,15 @@ namespace SHOP.CO.Application.DTOs
         public bool IsBestSeller { get; set; }
         public bool IsNewArrival { get; set; }
         public bool IsActive { get; set; }
-
+        public List<ProductImageDto> Images { get; set; } = new List<ProductImageDto>();
         public List<CreateVariantDto> Variants { get; set; } = new List<CreateVariantDto>();
     }
-    
+    public class ProductImageDto
+    {
+        public int ImageId { get; set; }
+        public string ImageUrl { get; set; } = string.Empty;
+        public bool IsThumbnail { get; set; }
+    }
     //DTO chứa toàn bộ dữ liệu cấu hình cho Form
     public class ProductFormAttributesDto
     {

@@ -32,6 +32,8 @@ namespace SHOP.CO.Application
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IProductAdminService, ProductAdminService>();
             services.AddScoped<ICategoryAdminService, CategoryAdminService>();
+            services.AddScoped<IUserAdminService, UserAdminService>();
+            services.AddScoped<IOrderAdminService, OrderAdminService>();
 
 
             #endregion

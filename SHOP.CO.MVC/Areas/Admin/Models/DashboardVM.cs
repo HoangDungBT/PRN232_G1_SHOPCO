@@ -7,4 +7,6 @@
         public decimal TotalRevenue { get; set; }
         public int LowStockProducts { get; set; }
     }
+
+
 }

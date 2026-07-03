@@ -15,6 +15,7 @@ namespace SHOP.CO.Infrastructure.Repositories
         Task SoftDeleteProductAsync(Product product);
         Task<bool> IsSlugExistsAsync(string slug, int? excludeProductId = null);
         Task<bool> IsSkuExistsAsync(string sku);
+        //Task<List<Product>> GetProductsBiIdsAsync(string sku);
 
 
 
@@ -34,6 +35,7 @@ namespace SHOP.CO.Infrastructure.Repositories
        public async Task<Product?> GetProductWithVariantsByIdAsync(int productId){
         return await _context.Products
                 .Include(p => p.ProductVariants)
+                .Include(p => p.ProductImages)
                 .FirstOrDefaultAsync(p =>  p.ProductId == productId);
                 }
        public async Task<Product> CreateProductWithVariantsAsync(Product product)
@@ -74,6 +76,7 @@ namespace SHOP.CO.Infrastructure.Repositories
         {
             return _context.Products
                 .Include(p => p.Category)
+                .Include(p => p.ProductImages)
                 .AsQueryable();
         }
 

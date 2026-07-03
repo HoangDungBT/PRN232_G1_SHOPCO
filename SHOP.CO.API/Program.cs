@@ -6,6 +6,7 @@ using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using SHOP.CO.Application;
 using SHOP.CO.Application.DTOs;
+using SHOP.CO.Domain.Entities;
 using SHOP.CO.Infrastructure;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -21,7 +22,10 @@ static IEdmModel GetEdmModel()
 
     odataBuilder.EntitySet<ProductDto>("AdminProductsOdata").EntityType.HasKey(p => p.ProductId);
     odataBuilder.EntitySet<CategoryDto>("AdminCategoriesOData").EntityType.HasKey(c => c.CategoryId);
+    odataBuilder.EntitySet<UserDto>("AdminUsersOData").EntityType.HasKey(u => u.UserId);
 
+    odataBuilder.EntitySet<OrderDto>("AdminOrdersOData").EntityType.HasKey(u => u.OrderId);
+    odataBuilder.EntitySet<ProductVariant>("AdminInventoryOData").EntityType.HasKey(v => v.VariantId);
     return odataBuilder.GetEdmModel();
 }
 #endregion

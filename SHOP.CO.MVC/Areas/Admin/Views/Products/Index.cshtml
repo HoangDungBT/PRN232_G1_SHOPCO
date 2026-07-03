@@ -2,9 +2,6 @@
     ViewData["Title"] = "Quản Lý Sản Phẩm ShopCo";
 }
 
-<!-- ========================================== -->
-<!-- DANH SÁCH DATALIST ĐỂ HIỂN THỊ GỢI Ý ĐỘNG  -->
-<!-- ========================================== -->
 <datalist id="brandList"></datalist>
 <datalist id="materialList"></datalist>
 <datalist id="sizeList"></datalist>
@@ -19,12 +16,37 @@
     </div>
     <div class="card-body">
 
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm theo tên sản phẩm...">
+        <div class="row mb-3 g-2">
+            <div class="col-md-3">
+                <input type="text" id="searchInput" class="form-control" placeholder="Tên sản phẩm...">
             </div>
             <div class="col-md-2">
+                <select id="filterStatus" class="form-select" onchange="resetPageAndLoad()">
+                    <option value="all">Tất cả trạng thái</option>
+                    <option value="active">Đang mở bán</option>
+                    <option value="inactive">Đã dừng bán</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select id="filterStock" class="form-select" onchange="resetPageAndLoad()">
+                    <option value="all">Tất cả tồn kho</option>
+                    <option value="lowstock">Sắp hết hàng (!)</option>
+                </select>
+            </div>
+            <div class="col-md-1">
                 <button id="btnSearch" class="btn btn-outline-secondary w-100"><i class="fas fa-search"></i> Tìm</button>
+            </div>
+
+            <div class="col-md-4 d-flex justify-content-end align-items-center">
+                <!-- Nút thao tác hàng loạt (Mặc định ẩn, hiện khi có check) -->
+                <div id="bulkActions" class="d-none">
+                    <span class="me-2 small text-muted">Đã chọn: <strong id="selectedCount">0</strong></span>
+                    <div class="btn-group btn-group-sm">
+                        <button type="button" class="btn btn-success" onclick="bulkUpdateStatus(true)" title="Mở bán hàng loạt"><i class="fas fa-play"></i> Mở bán</button>
+                        <button type="button" class="btn btn-warning text-dark" onclick="bulkUpdateStatus(false)" title="Dừng bán hàng loạt"><i class="fas fa-pause"></i> Dừng</button>
+                        <button type="button" class="btn btn-primary" onclick="bulkUpdateFeatured(true)" title="Đánh dấu nổi bật"><i class="fas fa-star"></i> Nổi bật</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -32,17 +54,20 @@
             <table class="table table-hover table-bordered align-middle">
                 <thead class="table-light">
                     <tr>
-                        <th>ID</th>
-                        <th>Tên Sản Phẩm</th>
-                        <th>Danh Mục</th>
-                        <th>Giá Gốc</th>
-                        <th>Trạng Thái</th>
+                        <th width="40" class="text-center">
+                            <input class="form-check-input" type="checkbox" id="chkSelectAll">
+                        </th>
+                        <th width="80" class="text-center">Ảnh</th>
+                        <th style="cursor: pointer;" onclick="changeSort('ProductName')">Tên Sản Phẩm <i class="fas fa-sort text-muted ms-1 sort-icon" id="sort-ProductName"></i></th>
+                        <th style="cursor: pointer;" onclick="changeSort('CategoryName')">Danh Mục <i class="fas fa-sort text-muted ms-1 sort-icon" id="sort-CategoryName"></i></th>
+                        <th style="cursor: pointer;" onclick="changeSort('BasePrice')">Giá Gốc <i class="fas fa-sort text-muted ms-1 sort-icon" id="sort-BasePrice"></i></th>
+                        <th style="cursor: pointer;" onclick="changeSort('IsActive')">Trạng Thái <i class="fas fa-sort text-muted ms-1 sort-icon" id="sort-IsActive"></i></th>
                         <th class="text-center">Thao Tác</th>
                     </tr>
                 </thead>
                 <tbody id="productTableBody">
                     <tr>
-                        <td colspan="6" class="text-center py-4 text-muted">
+                        <td colspan="7" class="text-center py-4 text-muted">
                             <i class="fas fa-spinner fa-spin me-2"></i> Đang tải dữ liệu...
                         </td>
                     </tr>
@@ -70,7 +95,6 @@
 
             <div class="mb-3">
                 <label class="form-label fw-bold">Danh Mục (*)</label>
-                <!-- Category vẫn BẮT BUỘC là Select chọn theo ID -->
                 <select id="CategoryId" class="form-select" required
                         oninvalid="this.setCustomValidity('Vui lòng chọn một danh mục hợp lệ')"
                         oninput="this.setCustomValidity('')">
@@ -88,12 +112,10 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Thương Hiệu</label>
-                    <!-- Chuyển thành text + datalist -->
                     <input type="text" id="Brand" class="form-control" list="brandList" placeholder="Chọn hoặc nhập mới..." autocomplete="off" />
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Chất Liệu</label>
-                    <!-- Chuyển thành text + datalist -->
                     <input type="text" id="Material" class="form-control" list="materialList" placeholder="Chọn hoặc nhập mới..." autocomplete="off" />
                 </div>
             </div>
@@ -101,13 +123,13 @@
             <div class="row border p-3 bg-light rounded mx-0 mb-3">
                 <div class="col-md-6 mb-3 mb-md-0">
                     <label class="form-label fw-bold text-danger">Giá Gốc (*) VNĐ</label>
-                    <input type="number" id="BasePrice" class="form-control border-danger" required min="1000" placeholder="VD: 150000"
-                           oninvalid="this.setCustomValidity('Giá gốc phải lớn hơn hoặc bằng 1,000 VNĐ')"
+                    <input type="number" step="1000" id="BasePrice" class="form-control border-danger" required min="1000" placeholder="VD: 150000"
+                           oninvalid="this.setCustomValidity('Giá gốc phải phải từ 1,000 VNĐ và chẵn hàng nghìn')"
                            oninput="this.setCustomValidity('')" />
                 </div>
                 <div class="col-md-6">
                     <label class="form-label text-success">Giá Khuyến Mãi (VNĐ)</label>
-                    <input type="number" id="SalePrice" class="form-control border-success" min="0" placeholder="Để trống nếu không sale"
+                    <input type="number" step="1000" id="SalePrice" class="form-control border-success" min="0" placeholder="Để trống nếu không sale"
                            oninvalid="this.setCustomValidity('Giá khuyến mãi không được là số âm')"
                            oninput="this.setCustomValidity('')" />
                 </div>
@@ -116,6 +138,14 @@
             <div class="mb-3">
                 <label class="form-label">Mô tả chi tiết</label>
                 <textarea id="Description" class="form-control" rows="4" placeholder="Nhập mô tả sản phẩm..."></textarea>
+            </div>
+
+            <div class="mb-4 p-3 bg-light border rounded">
+                <label class="form-label fw-bold text-primary"><i class="fas fa-images"></i> Hình Ảnh Sản Phẩm</label>
+                <input type="file" id="ProductImages" class="form-control" multiple accept="image/*" />
+                <small class="text-muted d-block mt-1">Hỗ trợ chọn nhiều file ảnh cùng lúc. Ảnh đầu tiên sẽ làm ảnh đại diện.</small>
+
+                <div id="imagePreviewContainer" class="d-flex flex-wrap gap-3 mt-3"></div>
             </div>
 
             <div class="row mb-4 bg-light p-2 rounded mx-0">
@@ -140,11 +170,9 @@
                         <i class="fas fa-plus"></i> Thêm Phân Loại
                     </button>
                 </div>
+              
                 <div id="variantContainer" class="mb-3">
                 </div>
-                <small class="text-danger d-block mb-3" id="variantWarningTxt">
-                    * Lưu ý: Hiện tại Backend chỉ hỗ trợ thêm mới biến thể. Cập nhật biến thể sẽ được mở rộng trong tương lai.
-                </small>
             </div>
 
         </form>
@@ -172,32 +200,43 @@
         let currentMode = 'create';
         let currentProductData = {};
 
+        // 🟢 QUẢN LÝ TRẠNG THÁI SORT & MẢNG CHECKBOX
+        let sortColumn = 'ProductId';
+        let sortDirection = 'desc';
+        let selectedIds = [];
+
+        let formAttributes = { sizes: [], colors: [] };
         const productOffcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasProduct'));
 
         $(document).ready(function () {
             loadFormAttributes();
             loadProducts();
 
-            $('#btnSearch').click(function() { currentPage = 1; loadProducts(); });
-            $('#searchInput').keypress(function(e) { if (e.which == 13) $('#btnSearch').click(); });
+            $('#btnSearch').click(function() { resetPageAndLoad(); });
+            $('#searchInput').keypress(function(e) { if (e.which == 13) resetPageAndLoad(); });
+
+            // Xử lý Check All
+            $('#chkSelectAll').change(function() {
+                $('.chk-item').prop('checked', this.checked);
+                updateSelectedIds();
+            });
         });
 
-        // 1. GỌI API LẤY DROPDOWN VÀ DATALIST TỪ BACKEND
+        // 🟢 HÀM LOAD CẤU HÌNH TỪ BACKEND
         function loadFormAttributes() {
             $.ajax({
                 url: apiUrl + 'api/admin/products/attributes',
                 type: 'GET',
+                cache: false,
                 headers: { 'Authorization': 'Bearer ' + token },
                 success: function (res) {
                     if (res.isSuccess) {
                         let data = res.data;
 
-                        // Đổ Category vào Select (Bắt buộc chọn)
                         let catHtml = '<option value="">-- Vui lòng chọn danh mục --</option>';
                         data.categories.forEach(c => { catHtml += `<option value="${c.id}">${c.name}</option>`; });
                         $('#CategoryId').html(catHtml);
 
-                        // Đổ các Option vào Datalist để làm Gợi ý động
                         let brandHtml = '';
                         data.brands.forEach(b => { brandHtml += `<option value="${b}">`; });
                         $('#brandList').html(brandHtml);
@@ -213,6 +252,9 @@
                         let colorHtml = '';
                         data.colors.forEach(c => { colorHtml += `<option value="${c}">`; });
                         $('#colorList').html(colorHtml);
+
+                        formAttributes.sizes = data.sizes;
+                        formAttributes.colors = data.colors;
                     }
                 },
                 error: function () {
@@ -221,26 +263,80 @@
             });
         }
 
-        // 2. LOAD BẢNG ODATA
+        function resetPageAndLoad() {
+            currentPage = 1;
+            loadProducts();
+        }
+
+        // 🟢 HÀM ĐỔI CỘT SẮP XẾP ODATA
+        function changeSort(column) {
+            // Đảo chiều nếu bấm lại cùng 1 cột
+            if (sortColumn === column) {
+                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn = column;
+                sortDirection = 'asc';
+            }
+
+            // Cập nhật Icon UI
+            $('.sort-icon').removeClass('fa-sort-up fa-sort-down text-primary').addClass('fa-sort text-muted');
+            $(`#sort-${column}`).removeClass('fa-sort text-muted')
+                                .addClass(sortDirection === 'asc' ? 'fa-sort-up text-primary' : 'fa-sort-down text-primary');
+
+            loadProducts();
+        }
+
+        // 🟢 CẬP NHẬT LOAD ODATA KÈM FILTER PHỨC TẠP
         function loadProducts() {
             let skip = (currentPage - 1) * pageSize;
-            let odataQuery = `odata/AdminProductsOdata?$count=true&$top=${pageSize}&$skip=${skip}&$orderby=ProductId desc`;
 
+            // Khởi tạo Base OData Query kèm OrderBy động
+            let odataQuery = `odata/AdminProductsOdata?$count=true&$top=${pageSize}&$skip=${skip}&$orderby=${sortColumn} ${sortDirection}`;
+
+            // Mảng chứa các điều kiện Lọc (Filter)
+            let filters = [];
+
+            // 1. Lọc theo từ khóa
             let keyword = $('#searchInput').val().trim();
-            if (keyword) odataQuery += `&$filter=contains(tolower(ProductName), '${keyword.toLowerCase()}')`;
+            if (keyword) {
+                filters.push(`contains(tolower(ProductName), '${keyword.toLowerCase()}')`);
+            }
+
+            // 2. Lọc theo Trạng thái
+            let status = $('#filterStatus').val();
+            if (status === 'active') filters.push(`IsActive eq true`);
+            else if (status === 'inactive') filters.push(`IsActive eq false`);
+
+            // 3. Lọc theo Tồn kho
+            let stock = $('#filterStock').val();
+            if (stock === 'lowstock') filters.push(`HasLowStock eq true`);
+
+            // Gắn mảng Filter vào URL bằng chữ 'and'
+            if (filters.length > 0) {
+                odataQuery += `&$filter=${filters.join(' and ')}`;
+            }
+
+            // Reset UI đa chọn
+            $('#chkSelectAll').prop('checked', false);
+            selectedIds = [];
+            toggleBulkActions();
 
             $.ajax({
                 url: apiUrl + odataQuery,
                 type: 'GET',
+                cache: false,
                 headers: { 'Authorization': 'Bearer ' + token },
-                success: function (response) {
-                    if (response && response.value) {
-                        renderTable(response.value);
-                        renderPagination(response['@@odata.count']);
+                beforeSend: function () {
+                    $('#productTableBody').html(`<tr><td colspan="7" class="text-center py-4 text-muted"><i class="fas fa-spinner fa-spin me-2"></i> Đang tải dữ liệu...</td></tr>`);
+                },
+                success: function (res) {
+                    if (res && res.value) {
+                        renderTable(res.value);
+                        renderPagination(res['@@odata.count']);
                     }
                 },
-                error: function (xhr) {
-                    $('#productTableBody').html(`<tr><td colspan="6" class="text-danger text-center py-4">Lỗi tải dữ liệu bảng.</td></tr>`);
+                error: function () {
+                    $('#productTableBody').html(`<tr><td colspan="7" class="text-danger text-center py-4">Lỗi tải dữ liệu bảng.</td></tr>`);
                 }
             });
         }
@@ -248,26 +344,35 @@
         function renderTable(products) {
             let html = '';
             if (products.length === 0) {
-                html = `<tr><td colspan="6" class="text-center py-4 text-muted">Không có dữ liệu!</td></tr>`;
+                html = `<tr><td colspan="7" class="text-center py-4 text-muted">Không có dữ liệu!</td></tr>`;
             } else {
                 products.forEach(p => {
-                    let statusHtml = p.IsActive ? `<span class="badge bg-success">Hoạt động</span>` : `<span class="badge bg-danger">Đã ẩn</span>`;
+                    let statusHtml = p.IsActive ? `<span class="badge bg-success">Đang mở bán</span>` : `<span class="badge bg-secondary">Dừng bán</span>`;
                     let price = p.BasePrice.toLocaleString('vi-VN') + ' đ';
+
+                    // 🟢 NẾU SẮP HẾT HÀNG -> Hiện Icon Cảnh Báo
+                    let warningIcon = p.HasLowStock ? `<i class="fas fa-exclamation-triangle text-warning ms-2" title="Sắp hết hàng"></i>` : '';
+
+                    let imgHtml = p.ThumbnailUrl
+                        ? `<img src="${apiUrl}${p.ThumbnailUrl}" style="width: 50px; height: 50px; object-fit: cover;" class="rounded border" />`
+                        : `<div class="bg-light rounded border d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;"><i class="fas fa-image text-muted"></i></div>`;
 
                     html += `
                         <tr>
-                            <td>#${p.ProductId}</td>
-                            <td><strong>${p.ProductName}</strong><br><small class="text-muted">${p.Slug}</small></td>
+                            <td class="text-center align-middle">
+                                <input class="form-check-input chk-item" type="checkbox" value="${p.ProductId}" onchange="updateSelectedIds()">
+                            </td>
+                            <td class="text-center">${imgHtml}</td>
+                            <td>
+                                <strong>${p.ProductName}</strong> ${warningIcon}<br>
+                                <small class="text-muted">Mã ID: #${p.ProductId}</small>
+                            </td>
                             <td>${p.CategoryName || 'N/A'}</td>
                             <td class="text-danger fw-bold">${price}</td>
                             <td>${statusHtml}</td>
                             <td class="text-center">
-                                <button class="btn btn-sm btn-outline-info me-1" title="Sửa" onclick="openOffcanvas('edit', ${p.ProductId})">
-                                    <i class="fas fa-edit"></i> Sửa
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger" title="Xóa" onclick="deleteProduct(${p.ProductId})">
-                                    <i class="fas fa-trash"></i> Xóa
-                                </button>
+                                <button class="btn btn-sm btn-outline-info me-1" title="Sửa" onclick="openOffcanvas('edit', ${p.ProductId})"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-outline-danger" title="Xóa" onclick="deleteProduct(${p.ProductId})"><i class="fas fa-trash"></i></button>
                             </td>
                         </tr>
                     `;
@@ -276,21 +381,87 @@
             $('#productTableBody').html(html);
         }
 
-        function renderPagination(total) {
-            let totalPages = Math.ceil(total / pageSize);
-            let html = '';
-            for (let i = 1; i <= totalPages; i++) {
-                html += `<li class="page-item ${currentPage === i ? 'active' : ''}"><a class="page-link" href="#" onclick="currentPage=${i}; loadProducts(); return false;">${i}</a></li>`;
-            }
-            $('#paginationUl').html(html);
-            $('#paginationInfo').text(`Tổng: ${total} sản phẩm`);
+        // 🟢 CÁC HÀM XỬ LÝ ĐA CHỌN (BULK ACTION)
+        function updateSelectedIds() {
+            selectedIds = [];
+            $('.chk-item:checked').each(function() {
+                selectedIds.push(parseInt($(this).val()));
+            });
+            toggleBulkActions();
         }
 
-        // 3. MỞ OFFCANVAS & ĐIỀN DỮ LIỆU
+        function toggleBulkActions() {
+            $('#selectedCount').text(selectedIds.length);
+            if (selectedIds.length > 0) {
+                $('#bulkActions').removeClass('d-none').addClass('d-flex');
+            } else {
+                $('#bulkActions').addClass('d-none').removeClass('d-flex');
+            }
+        }
+
+        function bulkUpdateStatus(isActive) {
+            let actionText = isActive ? 'Mở bán' : 'Dừng bán';
+            Swal.fire({
+                title: `Xác nhận ${actionText}?`,
+                text: `Áp dụng cho ${selectedIds.length} sản phẩm đã chọn.`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Đồng ý',
+            }).then((result) => {
+                if(result.isConfirmed) {
+                    $.ajax({
+                        url: apiUrl + 'api/admin/products/bulk/status',
+                        type: 'PUT',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ productIds: selectedIds, isActive: isActive }),
+                        headers: { 'Authorization': 'Bearer ' + token },
+                        success: function(res) {
+                            Swal.fire('Thành công', res.message, 'success');
+                            loadProducts();
+                        }
+                    });
+                }
+            });
+        }
+
+        function bulkUpdateFeatured(isFeatured) {
+            $.ajax({
+                url: apiUrl + 'api/admin/products/bulk/featured',
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify({ productIds: selectedIds, isFeatured: isFeatured }),
+                headers: { 'Authorization': 'Bearer ' + token },
+                success: function(res) {
+                    Swal.fire('Thành công', res.message, 'success');
+                    loadProducts();
+                }
+            });
+        }
+
+        function renderPagination(totalRecords) {
+            let totalPages = Math.ceil(totalRecords / pageSize);
+            let html = '';
+            let startRecord = totalRecords === 0 ? 0 : ((currentPage - 1) * pageSize) + 1;
+            let endRecord = (currentPage * pageSize) > totalRecords ? totalRecords : (currentPage * pageSize);
+            $('#paginationInfo').text(`Hiển thị ${startRecord} - ${endRecord} trên tổng ${totalRecords} sản phẩm`);
+
+            for (let i = 1; i <= totalPages; i++) {
+                html += `<li class="page-item ${currentPage === i ? 'active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+            }
+            $('#paginationUl').html(html);
+        }
+
+        $(document).on('click', '.page-link', function (e) {
+            e.preventDefault();
+            currentPage = parseInt($(this).data('page'));
+            loadProducts();
+        });
+
         function openOffcanvas(mode, id = 0) {
             currentMode = mode;
             $('#productForm')[0].reset();
             $('#variantContainer').empty();
+            $('#imagePreviewContainer').empty();
             $('#variantsSection').show();
 
             $('#CategoryId')[0].setCustomValidity('');
@@ -299,17 +470,16 @@
 
             if (mode === 'create') {
                 $('#offcanvasProductLabel').text('THÊM SẢN PHẨM MỚI');
-                $('#variantWarningTxt').hide();
                 addVariantRow();
                 productOffcanvas.show();
             }
             else if (mode === 'edit') {
                 $('#offcanvasProductLabel').text('SỬA SẢN PHẨM #' + id);
-                $('#variantWarningTxt').show();
 
                 $.ajax({
                     url: apiUrl + `api/admin/products/${id}`,
                     type: 'GET',
+                    cache: false,
                     headers: { 'Authorization': 'Bearer ' + token },
                     success: function (res) {
                         if(res.isSuccess) {
@@ -329,6 +499,26 @@
                             $('#IsActive').prop('checked', p.isActive);
                             $('#IsFeatured').prop('checked', p.isFeatured);
 
+                            // 🟢 HIỂN THỊ ẢNH CŨ VÀ THÊM NÚT XÓA ẢNH
+                            if(p.images && p.images.length > 0) {
+                                let imgPreviewHtml = '';
+                                p.images.forEach(img => {
+                                    let badge = img.isThumbnail ? '<span class="position-absolute top-0 start-0 badge rounded-0 bg-danger" style="font-size: 0.6rem;">Bìa</span>' : '';
+                                    imgPreviewHtml += `
+                                        <div class="position-relative d-inline-block" id="img-container-${img.imageId}">
+                                            <img src="${apiUrl}${img.imageUrl}" class="rounded border" style="width: 80px; height: 80px; object-fit: cover;" />
+                                            ${badge}
+                                            <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 translate-end rounded-circle p-0"
+                                                    style="width: 22px; height: 22px; line-height: 1;"
+                                                    onclick="deleteImage(${img.imageId})" title="Xóa ảnh này">
+                                               X
+                                            </button>
+                                        </div>
+                                    `;
+                                });
+                                $('#imagePreviewContainer').html(imgPreviewHtml);
+                            }
+
                             if(p.variants && p.variants.length > 0) {
                                 p.variants.forEach(v => {
                                     addVariantRow(v.sku, v.size, v.color, v.extraPrice, v.stockQuantity);
@@ -341,49 +531,84 @@
                         }
                     },
                     error: function(xhr) {
-                        Swal.fire('Lỗi', 'Không thể lấy thông tin chi tiết: ' + xhr.statusText, 'error');
+                        Swal.fire('Lỗi', 'Không thể lấy thông tin chi tiết.', 'error');
                     }
                 });
             }
         }
 
-        // 4. THÊM DÒNG PHÂN LOẠI (Chuyển sang dùng <input> + <datalist>)
+        // 🟢 HÀM XÓA ẢNH ĐỘC LẬP TỪ CSDL VÀ FOLDER
+        function deleteImage(imageId) {
+            Swal.fire({
+                title: 'Xóa ảnh này?',
+                text: "Hành động này sẽ xóa file vật lý trên máy chủ và không thể hoàn tác!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Có, Xóa nó!',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: apiUrl + `api/admin/products/images/${imageId}`, // API backend để xóa ảnh
+                        type: 'DELETE',
+                        headers: { 'Authorization': 'Bearer ' + token },
+                        success: function (res) {
+                            if (res.isSuccess) {
+                                $(`#img-container-${imageId}`).fadeOut(300, function() { $(this).remove(); });
+                                Swal.fire({ title: 'Đã xóa!', icon: 'success', timer: 1000, showConfirmButton: false });
+                                loadProducts(); // Reload lại bảng lỡ xóa trúng ảnh đại diện
+                            } else {
+                                Swal.fire('Lỗi', res.message, 'error');
+                            }
+                        },
+                        error: function (xhr) {
+                            let err = xhr.responseJSON?.message || 'Có lỗi khi xóa ảnh';
+                            Swal.fire('Lỗi', err, 'error');
+                        }
+                    });
+                }
+            });
+        }
+
         function addVariantRow(sku = '', size = '', color = '', extraPrice = 0, stockQuantity = 0) {
             let rowId = Date.now() + Math.floor(Math.random() * 100);
 
-            let readOnlyAttr = (currentMode === 'edit') ? 'readonly disabled' : '';
-            let hideBtnClass = (currentMode === 'edit') ? 'd-none' : '';
+            let isExisting = (sku !== '') ? 'is-existing' : '';
 
-            // 🟢 Thay vì select cứng, giờ ta dùng thẻ input text kết hợp datalist
             let rowHtml = `
-                <div class="row g-2 mb-2 p-2 border rounded bg-white variant-row shadow-sm" id="row_${rowId}">
+                <div class="row g-2 mb-2 p-2 border rounded bg-white variant-row shadow-sm ${isExisting}" id="row_${rowId}">
                     <div class="col-12 col-md-3">
                         <label class="small text-muted fw-bold">Mã SKU (*)</label>
-                        <input type="text" class="form-control form-control-sm v-sku border-primary" value="${sku}" placeholder="Tự tạo..." required ${readOnlyAttr}
+                        <input type="text" class="form-control form-control-sm v-sku border-primary" value="${sku}" placeholder="Tự tạo..." required
                                oninvalid="this.setCustomValidity('Vui lòng nhập mã SKU cho biến thể')"
                                oninput="this.setCustomValidity('')">
                     </div>
                     <div class="col-6 col-md-2">
                         <label class="small text-muted">Kích cỡ</label>
-                        <input type="text" class="form-control form-control-sm v-size" list="sizeList" value="${size}" oninput="autoGenerateSku('${rowId}')" placeholder="Chọn hoặc gõ..." autocomplete="off" ${readOnlyAttr}>
+                        <input type="text" class="form-control form-control-sm v-size" list="sizeList" value="${size}" oninput="autoGenerateSku('${rowId}')" placeholder="Chọn/gõ..." autocomplete="off">
                     </div>
                     <div class="col-6 col-md-2">
                         <label class="small text-muted">Màu sắc</label>
-                        <input type="text" class="form-control form-control-sm v-color" list="colorList" value="${color}" oninput="autoGenerateSku('${rowId}')" placeholder="Chọn hoặc gõ..." autocomplete="off" ${readOnlyAttr}>
+                        <input type="text" class="form-control form-control-sm v-color" list="colorList" value="${color}" oninput="autoGenerateSku('${rowId}')" placeholder="Chọn/gõ..." autocomplete="off">
                     </div>
                     <div class="col-6 col-md-2">
                         <label class="small text-muted">Giá (+)</label>
-                        <input type="number" class="form-control form-control-sm v-extra" value="${extraPrice}" placeholder="VNĐ" ${readOnlyAttr}>
+                        <input type="number" step="1000" min="0" class="form-control form-control-sm v-extra" value="${extraPrice}" placeholder="VNĐ"
+                         oninvalid="this.setCustomValidity('Giá thêm phải phải từ 0 VNĐ và chẵn hàng nghìn')"
+                           oninput="this.setCustomValidity('')"
+                        >
                     </div>
                     <div class="col-6 col-md-2">
                         <label class="small text-muted fw-bold">Tồn kho (*)</label>
-                        <input type="number" class="form-control form-control-sm v-stock border-warning" value="${stockQuantity}" placeholder="SL" required min="0" ${readOnlyAttr}
+                        <input type="number" class="form-control form-control-sm v-stock border-warning" value="${stockQuantity}" placeholder="SL" required min="0"
                                oninvalid="this.setCustomValidity('Tồn kho phải từ 0 trở lên')"
                                oninput="this.setCustomValidity('')">
                     </div>
-                    <div class="col-12 col-md-1 d-flex align-items-end ${hideBtnClass}">
+                    <div class="col-12 col-md-1 d-flex align-items-end">
                         <button type="button" class="btn btn-sm btn-outline-danger w-100" onclick="$('#row_${rowId}').remove()" title="Xóa dòng này">
-                            <i class="fas fa-times"></i>
+                            <i class="fas fa-times">Xóa</i>
                         </button>
                     </div>
                 </div>
@@ -391,9 +616,8 @@
             $('#variantContainer').append(rowHtml);
         }
 
-        // TỰ ĐỘNG TẠO SKU TỪ TÊN SP + SIZE + MÀU
         function autoGenerateSku(rowId) {
-            if (currentMode === 'edit') return;
+            if ($(`#row_${rowId}`).hasClass('is-existing')) return;
 
             let productName = $('#ProductName').val();
             let size = $(`#row_${rowId} .v-size`).val();
@@ -425,17 +649,13 @@
         }
 
         $(document).on('input', '#ProductName', function() {
-            if (currentMode === 'create') {
-                this.setCustomValidity('');
-                $('.variant-row').each(function() {
-                    let rowId = $(this).attr('id').replace('row_', '');
-                    autoGenerateSku(rowId);
-                });
-            }
+            $('.variant-row').not('.is-existing').each(function() {
+                let rowId = $(this).attr('id').replace('row_', '');
+                autoGenerateSku(rowId);
+            });
         });
 
-        // 5. LƯU DỮ LIỆU (POST / PUT)
-        function saveProduct() {
+        async function saveProduct() {
             if(!$('#productForm')[0].checkValidity()) {
                 $('#productForm')[0].reportValidity();
                 return;
@@ -446,78 +666,124 @@
             let salePriceInput = $('#SalePrice').val();
             let salePrice = salePriceInput ? parseFloat(salePriceInput) : null;
 
-            let dataPayload = {
-                categoryId: catId,
-                productName: $('#ProductName').val(),
-                brand: $('#Brand').val(), // Nhận cả text gõ tự do
-                material: $('#Material').val(), // Nhận cả text gõ tự do
-                basePrice: basePrice,
-                salePrice: salePrice,
-                description: $('#Description').val(),
-                isActive: $('#IsActive').is(':checked'),
-                isFeatured: $('#IsFeatured').is(':checked'),
-                genderTarget: currentProductData.genderTarget || "Unisex",
-                isBestSeller: currentProductData.isBestSeller || false,
-                isNewArrival: currentProductData.isNewArrival || true
-            };
+            $('#btnSaveProduct').html('<i class="fas fa-spinner fa-spin"></i> Đang xử lý...').prop('disabled', true);
 
-            let ajaxUrl = apiUrl + 'api/admin/products';
-            let ajaxMethod = 'POST';
+            try {
+                let uploadedImageUrls = [];
+                let files = $('#ProductImages')[0].files;
 
-            if (currentMode === 'create') {
-                dataPayload.variants = [];
+                if (files.length > 0) {
+                    let formData = new FormData();
+                    for (let i = 0; i < files.length; i++) {
+                        formData.append("images", files[i]);
+                    }
+
+                    let uploadRes = await $.ajax({
+                        url: apiUrl + 'api/admin/products/upload-images',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        headers: { 'Authorization': 'Bearer ' + token }
+                    });
+
+                    if (uploadRes && uploadRes.isSuccess) {
+                        uploadedImageUrls = uploadRes.data;
+                    } else {
+                        Swal.fire('Lỗi', uploadRes.message || 'Upload ảnh thất bại', 'error');
+                        $('#btnSaveProduct').html('<i class="fas fa-save me-1"></i> LƯU SẢN PHẨM').prop('disabled', false);
+                        return;
+                    }
+                }
+
+                let variantsArray = [];
                 $('.variant-row').each(function() {
-                    dataPayload.variants.push({
+                    variantsArray.push({
                         sku: $(this).find('.v-sku').val(),
-                        size: $(this).find('.v-size').val() || null,  // Nhận cả text gõ tự do
-                        color: $(this).find('.v-color').val() || null, // Nhận cả text gõ tự do
+                        size: $(this).find('.v-size').val() || null,
+                        color: $(this).find('.v-color').val() || null,
                         extraPrice: parseFloat($(this).find('.v-extra').val() || 0),
                         stockQuantity: parseInt($(this).find('.v-stock').val() || 0)
                     });
                 });
 
-                if(dataPayload.variants.length === 0) {
+                if(variantsArray.length === 0) {
                     Swal.fire('Cảnh báo', 'Vui lòng thêm ít nhất 1 dòng phân loại SKU!', 'warning');
+                    $('#btnSaveProduct').html('<i class="fas fa-save me-1"></i> LƯU SẢN PHẨM').prop('disabled', false);
                     return;
                 }
-            } else {
-                ajaxMethod = 'PUT';
-                ajaxUrl += '/' + $('#ProductId').val();
-            }
 
-            $.ajax({
-                url: ajaxUrl,
-                type: ajaxMethod,
-                contentType: 'application/json',
-                data: JSON.stringify(dataPayload),
-                headers: { 'Authorization': 'Bearer ' + token },
-                beforeSend: function() {
-                    $('#btnSaveProduct').html('<i class="fas fa-spinner fa-spin"></i> Đang lưu...');
-                    $('#btnSaveProduct').prop('disabled', true);
-                },
-                success: function (res) {
-                    $('#btnSaveProduct').html('<i class="fas fa-save me-1"></i> LƯU SẢN PHẨM').prop('disabled', false);
-                    if(res.isSuccess) {
-                        productOffcanvas.hide();
-                        Swal.fire('Thành công', res.message, 'success');
+                let dataPayload = {
+                    categoryId: catId,
+                    productName: $('#ProductName').val(),
+                    brand: $('#Brand').val(),
+                    material: $('#Material').val(),
+                    basePrice: basePrice,
+                    salePrice: salePrice,
+                    description: $('#Description').val(),
+                    isActive: $('#IsActive').is(':checked'),
+                    isFeatured: $('#IsFeatured').is(':checked'),
+                    genderTarget: currentProductData.genderTarget || "Unisex",
+                    isBestSeller: currentProductData.isBestSeller || false,
+                    isNewArrival: currentProductData.isNewArrival || true,
+                    imageUrls: uploadedImageUrls,
+                    variants: variantsArray
+                };
 
-                        // Gọi lại API load Dropdown/Datalist để cập nhật ngay lập tức các chữ mới gõ
-                        loadFormAttributes();
+                let ajaxUrl = apiUrl + 'api/admin/products';
+                let ajaxMethod = 'POST';
 
-                        loadProducts();
-                    } else {
-                        Swal.fire('Lỗi', res.message, 'error');
-                    }
-                },
-                error: function (xhr) {
-                    $('#btnSaveProduct').html('<i class="fas fa-save me-1"></i> LƯU SẢN PHẨM').prop('disabled', false);
-                    let err = xhr.responseJSON?.message || 'Có lỗi xảy ra khi lưu.';
-                    Swal.fire('Lỗi', err, 'error');
+                if (currentMode === 'edit') {
+                    ajaxMethod = 'PUT';
+                    ajaxUrl += '/' + $('#ProductId').val();
                 }
-            });
+
+                $.ajax({
+                    url: ajaxUrl,
+                    type: ajaxMethod,
+                    contentType: 'application/json',
+                    data: JSON.stringify(dataPayload),
+                    headers: { 'Authorization': 'Bearer ' + token },
+                    success: function (res) {
+                        $('#btnSaveProduct').html('<i class="fas fa-save me-1"></i> LƯU SẢN PHẨM').prop('disabled', false);
+                        if(res.isSuccess) {
+                            productOffcanvas.hide();
+                            Swal.fire({ title: 'Thành công', text: res.message, icon: 'success', timer: 1500, showConfirmButton: false });
+
+                            $('#ProductImages').val('');
+                            loadFormAttributes();
+                            loadProducts();
+                        } else {
+                            Swal.fire('Lỗi', res.message, 'error');
+                        }
+                    },
+                 error: function (xhr) {
+                        $('#btnSaveProduct').html('<i class="fas fa-save me-1"></i> LƯU SẢN PHẨM').prop('disabled', false);
+
+                        let errMessage = 'Có lỗi xảy ra khi lưu.';
+
+                        if (xhr.responseJSON) {
+                            // 1. Kiểm tra nếu là lỗi do Data Annotation ([Range], [Required]) tự động sinh ra
+                            if (xhr.responseJSON.errors) {
+                                // Lấy thông báo lỗi đầu tiên trong danh sách errors
+                                let firstErrorKey = Object.keys(xhr.responseJSON.errors)[0];
+                                errMessage = xhr.responseJSON.errors[firstErrorKey][0];
+                            }
+                            // 2. Nếu là lỗi do code Backend Service của chúng ta tự trả về (ResultModel)
+                            else if (xhr.responseJSON.message) {
+                                errMessage = xhr.responseJSON.message;
+                            }
+                        }
+
+                        Swal.fire('Lỗi Dữ Liệu', errMessage, 'error');
+                    }
+                });
+            } catch (error) {
+                $('#btnSaveProduct').html('<i class="fas fa-save me-1"></i> LƯU SẢN PHẨM').prop('disabled', false);
+                Swal.fire('Lỗi hệ thống', 'Quá trình tải ảnh lên gặp sự cố, vui lòng thử lại', 'error');
+            }
         }
 
-        // 6. XÓA MỀM (SOFT DELETE)
         function deleteProduct(id) {
             Swal.fire({
                 title: 'Khóa sản phẩm?',
@@ -536,7 +802,7 @@
                         headers: { 'Authorization': 'Bearer ' + token },
                         success: function (res) {
                             if(res.isSuccess) {
-                                Swal.fire('Thành công!', res.message, 'success');
+                                Swal.fire({ title: 'Thành công!', text: res.message, icon: 'success', timer: 1500, showConfirmButton: false });
                                 loadProducts();
                             } else {
                                 Swal.fire('Lỗi', res.message, 'error');
@@ -548,4 +814,3 @@
         }
     </script>
 }
-```
