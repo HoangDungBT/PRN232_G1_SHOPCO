@@ -12,6 +12,9 @@ namespace SHOP.CO.Application.Services
     public interface IAdminService
     {
         Task<ResultModel<DashboardSummaryDto>> GetDashBoardSummaryAsync();
+        Task<ResultModel<List<RevenueByDayDto>>> GetRevenueChartAsync(int days);
+        Task<ResultModel<bool>> AdjustStockAsync(int variantId, int quantityChange, string reason, string logType);
+        IQueryable<ProductVariant> GetInventoryODataQuery();
     }
 
     public class AdminService : IAdminService
@@ -51,6 +54,80 @@ namespace SHOP.CO.Application.Services
                 return ResultModel<DashboardSummaryDto>.Exception(ex);
             }
 
+        }
+
+        public async Task<ResultModel<List<RevenueByDayDto>>> GetRevenueChartAsync(int days)
+        {
+            try
+            {
+                var endDate = DateTime.UtcNow.Date;
+                var startDate = endDate.AddDays(-days + 1);
+                var order = await _context.Orders
+                    .Where(o => o.OrderStatus == "Completed" && o.CreatedAt >= startDate && o.CreatedAt <= endDate.AddDays(1))
+                    .ToListAsync();
+
+                var groupedRevenue = order
+                    .GroupBy(o => o.CreatedAt.Date)
+                    .ToDictionary(g => g.Key, g => g.Sum(o => o.TotalAmount));
+
+                var result = new List<RevenueByDayDto>();
+                for (int i = 0; i < days; i++)
+                {
+                    var currentDate = startDate.AddDays(i);
+                    result.Add(new RevenueByDayDto
+                    {
+                        Date = currentDate.ToString("dd/MM"),
+                        Revenue = groupedRevenue.ContainsKey(currentDate)
+                        ? groupedRevenue[currentDate] : 0
+                    });
+                }
+                return ResultModel<List<RevenueByDayDto>>.Success(result);
+
+            }
+            catch (Exception ex)
+            {
+                return ResultModel<List<RevenueByDayDto>>.Exception(ex);
+            }
+        }
+        public IQueryable<ProductVariant> GetInventoryODataQuery()
+        {
+            return _context.ProductVariants
+                .Include(v => v.Product) // Để lấy tên sản phẩm hiển thị ra View
+                .AsQueryable();
+        }
+        public async Task<ResultModel<bool>> AdjustStockAsync(int variantId, int quantityChange, string reason, string logType = "StockMovement")
+        {
+            try
+            {
+                // 1. Tìm biến thể
+                var variant = await _context.ProductVariants.FindAsync(variantId);
+                if (variant == null) return ResultModel<bool>.Error("Không tìm thấy biến thể", 404);
+
+                // 2. Cập nhật tồn kho hiện tại
+                variant.StockQuantity += quantityChange;
+
+                // 3. Ghi vào InteractionLog
+                var log = new InteractionLog
+                {
+                    VariantId = variantId,
+                    ProductId = variant.ProductId,
+                    LogType = logType,
+                    QuantityChanged = quantityChange,
+                    Message = reason,
+                    CreatedAt = DateTime.UtcNow,
+                    Status = "Success"
+                };
+
+                _context.InteractionLogs.Add(log);
+                await _context.SaveChangesAsync();
+
+                return ResultModel<bool>.Success(true, "Cập nhật kho thành công");
+            }
+            catch (Exception ex)
+            {
+                var innerEx = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return ResultModel<bool>.Error(innerEx,500);
+            }
         }
     }
 }
