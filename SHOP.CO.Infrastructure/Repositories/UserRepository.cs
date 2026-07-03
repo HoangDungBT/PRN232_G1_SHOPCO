@@ -8,10 +8,10 @@ namespace SHOP.CO.Infrastructure.Repositories
         Task<bool> EmailExistsAsync(string email);
         Task<User?> GetUserByEmailAsync(string email);
         Task<User?> GetUserByRefreshTokenAsync(string refreshToken);
+        IQueryable<User> GetUsersAsQueryable();
         Task<User?> GetUserByIdAsync(int id);
         Task AddUserAsync(User user);
         Task UpdateUserAsync(User user);
-
     }
 
     public class UserRepository : IUserRepository
@@ -22,6 +22,7 @@ namespace SHOP.CO.Infrastructure.Repositories
         {
             _context = context;
         }
+       
         public async Task<bool> EmailExistsAsync(string email)
         {
            return await _context.Users.AnyAsync(u => u.Email == email);
@@ -31,7 +32,14 @@ namespace SHOP.CO.Infrastructure.Repositories
         {
             return await _context.Users.SingleOrDefaultAsync(u => u.Email == email);
         }
-
+        public IQueryable<User> GetUsersAsQueryable()
+        {
+            return _context.Users.AsQueryable();
+        }
+        public async Task<User?> GetUserByIdAsync(int id)
+        {
+            return await _context.Users.FindAsync(id);
+        }
         public async Task AddUserAsync(User user)
         {
             _context.Users.Add(user);
@@ -49,10 +57,6 @@ namespace SHOP.CO.Infrastructure.Repositories
         {
             return await _context.Users.SingleOrDefaultAsync(u => u.RefreshToken == refreshToken);
         }
-
-        public async Task<User?> GetUserByIdAsync(int id)
-        {
-            return await _context.Users.FindAsync(id);
-        }
+      
     }
 }
