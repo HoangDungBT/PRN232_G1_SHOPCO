@@ -57,6 +57,8 @@ namespace SHOP.CO.Infrastructure.Migrations
                     DateOfBirth = table.Column<DateOnly>(type: "date", nullable: true),
                     PreferredSize = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     PreferredStyle = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    VerificationToken = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    VerificationExpiresAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ResetPasswordToken = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     ResetPasswordExpiresAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     RefreshToken = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
@@ -69,7 +71,7 @@ namespace SHOP.CO.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Users", x => x.UserId);
                     table.CheckConstraint("CK_Users_Role", "[Role] IN (N'Customer', N'Staff', N'Admin')");
-                    table.CheckConstraint("CK_Users_Status", "[Status] IN (N'Active', N'Locked', N'Deleted')");
+                    table.CheckConstraint("CK_Users_Status", "[Status] IN (N'Unverified', N'Active', N'Locked', N'Deleted')");
                 });
 
             migrationBuilder.CreateTable(
@@ -533,61 +535,68 @@ namespace SHOP.CO.Infrastructure.Migrations
                 values: new object[,]
                 {
                     { 1, "Thời trang Nam", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, true, null, "thoi-trang-nam", null },
-                    { 2, "Thời trang Nữ", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, true, null, "thoi-trang-nu", null }
+                    { 2, "Thời trang Nữ", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, true, null, "thoi-trang-nu", null },
+                    { 3, "Unisex", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, true, null, "thoi-trang-unisex", null }
                 });
 
             migrationBuilder.InsertData(
+                table: "CommerceRecords",
+                columns: new[] { "RecordId", "Amount", "Code", "CreatedAt", "DiscountType", "DiscountValue", "EndAt", "MaxDiscountAmount", "MinOrderAmount", "Name", "OrderId", "PayloadJson", "PaymentMethod", "PaymentProvider", "ProductId", "RecordType", "StartAt", "Status", "TransactionCode", "UpdatedAt", "UsageLimit", "UsedCount", "UserId", "VariantId" },
+                values: new object[] { 4, null, "WELCOME50", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Fixed", 50000m, new DateTime(2024, 2, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, 200000m, "Giảm 50K cho thành viên mới", null, null, null, null, null, "Voucher", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Active", null, null, 1000, 150, null, null });
+
+            migrationBuilder.InsertData(
+                table: "CommerceRecords",
+                columns: new[] { "RecordId", "Amount", "Code", "CreatedAt", "DiscountType", "DiscountValue", "EndAt", "MaxDiscountAmount", "MinOrderAmount", "Name", "OrderId", "PayloadJson", "PaymentMethod", "PaymentProvider", "ProductId", "RecordType", "StartAt", "Status", "TransactionCode", "UpdatedAt", "UsageLimit", "UserId", "VariantId" },
+                values: new object[] { 5, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, new DateTime(2024, 1, 2, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Sale 11.11", null, "{\"discountPercent\": 10}", null, null, null, "FlashSale", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Active", null, null, null, null, null });
+
+            migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "UserId", "AvatarUrl", "CreatedAt", "DateOfBirth", "Email", "FullName", "Gender", "LastLoginAt", "PasswordHash", "Phone", "PreferredSize", "PreferredStyle", "RefreshToken", "RefreshTokenExpiresAt", "ResetPasswordExpiresAt", "ResetPasswordToken", "Role", "Status", "UpdatedAt" },
+                columns: new[] { "UserId", "AvatarUrl", "CreatedAt", "DateOfBirth", "Email", "FullName", "Gender", "LastLoginAt", "PasswordHash", "Phone", "PreferredSize", "PreferredStyle", "RefreshToken", "RefreshTokenExpiresAt", "ResetPasswordExpiresAt", "ResetPasswordToken", "Role", "Status", "UpdatedAt", "VerificationExpiresAt", "VerificationToken" },
                 values: new object[,]
                 {
-                    { 1, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "admin@shop.co", "Admin System", null, null, "hashed123", null, null, null, null, null, null, null, "Admin", "Active", null },
-                    { 2, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "nguyenvana@gmail.com", "Nguyễn Văn A", null, null, "hashed123", null, null, null, null, null, null, null, "Customer", "Active", null },
-                    { 3, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "tranthib@gmail.com", "Trần Thị B", null, null, "hashed123", null, null, null, null, null, null, null, "Customer", "Active", null }
+                    { 1, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "admin@shop.co", "Admin System", null, null, "hashed123", null, null, null, null, null, null, null, "Admin", "Active", null, null, null },
+                    { 2, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "nguyenvana@gmail.com", "Nguyễn Văn A", "Nam", null, "hashed123", null, null, null, null, null, null, null, "Customer", "Active", null, null, null },
+                    { 3, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "tranthib@gmail.com", "Trần Thị B", "Nữ", null, "hashed123", null, null, null, null, null, null, null, "Customer", "Active", null, null, null }
                 });
 
             migrationBuilder.InsertData(
                 table: "Categories",
                 columns: new[] { "CategoryId", "CategoryName", "CreatedAt", "Description", "ImageUrl", "IsActive", "ParentCategoryId", "Slug", "UpdatedAt" },
-                values: new object[] { 3, "Áo Thun Nam", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, true, 1, "ao-thun-nam", null });
+                values: new object[,]
+                {
+                    { 4, "Áo Thun Nam", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, true, 1, "ao-thun-nam", null },
+                    { 5, "Quần Jeans Nam", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, true, 1, "quan-jeans-nam", null },
+                    { 6, "Váy Nữ", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, true, 2, "vay-nu", null },
+                    { 7, "Áo Sơ Mi Nữ", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, true, 2, "ao-so-mi-nu", null }
+                });
 
             migrationBuilder.InsertData(
                 table: "CustomerActivities",
                 columns: new[] { "ActivityId", "ActivityType", "Comment", "CreatedAt", "InputJson", "IpAddress", "IsActive", "Keyword", "OrderItemId", "ProductId", "Rating", "ResultJson", "SessionId", "UpdatedAt", "UserId", "VariantId" },
-                values: new object[] { 3, "Search", null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, true, "Áo khoác mùa đông", null, null, null, null, null, null, 2, null });
+                values: new object[,]
+                {
+                    { 3, "Search", null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, true, "quần jeans nam", null, null, null, null, null, null, 2, null },
+                    { 5, "AiColorSearch", null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "{\"imageUrl\": \"/uploads/user-search-1.jpg\"}", null, true, null, null, null, null, "{\"dominantColor\": \"#FF0000\", \"matchScore\": 95}", null, null, 3, null }
+                });
 
             migrationBuilder.InsertData(
                 table: "InteractionLogs",
                 columns: new[] { "LogId", "ActionName", "CreatedAt", "EntitiesJson", "IntentName", "IsRead", "LogType", "Message", "NewValueJson", "OldValueJson", "OrderId", "PayloadJson", "ProductId", "QuantityChanged", "ReadAt", "ReferenceId", "ReferenceType", "SenderType", "SessionId", "Status", "Title", "UserId", "VariantId" },
                 values: new object[,]
                 {
-                    { 1, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, true, "Chatbot", "Cho tôi hỏi size áo thun", null, null, null, null, null, null, null, null, null, "User", null, null, null, 2, null },
-                    { 2, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, true, "Chatbot", "Dạ, size M phù hợp với người từ 50-60kg ạ.", null, null, null, null, null, null, null, null, null, "Bot", null, null, null, 2, null }
+                    { 1, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, true, "Chatbot", "Cho tôi hỏi quần jeans size 30 còn hàng không?", null, null, null, null, null, null, null, null, null, "User", "sess_123", null, null, 2, null },
+                    { 2, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "{\"product\": \"quần jeans\", \"size\": \"30\"}", "check_stock", true, "Chatbot", "Dạ, quần jeans nam slimfit size 30 hiện còn 40 sản phẩm ạ.", null, null, null, null, null, null, null, null, null, "Bot", "sess_123", null, null, 2, null }
                 });
 
             migrationBuilder.InsertData(
                 table: "InteractionLogs",
                 columns: new[] { "LogId", "ActionName", "CreatedAt", "EntitiesJson", "IntentName", "LogType", "Message", "NewValueJson", "OldValueJson", "OrderId", "PayloadJson", "ProductId", "QuantityChanged", "ReadAt", "ReferenceId", "ReferenceType", "SenderType", "SessionId", "Status", "Title", "UserId", "VariantId" },
-                values: new object[] { 3, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Notification", "Đơn hàng ORD003 của bạn đang được giao", null, null, null, null, null, null, null, null, null, null, null, null, "Đơn hàng đang giao", 3, null });
-
-            migrationBuilder.InsertData(
-                table: "Orders",
-                columns: new[] { "OrderId", "AddressId", "CancelReason", "CanceledAt", "CompletedAt", "CreatedAt", "CustomerNote", "OrderCode", "OrderStatus", "PaymentStatus", "ReceiverName", "ReceiverPhone", "ShippingAddressText", "ShippingStatus", "StaffNote", "TotalAmount", "UpdatedAt", "UserId" },
-                values: new object[,]
-                {
-                    { 1, null, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "ORD001", "Completed", "Paid", "Nguyễn Văn A", "0901234567", "123 Lê Lợi, Quận 1, TP.HCM", "Delivered", null, 240000m, null, 2 },
-                    { 2, null, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "ORD002", "Pending", "Unpaid", "Nguyễn Văn A", "0901234567", "456 Nguyễn Huệ, Quận 1, TP.HCM", "NotShipped", null, 300000m, null, 2 },
-                    { 3, null, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "ORD003", "Shipping", "Paid", "Trần Thị B", "0987654321", "789 Hai Bà Trưng, Quận 3, TP.HCM", "Shipping", null, 400000m, null, 3 }
-                });
+                values: new object[] { 5, "UpdateProductPrice", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Audit", null, "{\"price\": 399000}", "{\"price\": 400000}", null, null, null, null, null, null, null, "Admin", null, null, "Cập nhật giá sản phẩm", 1, null });
 
             migrationBuilder.InsertData(
                 table: "Products",
-                columns: new[] { "ProductId", "BasePrice", "Brand", "CategoryId", "CreatedAt", "DeletedAt", "Description", "GenderTarget", "IsActive", "Material", "ProductName", "SalePrice", "Slug", "UpdatedAt" },
-                values: new object[,]
-                {
-                    { 2, 350000m, null, 2, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, true, null, "Váy Hoa Mùa Hè", 300000m, "vay-hoa-mua-he", null },
-                    { 3, 400000m, null, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, true, null, "Áo Khoác Hoodie Unisex", 400000m, "ao-khoac-hoodie-unisex", null }
-                });
+                columns: new[] { "ProductId", "AverageRating", "BasePrice", "Brand", "CategoryId", "CreatedAt", "DeletedAt", "Description", "GenderTarget", "IsActive", "IsFeatured", "Material", "ProductName", "ReviewCount", "SalePrice", "Slug", "UpdatedAt" },
+                values: new object[] { 3, 4.2m, 400000m, "Shop.Co", 3, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, true, true, "Nỉ", "Áo Khoác Hoodie Unisex", 5, 400000m, "ao-khoac-hoodie-unisex", null });
 
             migrationBuilder.InsertData(
                 table: "UserAddresses",
@@ -605,89 +614,158 @@ namespace SHOP.CO.Infrastructure.Migrations
                 values: new object[] { 3, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Quận 3", true, null, "TP.HCM", "Trần Thị B", "0987654321", "789 Hai Bà Trưng", null, 3, "Phường 6" });
 
             migrationBuilder.InsertData(
+                table: "Orders",
+                columns: new[] { "OrderId", "AddressId", "CancelReason", "CanceledAt", "CompletedAt", "CreatedAt", "CustomerNote", "OrderCode", "OrderStatus", "PaymentStatus", "ReceiverName", "ReceiverPhone", "ShippingAddressText", "ShippingStatus", "StaffNote", "SubtotalAmount", "TotalAmount", "UpdatedAt", "UserId" },
+                values: new object[] { 1, 1, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "ORD-0001", "Completed", "Paid", "Nguyễn Văn A", "0901234567", "123 Lê Lợi, Quận 1, TP.HCM", "Completed", null, 240000m, 240000m, null, 2 });
+
+            migrationBuilder.InsertData(
+                table: "Orders",
+                columns: new[] { "OrderId", "AddressId", "CancelReason", "CanceledAt", "CompletedAt", "CreatedAt", "CustomerNote", "DiscountAmount", "OrderCode", "OrderStatus", "PaymentStatus", "ReceiverName", "ReceiverPhone", "ShippingAddressText", "ShippingStatus", "StaffNote", "SubtotalAmount", "TotalAmount", "UpdatedAt", "UserId" },
+                values: new object[] { 2, 2, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, 19000m, "ORD-0002", "Pending", "Unpaid", "Nguyễn Văn A (Công ty)", "0901234567", "456 Nguyễn Huệ, Quận 1, TP.HCM", "NotShipped", null, 399000m, 380000m, null, 2 });
+
+            migrationBuilder.InsertData(
+                table: "Orders",
+                columns: new[] { "OrderId", "AddressId", "CancelReason", "CanceledAt", "CompletedAt", "CreatedAt", "CustomerNote", "OrderCode", "OrderStatus", "PaymentStatus", "ReceiverName", "ReceiverPhone", "ShippingAddressText", "ShippingStatus", "StaffNote", "SubtotalAmount", "TotalAmount", "UpdatedAt", "UserId" },
+                values: new object[,]
+                {
+                    { 3, 3, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "ORD-0003", "Shipping", "Paid", "Trần Thị B", "0987654321", "789 Hai Bà Trưng, Quận 3, TP.HCM", "Shipping", null, 300000m, 300000m, null, 3 },
+                    { 4, 3, "Đổi ý", null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "ORD-0004", "Canceled", "Refunded", "Trần Thị B", "0987654321", "789 Hai Bà Trưng, Quận 3, TP.HCM", "NotShipped", null, 400000m, 400000m, null, 3 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ProductImages",
+                columns: new[] { "ImageId", "AltText", "ColorAnalysisJson", "ContentType", "CreatedAt", "DominantColorHex", "FileName", "FileSize", "ImageUrl", "IsThumbnail", "ProductId", "SortOrder", "VariantId" },
+                values: new object[] { 4, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "https://via.placeholder.com/600x800.png?text=Hoodie+Xam", true, 3, 1, null });
+
+            migrationBuilder.InsertData(
+                table: "ProductVariants",
+                columns: new[] { "VariantId", "Barcode", "Color", "ColorHex", "CreatedAt", "IsActive", "LowStockThreshold", "OriginalPrice", "ProductId", "Size", "Sku", "StockQuantity", "UpdatedAt", "WeightGram" },
+                values: new object[] { 4, null, "Xám", "#808080", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), true, 10, null, 3, "XL", "AKH-XA-XL", 100, null, null });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "ProductId", "AverageRating", "BasePrice", "Brand", "CategoryId", "CreatedAt", "DeletedAt", "Description", "GenderTarget", "IsActive", "IsBestSeller", "Material", "ProductName", "ReviewCount", "SalePrice", "Slug", "UpdatedAt" },
+                values: new object[] { 1, 4.5m, 150000m, "Shop.Co", 4, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, true, true, "Cotton", "Áo Thun Cổ Tròn Basic", 10, 120000m, "ao-thun-co-tron-basic", null });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "ProductId", "AverageRating", "BasePrice", "Brand", "CategoryId", "CreatedAt", "DeletedAt", "Description", "GenderTarget", "IsActive", "IsNewArrival", "Material", "ProductName", "ReviewCount", "SalePrice", "Slug", "UpdatedAt" },
+                values: new object[] { 2, 4.8m, 350000m, "Shop.Co", 6, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, true, true, "Voan", "Váy Hoa Mùa Hè", 25, 300000m, "vay-hoa-mua-he", null });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "ProductId", "AverageRating", "BasePrice", "Brand", "CategoryId", "CreatedAt", "DeletedAt", "Description", "GenderTarget", "IsActive", "IsBestSeller", "Material", "ProductName", "ReviewCount", "SalePrice", "Slug", "UpdatedAt" },
+                values: new object[] { 4, 4.9m, 450000m, "DenimX", 5, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, true, true, "Denim", "Quần Jeans Nam Slimfit", 50, 399000m, "quan-jeans-nam-slimfit", null });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "ProductId", "AverageRating", "BasePrice", "Brand", "CategoryId", "CreatedAt", "DeletedAt", "Description", "GenderTarget", "IsActive", "Material", "ProductName", "ReviewCount", "SalePrice", "Slug", "UpdatedAt" },
+                values: new object[] { 5, 4.0m, 250000m, "OfficeWear", 7, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, true, "Lụa", "Áo Sơ Mi Lụa Công Sở", 2, null, "ao-so-mi-lua-cong-so", null });
+
+            migrationBuilder.InsertData(
                 table: "CommerceRecords",
                 columns: new[] { "RecordId", "Amount", "Code", "CreatedAt", "DiscountType", "DiscountValue", "EndAt", "MaxDiscountAmount", "MinOrderAmount", "Name", "OrderId", "PayloadJson", "PaymentMethod", "PaymentProvider", "ProductId", "RecordType", "StartAt", "Status", "TransactionCode", "UpdatedAt", "UsageLimit", "UserId", "VariantId" },
                 values: new object[,]
                 {
-                    { 1, 240000m, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, null, null, null, 1, null, null, null, null, "Payment", null, "Success", null, null, null, 2, null },
-                    { 2, null, "GIAM10K", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, 10000m, null, null, null, null, 2, null, null, null, null, "VoucherUsage", null, "Applied", null, null, null, 2, null },
-                    { 3, 400000m, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, null, null, null, 3, null, null, null, null, "Payment", null, "Success", null, null, null, 3, null }
+                    { 1, 240000m, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, null, null, null, 1, null, "Online", "VNPay", null, "Payment", null, "Success", "VNP123456", null, null, 2, null },
+                    { 2, null, "FREESHIP19K", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Fixed", 19000m, null, null, null, null, 2, null, null, null, null, "VoucherUsage", null, "Applied", null, null, null, 2, null },
+                    { 3, 300000m, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, null, null, null, 3, null, "COD", null, null, "Payment", null, "Pending", null, null, null, 3, null }
                 });
 
             migrationBuilder.InsertData(
                 table: "CustomerActivities",
                 columns: new[] { "ActivityId", "ActivityType", "Comment", "CreatedAt", "InputJson", "IpAddress", "IsActive", "Keyword", "OrderItemId", "ProductId", "Rating", "ResultJson", "SessionId", "UpdatedAt", "UserId", "VariantId" },
-                values: new object[] { 2, "Wishlist", null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, true, null, null, 2, null, null, null, null, 3, null });
+                values: new object[,]
+                {
+                    { 2, "Wishlist", null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, true, null, null, 5, null, null, null, null, 3, null },
+                    { 4, "RecentlyViewed", null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, true, null, null, 2, null, null, null, null, 3, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "InteractionLogs",
+                columns: new[] { "LogId", "ActionName", "CreatedAt", "EntitiesJson", "IntentName", "LogType", "Message", "NewValueJson", "OldValueJson", "OrderId", "PayloadJson", "ProductId", "QuantityChanged", "ReadAt", "ReferenceId", "ReferenceType", "SenderType", "SessionId", "Status", "Title", "UserId", "VariantId" },
+                values: new object[] { 3, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Notification", "Đơn hàng ORD-0003 của bạn đã được giao cho đơn vị vận chuyển.", null, null, 3, null, null, null, null, null, null, null, null, "Sent", "Đơn hàng đang giao", 3, null });
+
+            migrationBuilder.InsertData(
+                table: "OrderItems",
+                columns: new[] { "OrderItemId", "ColorSnapshot", "CreatedAt", "ImageUrlSnapshot", "LineTotal", "OrderId", "ProductId", "ProductNameSnapshot", "Quantity", "ReviewStatus", "SalePrice", "SizeSnapshot", "SkuSnapshot", "UnitPrice", "UpdatedAt", "VariantId" },
+                values: new object[] { 4, "Xám", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "https://via.placeholder.com/600x800.png?text=Hoodie+Xam", 400000m, 4, 3, "Áo Khoác Hoodie Unisex", 1, "NotReviewed", 400000m, "XL", "AKH-XA-XL", 400000m, null, 4 });
 
             migrationBuilder.InsertData(
                 table: "ProductImages",
-                columns: new[] { "ImageId", "AltText", "ColorAnalysisJson", "ContentType", "CreatedAt", "DominantColorHex", "FileName", "FileSize", "ImageUrl", "IsThumbnail", "ProductId", "VariantId" },
+                columns: new[] { "ImageId", "AltText", "ColorAnalysisJson", "ContentType", "CreatedAt", "DominantColorHex", "FileName", "FileSize", "ImageUrl", "IsThumbnail", "ProductId", "SortOrder", "VariantId" },
                 values: new object[,]
                 {
-                    { 2, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "/images/vay-hoa.jpg", true, 2, null },
-                    { 3, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "/images/hoodie-xam.jpg", true, 3, null }
+                    { 3, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "https://via.placeholder.com/600x800.png?text=Vay+Hoa", true, 2, 1, null },
+                    { 7, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "https://via.placeholder.com/600x800.png?text=So+Mi+Trang", true, 5, 1, null }
                 });
 
             migrationBuilder.InsertData(
                 table: "ProductVariants",
-                columns: new[] { "VariantId", "Barcode", "Color", "ColorHex", "CreatedAt", "IsActive", "OriginalPrice", "ProductId", "Size", "Sku", "StockQuantity", "UpdatedAt", "WeightGram" },
+                columns: new[] { "VariantId", "Barcode", "Color", "ColorHex", "CreatedAt", "IsActive", "LowStockThreshold", "OriginalPrice", "ProductId", "Size", "Sku", "StockQuantity", "UpdatedAt", "WeightGram" },
                 values: new object[,]
                 {
-                    { 3, null, "Đỏ", null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), true, null, 2, "S", "VHM-DO-S", 20, null, null },
-                    { 4, null, "Xám", null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), true, null, 3, "XL", "AKH-XA-XL", 100, null, null }
+                    { 1, null, "Trắng", "#FFFFFF", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), true, 5, null, 1, "M", "ATB-TR-M", 50, null, null },
+                    { 2, null, "Đen", "#000000", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), true, 5, null, 1, "L", "ATB-DE-L", 30, null, null },
+                    { 3, null, "Đỏ", "#FF0000", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), true, 2, null, 2, "S", "VHM-DO-S", 20, null, null },
+                    { 5, null, "Xanh Denim", "#1560BD", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), true, 5, null, 4, "30", "QJN-XANH-30", 40, null, null },
+                    { 6, null, "Xanh Đậm", "#00008B", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), true, 5, null, 4, "31", "QJN-XANH-31", 3, null, null },
+                    { 7, null, "Trắng", "#FFFFFF", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), true, 5, null, 5, "M", "ASM-TR-M", 15, null, null }
                 });
-
-            migrationBuilder.InsertData(
-                table: "Products",
-                columns: new[] { "ProductId", "BasePrice", "Brand", "CategoryId", "CreatedAt", "DeletedAt", "Description", "GenderTarget", "IsActive", "Material", "ProductName", "SalePrice", "Slug", "UpdatedAt" },
-                values: new object[] { 1, 150000m, null, 3, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, true, null, "Áo Thun Cổ Tròn Basic", 120000m, "ao-thun-co-tron-basic", null });
 
             migrationBuilder.InsertData(
                 table: "CartItems",
                 columns: new[] { "CartItemId", "CreatedAt", "IsSelected", "Quantity", "SelectedColor", "SelectedSize", "SessionId", "UnitPrice", "UpdatedAt", "UserId", "VariantId" },
                 values: new object[,]
                 {
-                    { 2, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), true, 1, null, null, null, 300000m, null, 2, 3 },
-                    { 3, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), true, 1, null, null, null, 400000m, null, 3, 4 }
-                });
-
-            migrationBuilder.InsertData(
-                table: "CustomerActivities",
-                columns: new[] { "ActivityId", "ActivityType", "Comment", "CreatedAt", "InputJson", "IpAddress", "IsActive", "Keyword", "OrderItemId", "ProductId", "Rating", "ResultJson", "SessionId", "UpdatedAt", "UserId", "VariantId" },
-                values: new object[] { 1, "Review", "Áo mặc mát mẻ, đẹp", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, true, null, null, 1, 5, null, null, null, 2, null });
-
-            migrationBuilder.InsertData(
-                table: "OrderItems",
-                columns: new[] { "OrderItemId", "ColorSnapshot", "CreatedAt", "ImageUrlSnapshot", "LineTotal", "OrderId", "ProductId", "ProductNameSnapshot", "Quantity", "ReviewStatus", "SalePrice", "SizeSnapshot", "SkuSnapshot", "UnitPrice", "UpdatedAt", "VariantId" },
-                values: new object[,]
-                {
-                    { 2, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, 300000m, 2, 2, "Váy Hoa Mùa Hè", 1, "NotReviewed", 300000m, null, "VHM-DO-S", 350000m, null, 3 },
-                    { 3, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, 400000m, 3, 3, "Áo Khoác Hoodie Unisex", 1, "NotReviewed", 400000m, null, "AKH-XA-XL", 400000m, null, 4 }
-                });
-
-            migrationBuilder.InsertData(
-                table: "ProductImages",
-                columns: new[] { "ImageId", "AltText", "ColorAnalysisJson", "ContentType", "CreatedAt", "DominantColorHex", "FileName", "FileSize", "ImageUrl", "IsThumbnail", "ProductId", "VariantId" },
-                values: new object[] { 1, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "/images/ao-thun-trang.jpg", true, 1, null });
-
-            migrationBuilder.InsertData(
-                table: "ProductVariants",
-                columns: new[] { "VariantId", "Barcode", "Color", "ColorHex", "CreatedAt", "IsActive", "OriginalPrice", "ProductId", "Size", "Sku", "StockQuantity", "UpdatedAt", "WeightGram" },
-                values: new object[,]
-                {
-                    { 1, null, "Trắng", null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), true, null, 1, "M", "ATB-TR-M", 50, null, null },
-                    { 2, null, "Đen", null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), true, null, 1, "L", "ATB-DE-L", 30, null, null }
+                    { 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), true, 2, "Trắng", "M", null, 120000m, null, 2, 1 },
+                    { 2, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), true, 1, "Xanh Denim", "30", null, 399000m, null, 2, 5 }
                 });
 
             migrationBuilder.InsertData(
                 table: "CartItems",
-                columns: new[] { "CartItemId", "CreatedAt", "IsSelected", "Quantity", "SelectedColor", "SelectedSize", "SessionId", "UnitPrice", "UpdatedAt", "UserId", "VariantId" },
-                values: new object[] { 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), true, 2, null, null, null, 120000m, null, 2, 1 });
+                columns: new[] { "CartItemId", "CreatedAt", "Quantity", "SelectedColor", "SelectedSize", "SessionId", "UnitPrice", "UpdatedAt", "UserId", "VariantId" },
+                values: new object[] { 3, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Trắng", "M", null, 250000m, null, 3, 7 });
+
+            migrationBuilder.InsertData(
+                table: "InteractionLogs",
+                columns: new[] { "LogId", "ActionName", "CreatedAt", "EntitiesJson", "IntentName", "LogType", "Message", "NewValueJson", "OldValueJson", "OrderId", "PayloadJson", "ProductId", "QuantityChanged", "ReadAt", "ReferenceId", "ReferenceType", "SenderType", "SessionId", "Status", "Title", "UserId", "VariantId" },
+                values: new object[] { 4, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "StockAlert", "Biến thể QJN-XANH-31 chỉ còn 3 sản phẩm trong kho.", null, null, null, null, 4, null, null, null, null, "System", null, null, "Cảnh báo tồn kho thấp", 1, 6 });
 
             migrationBuilder.InsertData(
                 table: "OrderItems",
                 columns: new[] { "OrderItemId", "ColorSnapshot", "CreatedAt", "ImageUrlSnapshot", "LineTotal", "OrderId", "ProductId", "ProductNameSnapshot", "Quantity", "ReviewStatus", "SalePrice", "SizeSnapshot", "SkuSnapshot", "UnitPrice", "UpdatedAt", "VariantId" },
-                values: new object[] { 1, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, 240000m, 1, 1, "Áo Thun Cổ Tròn Basic", 2, "NotReviewed", 120000m, null, "ATB-TR-M", 150000m, null, 1 });
+                values: new object[,]
+                {
+                    { 1, "Trắng", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "https://via.placeholder.com/600x800.png?text=Ao+Thun+Trang", 240000m, 1, 1, "Áo Thun Cổ Tròn Basic", 2, "Reviewed", 120000m, "M", "ATB-TR-M", 150000m, null, 1 },
+                    { 2, "Xanh Denim", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "https://via.placeholder.com/600x800.png?text=Jeans+Denim", 399000m, 2, 4, "Quần Jeans Nam Slimfit", 1, "NotReviewed", 399000m, "30", "QJN-XANH-30", 450000m, null, 5 },
+                    { 3, "Đỏ", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "https://via.placeholder.com/600x800.png?text=Vay+Hoa", 300000m, 3, 2, "Váy Hoa Mùa Hè", 1, "NotReviewed", 300000m, "S", "VHM-DO-S", 350000m, null, 3 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ProductImages",
+                columns: new[] { "ImageId", "AltText", "ColorAnalysisJson", "ContentType", "CreatedAt", "DominantColorHex", "FileName", "FileSize", "ImageUrl", "IsThumbnail", "ProductId", "SortOrder", "VariantId" },
+                values: new object[] { 1, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "https://via.placeholder.com/600x800.png?text=Ao+Thun+Trang", true, 1, 1, 1 });
+
+            migrationBuilder.InsertData(
+                table: "ProductImages",
+                columns: new[] { "ImageId", "AltText", "ColorAnalysisJson", "ContentType", "CreatedAt", "DominantColorHex", "FileName", "FileSize", "ImageUrl", "ProductId", "SortOrder", "VariantId" },
+                values: new object[] { 2, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "https://via.placeholder.com/600x800.png?text=Ao+Thun+Den", 1, 2, 2 });
+
+            migrationBuilder.InsertData(
+                table: "ProductImages",
+                columns: new[] { "ImageId", "AltText", "ColorAnalysisJson", "ContentType", "CreatedAt", "DominantColorHex", "FileName", "FileSize", "ImageUrl", "IsThumbnail", "ProductId", "SortOrder", "VariantId" },
+                values: new object[] { 5, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "https://via.placeholder.com/600x800.png?text=Jeans+Denim", true, 4, 1, 5 });
+
+            migrationBuilder.InsertData(
+                table: "ProductImages",
+                columns: new[] { "ImageId", "AltText", "ColorAnalysisJson", "ContentType", "CreatedAt", "DominantColorHex", "FileName", "FileSize", "ImageUrl", "ProductId", "SortOrder", "VariantId" },
+                values: new object[] { 6, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "https://via.placeholder.com/600x800.png?text=Jeans+Dam", 4, 2, 6 });
+
+            migrationBuilder.InsertData(
+                table: "CustomerActivities",
+                columns: new[] { "ActivityId", "ActivityType", "Comment", "CreatedAt", "InputJson", "IpAddress", "IsActive", "Keyword", "OrderItemId", "ProductId", "Rating", "ResultJson", "SessionId", "UpdatedAt", "UserId", "VariantId" },
+                values: new object[] { 1, "Review", "Áo chất lượng rất tốt, form chuẩn.", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, true, null, 1, 1, 5, null, null, null, 2, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_CartItems_SessionId",

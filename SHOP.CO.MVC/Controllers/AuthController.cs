@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using SHOP.CO.MVC.Common;
 using SHOP.CO.MVC.Models;
 using System.IdentityModel.Tokens.Jwt;
@@ -8,8 +9,11 @@ namespace SHOP.CO.MVC.Controllers
 {
     public class AuthController : ABaseController
     {
-        public AuthController(IHttpClientFactory factory) : base(factory)
+        private readonly IConfiguration _configuration;
+
+        public AuthController(IHttpClientFactory factory, IConfiguration configuration) : base(factory)
         {
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -51,26 +55,39 @@ namespace SHOP.CO.MVC.Controllers
 
         // --- ĐĂNG KÝ ---
         [HttpGet]
-        public IActionResult Register() => View(new RegisterVM());
-
-        [HttpPost]
-        public async Task<IActionResult> Register(RegisterVM model)
+        public IActionResult Register()
         {
-            if (!ModelState.IsValid) return View(model);
+            // 🟢 THÊM DÒNG NÀY ĐỂ TRUYỀN URL API XUỐNG VIEW
+            ViewBag.ApiBaseUrl = _configuration.GetSection("ApiSettings:BaseUrl").Value;
 
-            // POST đến API (Kiểu trả về là chuỗi string Message)
-            var result = await PostApiAsync<string>("api/auth/register", model);
-
-            if (result != null && result.IsSuccess)
-            {
-                TempData["SuccessMessage"] = "Đăng ký thành công! Vui lòng đăng nhập.";
-                return RedirectToAction("Login");
-            }
-
-            ViewBag.ErrorMessage = result?.Message ?? "Đăng ký thất bại.";
-            return View(model);
+            return View(new RegisterVM());
         }
 
+        // bỏ vì dùn ajax
+        //[HttpPost]
+        //public async Task<IActionResult> Register(RegisterVM model)
+        //{
+        //    if (!ModelState.IsValid) return View(model);
+
+        //    // POST đến API (Kiểu trả về là chuỗi string Message)
+        //    var result = await PostApiAsync<string>("api/auth/register", model);
+
+        //    if (result != null && result.IsSuccess)
+        //    {
+        //        TempData["SuccessMessage"] = "Đăng ký thành công! Vui lòng đăng nhập.";
+        //        return RedirectToAction("Login");
+        //    }
+
+        //    ViewBag.ErrorMessage = result?.Message ?? "Đăng ký thất bại.";
+        //    return View(model);
+        //}
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            ViewBag.ApiBaseUrl = _configuration.GetSection("ApiSettings:BaseUrl").Value;
+            return View();
+        }
         // --- ĐĂNG XUẤT ---
         [HttpGet]
         public async Task<IActionResult> Logout()

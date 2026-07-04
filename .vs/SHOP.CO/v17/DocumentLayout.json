@@ -7,80 +7,48 @@
       "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\views\\products\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\views\\categories\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\views\\categories\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\views\\orders\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\views\\orders\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{FCFF2F3D-0F58-4BB9-8349-C84DADD024E8}|SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.infrastructure\\data\\shopcodbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FCFF2F3D-0F58-4BB9-8349-C84DADD024E8}|SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj|solutionrelative:shop.co.infrastructure\\data\\shopcodbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\controllers\\categoriescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\controllers\\categoriescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{FCFF2F3D-0F58-4BB9-8349-C84DADD024E8}|SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.infrastructure\\data\\modelbuilderextension.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FCFF2F3D-0F58-4BB9-8349-C84DADD024E8}|SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj|solutionrelative:shop.co.infrastructure\\data\\modelbuilderextension.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\controllers\\productscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\controllers\\productscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\views\\auth\\forgotpassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\views\\auth\\forgotpassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\views\\dashboard\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\views\\dashboard\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.domain\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|solutionrelative:shop.co.domain\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|solutionrelative:shop.co.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{75C3C918-64F2-48FB-B2B6-4373D8141BF1}|ALib{75C3C918-64F2-48FB-B2B6-4373D8141BF1}|D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\HelpCommand.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{75C3C918-64F2-48FB-B2B6-4373D8141BF1}|ALib{75C3C918-64F2-48FB-B2B6-4373D8141BF1}|solutionrelative:HelpCommand.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.api\\controllers\\adproductscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|solutionrelative:shop.co.api\\controllers\\adproductscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.api\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|solutionrelative:shop.co.api\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.api\\controllers\\odata\\adminproductsodatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|solutionrelative:shop.co.api\\controllers\\odata\\adminproductsodatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|solutionrelative:shop.co.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\controllers\\baseadmincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\controllers\\baseadmincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\utilities\\emailsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\utilities\\emailsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\controllers\\dashboardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\controllers\\dashboardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\utilities\\authsetting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\utilities\\authsetting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.domain\\entities\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|solutionrelative:shop.co.domain\\entities\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\controllers\\cartcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\controllers\\cartcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\views\\shared\\_adminlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\views\\shared\\_adminlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.api\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|solutionrelative:shop.co.api\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.api\\controllers\\adcategoriescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|solutionrelative:shop.co.api\\controllers\\adcategoriescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.api\\controllers\\odata\\admincategoriesodatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|solutionrelative:shop.co.api\\controllers\\odata\\admincategoriesodatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\services\\adproductservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\services\\adproductservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FCFF2F3D-0F58-4BB9-8349-C84DADD024E8}|SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.infrastructure\\repositories\\productrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FCFF2F3D-0F58-4BB9-8349-C84DADD024E8}|SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj|solutionrelative:shop.co.infrastructure\\repositories\\productrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\services\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\services\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\utilities\\passwordhasher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\utilities\\passwordhasher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\applicationdi.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -91,80 +59,252 @@
       "RelativeMoniker": "D:0:0:{FCFF2F3D-0F58-4BB9-8349-C84DADD024E8}|SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj|solutionrelative:shop.co.infrastructure\\infrastructuredi.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\services\\adminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\services\\adminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\views\\auth\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\views\\auth\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\services\\adcategoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\services\\adcategoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\dtos\\adproductdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\dtos\\adproductdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\controllers\\abasecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\controllers\\abasecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\common\\resultmodelt.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\common\\resultmodelt.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\controllers\\baseadmincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\controllers\\baseadmincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\dtos\\adcatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\dtos\\adcatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\controllers\\categoriescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\controllers\\categoriescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\dtos\\addto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\dtos\\addto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.api\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|solutionrelative:shop.co.api\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\dtos\\productdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\dtos\\productdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\views\\auth\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\views\\auth\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FCFF2F3D-0F58-4BB9-8349-C84DADD024E8}|SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.infrastructure\\repositories\\categoryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FCFF2F3D-0F58-4BB9-8349-C84DADD024E8}|SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj|solutionrelative:shop.co.infrastructure\\repositories\\categoryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\utilities\\passwordhasher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\utilities\\passwordhasher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\controllers\\cartcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\controllers\\cartcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\utilities\\authsetting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\utilities\\authsetting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.api\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|solutionrelative:shop.co.api\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\dtos\\authdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\dtos\\authdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.domain\\entities\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|solutionrelative:shop.co.domain\\entities\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\utilities\\tokengenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\utilities\\tokengenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\models\\dashboardvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\models\\dashboardvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\services\\adminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\services\\adminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\utilities\\emailsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\utilities\\emailsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FCFF2F3D-0F58-4BB9-8349-C84DADD024E8}|SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.infrastructure\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FCFF2F3D-0F58-4BB9-8349-C84DADD024E8}|SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj|solutionrelative:shop.co.infrastructure\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.domain\\enums\\mockclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|solutionrelative:shop.co.domain\\enums\\mockclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.domain\\shared\\systemattributes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|solutionrelative:shop.co.domain\\shared\\systemattributes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{75C3C918-64F2-48FB-B2B6-4373D8141BF1}|ALib{75C3C918-64F2-48FB-B2B6-4373D8141BF1}|D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\PackageLibary.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{75C3C918-64F2-48FB-B2B6-4373D8141BF1}|ALib{75C3C918-64F2-48FB-B2B6-4373D8141BF1}|solutionrelative:PackageLibary.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|solutionrelative:shop.co.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FCFF2F3D-0F58-4BB9-8349-C84DADD024E8}|SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.infrastructure\\repositories\\categoryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FCFF2F3D-0F58-4BB9-8349-C84DADD024E8}|SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj|solutionrelative:shop.co.infrastructure\\repositories\\categoryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\common\\resultmodelt.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\common\\resultmodelt.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\common\\appconstants.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\common\\appconstants.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\views\\categories\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\views\\categories\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.api\\controllers\\adminorderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|solutionrelative:shop.co.api\\controllers\\adminorderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.api\\controllers\\adcategoriescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|solutionrelative:shop.co.api\\controllers\\adcategoriescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\services\\adcategoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\services\\adcategoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\views\\users\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\views\\users\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\views\\dashboard\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\views\\dashboard\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\views\\orders\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\views\\orders\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\views\\inventory\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\views\\inventory\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.domain\\entities\\interactionlog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|solutionrelative:shop.co.domain\\entities\\interactionlog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.api\\controllers\\odata\\admininventoryodatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|solutionrelative:shop.co.api\\controllers\\odata\\admininventoryodatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.api\\controllers\\odata\\adminusersodatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|solutionrelative:shop.co.api\\controllers\\odata\\adminusersodatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\services\\aduserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\services\\aduserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\views\\shared\\_adminlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\views\\shared\\_adminlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\controllers\\inventorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\controllers\\inventorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\services\\adorderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\services\\adorderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\dtos\\addto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\dtos\\addto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FCFF2F3D-0F58-4BB9-8349-C84DADD024E8}|SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.infrastructure\\repositories\\productrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FCFF2F3D-0F58-4BB9-8349-C84DADD024E8}|SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj|solutionrelative:shop.co.infrastructure\\repositories\\productrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FCFF2F3D-0F58-4BB9-8349-C84DADD024E8}|SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.infrastructure\\repositories\\orderrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FCFF2F3D-0F58-4BB9-8349-C84DADD024E8}|SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj|solutionrelative:shop.co.infrastructure\\repositories\\orderrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\services\\adproductservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\services\\adproductservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\controllers\\dashboardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\controllers\\dashboardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\models\\dashboardvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\models\\dashboardvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\dtos\\adproductdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\dtos\\adproductdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.api\\controllers\\adminproductscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|solutionrelative:shop.co.api\\controllers\\adminproductscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.api\\controllers\\odata\\adminordersodatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|solutionrelative:shop.co.api\\controllers\\odata\\adminordersodatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.api\\controllers\\odata\\adminproductsodatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|solutionrelative:shop.co.api\\controllers\\odata\\adminproductsodatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\controllers\\productscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\controllers\\productscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\dtos\\adorderdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\dtos\\adorderdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\dtos\\aduserdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\dtos\\aduserdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.api\\controllers\\adminuserscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|solutionrelative:shop.co.api\\controllers\\adminuserscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.api\\controllers\\odata\\admincategoriesodatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|solutionrelative:shop.co.api\\controllers\\odata\\admincategoriesodatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FCFF2F3D-0F58-4BB9-8349-C84DADD024E8}|SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.infrastructure\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FCFF2F3D-0F58-4BB9-8349-C84DADD024E8}|SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj|solutionrelative:shop.co.infrastructure\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\services\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\services\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\dtos\\adcatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\dtos\\adcatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\models\\cartitemvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\models\\cartitemvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\models\\errorviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\models\\errorviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.api\\controllers\\productscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|solutionrelative:shop.co.api\\controllers\\productscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.api\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|solutionrelative:shop.co.api\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.domain\\entities\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|solutionrelative:shop.co.domain\\entities\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.domain\\entities\\orderitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|solutionrelative:shop.co.domain\\entities\\orderitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.domain\\entities\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|solutionrelative:shop.co.domain\\entities\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.domain\\entities\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|solutionrelative:shop.co.domain\\entities\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.domain\\entities\\productimage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -179,24 +319,8 @@
       "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\views\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\views\\users\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\views\\users\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\common\\authfilters.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\common\\authfilters.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\areas\\admin\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\areas\\admin\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -207,28 +331,8 @@
       "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\common\\appconstants.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\common\\appconstants.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\models\\authvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\models\\authvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\utilities\\tokengenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\utilities\\tokengenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\controllers\\abasecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\controllers\\abasecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\views\\auth\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\views\\auth\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\views\\auth\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\views\\auth\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\common\\mvcconstants.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -243,20 +347,8 @@
       "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\models\\cartitemvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\models\\cartitemvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.domain\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|solutionrelative:shop.co.domain\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\utilities\\tonghopcodeutilities.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
       "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\utilities\\tonghopcodeutilities.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{75C3C918-64F2-48FB-B2B6-4373D8141BF1}|ALib{75C3C918-64F2-48FB-B2B6-4373D8141BF1}|D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\HelpCommand.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{75C3C918-64F2-48FB-B2B6-4373D8141BF1}|ALib{75C3C918-64F2-48FB-B2B6-4373D8141BF1}|solutionrelative:HelpCommand.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\dtos\\pagedresult.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -265,22 +357,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.application\\shop.co.application.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{5D4F4C0A-C7FC-427D-817A-AFA757591BEB}|SHOP.CO.Application\\SHOP.CO.Application.csproj|solutionrelative:shop.co.application\\shop.co.application.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{75C3C918-64F2-48FB-B2B6-4373D8141BF1}|ALib{75C3C918-64F2-48FB-B2B6-4373D8141BF1}|D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\PackageLibary.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{75C3C918-64F2-48FB-B2B6-4373D8141BF1}|ALib{75C3C918-64F2-48FB-B2B6-4373D8141BF1}|solutionrelative:PackageLibary.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FCFF2F3D-0F58-4BB9-8349-C84DADD024E8}|SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.infrastructure\\data\\shopcodbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FCFF2F3D-0F58-4BB9-8349-C84DADD024E8}|SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj|solutionrelative:shop.co.infrastructure\\data\\shopcodbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.api\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|solutionrelative:shop.co.api\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|solutionrelative:shop.co.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{FCFF2F3D-0F58-4BB9-8349-C84DADD024E8}|SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.infrastructure\\shop.co.infrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
@@ -315,16 +391,8 @@
       "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\views\\home\\category.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\models\\productvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\models\\productvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\models\\errorviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|solutionrelative:shop.co.mvc\\models\\errorviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{EF1AE2BD-B3D2-4070-9845-F456F9903FD4}|SHOP.CO.MVC\\SHOP.CO.MVC.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.mvc\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
@@ -337,10 +405,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.api\\shop.co.api.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
       "RelativeMoniker": "D:0:0:{F0ABA741-2487-4055-A77A-381546EB3ED2}|SHOP.CO.API\\SHOP.CO.API.csproj|solutionrelative:shop.co.api\\shop.co.api.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FCFF2F3D-0F58-4BB9-8349-C84DADD024E8}|SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.infrastructure\\data\\modelbuilderextension.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FCFF2F3D-0F58-4BB9-8349-C84DADD024E8}|SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj|solutionrelative:shop.co.infrastructure\\data\\modelbuilderextension.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.domain\\entities\\cartitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -359,22 +423,6 @@
       "RelativeMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|solutionrelative:shop.co.domain\\entities\\useraddress.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.domain\\entities\\orderitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|solutionrelative:shop.co.domain\\entities\\orderitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.domain\\entities\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|solutionrelative:shop.co.domain\\entities\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.domain\\entities\\interactionlog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|solutionrelative:shop.co.domain\\entities\\interactionlog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.domain\\enums\\mockclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|solutionrelative:shop.co.domain\\enums\\mockclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|d:\\quantrong\\vs2022\\prn232_g1_shopco\\shop.co.domain\\shop.co.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{CA54FF62-25DB-4F6C-81A2-49A6A235B3CF}|SHOP.CO.Domain\\SHOP.CO.Domain.csproj|solutionrelative:shop.co.domain\\shop.co.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     }
@@ -386,7 +434,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 220,
+          "SelectedChildIndex": 233,
           "Children": [
             {
               "$type": "Bookmark",
@@ -1213,49 +1261,224 @@
               "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ForgotPassword.cshtml",
+              "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Views\\Auth\\ForgotPassword.cshtml",
+              "RelativeDocumentMoniker": "SHOP.CO.MVC\\Views\\Auth\\ForgotPassword.cshtml",
+              "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Views\\Auth\\ForgotPassword.cshtml",
+              "RelativeToolTip": "SHOP.CO.MVC\\Views\\Auth\\ForgotPassword.cshtml",
+              "ViewState": "AgIAAFIAAAAAAAAAAAAAAGAAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-07-04T19:27:31.31Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 41,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Views\\Inventory\\Index.cshtml",
+              "RelativeDocumentMoniker": "SHOP.CO.MVC\\Areas\\Admin\\Views\\Inventory\\Index.cshtml",
+              "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Views\\Inventory\\Index.cshtml",
+              "RelativeToolTip": "SHOP.CO.MVC\\Areas\\Admin\\Views\\Inventory\\Index.cshtml",
+              "ViewState": "AgIAAG8AAAAAAAAAAAAkwH8AAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-07-03T11:10:58.863Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 47,
+              "Title": "InventoryController.cs",
+              "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Controllers\\InventoryController.cs",
+              "RelativeDocumentMoniker": "SHOP.CO.MVC\\Areas\\Admin\\Controllers\\InventoryController.cs",
+              "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Controllers\\InventoryController.cs",
+              "RelativeToolTip": "SHOP.CO.MVC\\Areas\\Admin\\Controllers\\InventoryController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-03T11:10:06.231Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 43,
+              "Title": "AdminInventoryODataController.cs",
+              "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Controllers\\OData\\AdminInventoryODataController.cs",
+              "RelativeDocumentMoniker": "SHOP.CO.API\\Controllers\\OData\\AdminInventoryODataController.cs",
+              "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Controllers\\OData\\AdminInventoryODataController.cs",
+              "RelativeToolTip": "SHOP.CO.API\\Controllers\\OData\\AdminInventoryODataController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-03T11:08:48.222Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 54,
+              "Title": "DashboardVM.cs",
+              "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Models\\DashboardVM.cs",
+              "RelativeDocumentMoniker": "SHOP.CO.MVC\\Areas\\Admin\\Models\\DashboardVM.cs",
+              "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Models\\DashboardVM.cs",
+              "RelativeToolTip": "SHOP.CO.MVC\\Areas\\Admin\\Models\\DashboardVM.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-15T15:56:41.305Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 35,
+              "Title": "AdminOrdersController.cs",
+              "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Controllers\\AdminOrdersController.cs",
+              "RelativeDocumentMoniker": "SHOP.CO.API\\Controllers\\AdminOrdersController.cs",
+              "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Controllers\\AdminOrdersController.cs",
+              "RelativeToolTip": "SHOP.CO.API\\Controllers\\AdminOrdersController.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAA1wCkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-29T05:43:23.402Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 58,
+              "Title": "AdminOrdersODataController.cs",
+              "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Controllers\\OData\\AdminOrdersODataController.cs",
+              "RelativeDocumentMoniker": "SHOP.CO.API\\Controllers\\OData\\AdminOrdersODataController.cs",
+              "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Controllers\\OData\\AdminOrdersODataController.cs",
+              "RelativeToolTip": "SHOP.CO.API\\Controllers\\OData\\AdminOrdersODataController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-29T05:42:40.838Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 51,
+              "Title": "OrderRepository.cs",
+              "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Infrastructure\\Repositories\\OrderRepository.cs",
+              "RelativeDocumentMoniker": "SHOP.CO.Infrastructure\\Repositories\\OrderRepository.cs",
+              "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Infrastructure\\Repositories\\OrderRepository.cs",
+              "RelativeToolTip": "SHOP.CO.Infrastructure\\Repositories\\OrderRepository.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAQwCgAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-29T05:41:59.631Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 48,
+              "Title": "AdOrderService.cs",
+              "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\Services\\AdOrderService.cs",
+              "RelativeDocumentMoniker": "SHOP.CO.Application\\Services\\AdOrderService.cs",
+              "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\Services\\AdOrderService.cs",
+              "RelativeToolTip": "SHOP.CO.Application\\Services\\AdOrderService.cs",
+              "ViewState": "AgIAAHAAAAAAAAAAAAApwIMAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-29T05:40:05.948Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 62,
+              "Title": "AdOrderDto.cs",
+              "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\DTOs\\AdOrderDto.cs",
+              "RelativeDocumentMoniker": "SHOP.CO.Application\\DTOs\\AdOrderDto.cs",
+              "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\DTOs\\AdOrderDto.cs",
+              "RelativeToolTip": "SHOP.CO.Application\\DTOs\\AdOrderDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-29T05:39:13.132Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 64,
+              "Title": "AdminUsersController.cs",
+              "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Controllers\\AdminUsersController.cs",
+              "RelativeDocumentMoniker": "SHOP.CO.API\\Controllers\\AdminUsersController.cs",
+              "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Controllers\\AdminUsersController.cs",
+              "RelativeToolTip": "SHOP.CO.API\\Controllers\\AdminUsersController.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAQwCMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-29T04:22:00.847Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 44,
+              "Title": "AdminUsersODataController.cs",
+              "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Controllers\\OData\\AdminUsersODataController.cs",
+              "RelativeDocumentMoniker": "SHOP.CO.API\\Controllers\\OData\\AdminUsersODataController.cs",
+              "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Controllers\\OData\\AdminUsersODataController.cs",
+              "RelativeToolTip": "SHOP.CO.API\\Controllers\\OData\\AdminUsersODataController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-29T04:16:31.329Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 45,
+              "Title": "AdUserService.cs",
+              "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\Services\\AdUserService.cs",
+              "RelativeDocumentMoniker": "SHOP.CO.Application\\Services\\AdUserService.cs",
+              "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\Services\\AdUserService.cs",
+              "RelativeToolTip": "SHOP.CO.Application\\Services\\AdUserService.cs",
+              "ViewState": "AgIAADEAAAAAAAAAAAAAwBoAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-29T03:57:10.85Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 63,
+              "Title": "AdUserDto.cs",
+              "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\DTOs\\AdUserDto.cs",
+              "RelativeDocumentMoniker": "SHOP.CO.Application\\DTOs\\AdUserDto.cs",
+              "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\DTOs\\AdUserDto.cs",
+              "RelativeToolTip": "SHOP.CO.Application\\DTOs\\AdUserDto.cs",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAAAAsAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-29T03:51:59.883Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
               "Title": "Index.cshtml",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Views\\Categories\\Index.cshtml",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Areas\\Admin\\Views\\Categories\\Index.cshtml",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Views\\Categories\\Index.cshtml",
               "RelativeToolTip": "SHOP.CO.MVC\\Areas\\Admin\\Views\\Categories\\Index.cshtml",
-              "ViewState": "AgIAAN0AAAAAAAAAAAAAAO8AAAAkAAAAAAAAAA==",
+              "ViewState": "AgIAAFQBAAAAAAAAAAAiwGsBAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2026-06-21T17:49:28.347Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 18,
               "Title": "CategoriesController.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Controllers\\CategoriesController.cs",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Areas\\Admin\\Controllers\\CategoriesController.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Controllers\\CategoriesController.cs",
               "RelativeToolTip": "SHOP.CO.MVC\\Areas\\Admin\\Controllers\\CategoriesController.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-21T17:38:57.93Z"
+              "WhenOpened": "2026-06-21T17:38:57.93Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "AdProductsController.cs",
-              "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Controllers\\AdProductsController.cs",
-              "RelativeDocumentMoniker": "SHOP.CO.API\\Controllers\\AdProductsController.cs",
-              "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Controllers\\AdProductsController.cs",
-              "RelativeToolTip": "SHOP.CO.API\\Controllers\\AdProductsController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAA9AAAAAAAAAA==",
+              "DocumentIndex": 57,
+              "Title": "AdminProductsController.cs",
+              "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Controllers\\AdminProductsController.cs",
+              "RelativeDocumentMoniker": "SHOP.CO.API\\Controllers\\AdminProductsController.cs",
+              "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Controllers\\AdminProductsController.cs",
+              "RelativeToolTip": "SHOP.CO.API\\Controllers\\AdminProductsController.cs",
+              "ViewState": "AgIAAEYAAAAAAAAAAAAiwB8AAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-06-21T17:29:59.734Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 65,
               "Title": "AdminCategoriesODataController.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Controllers\\OData\\AdminCategoriesODataController.cs",
               "RelativeDocumentMoniker": "SHOP.CO.API\\Controllers\\OData\\AdminCategoriesODataController.cs",
@@ -1267,31 +1490,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 36,
               "Title": "AdCategoriesController.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Controllers\\AdCategoriesController.cs",
               "RelativeDocumentMoniker": "SHOP.CO.API\\Controllers\\AdCategoriesController.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Controllers\\AdCategoriesController.cs",
               "RelativeToolTip": "SHOP.CO.API\\Controllers\\AdCategoriesController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAACQAAAAAAAAAAAAAADMAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-21T17:14:43.121Z"
+              "WhenOpened": "2026-06-21T17:14:43.121Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 37,
               "Title": "AdCategoryService.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\Services\\AdCategoryService.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Application\\Services\\AdCategoryService.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\Services\\AdCategoryService.cs",
               "RelativeToolTip": "SHOP.CO.Application\\Services\\AdCategoryService.cs",
-              "ViewState": "AgIAACwAAAAAAAAAAAAAABwAAAA2AAAAAAAAAA==",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAAABIAAAA5AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-21T17:01:34.113Z"
+              "WhenOpened": "2026-06-21T17:01:34.113Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 68,
               "Title": "AdCateDto.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\DTOs\\AdCateDto.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Application\\DTOs\\AdCateDto.cs",
@@ -1303,7 +1528,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 31,
               "Title": "CategoryRepository.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Infrastructure\\Repositories\\CategoryRepository.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Infrastructure\\Repositories\\CategoryRepository.cs",
@@ -1311,11 +1536,12 @@
               "RelativeToolTip": "SHOP.CO.Infrastructure\\Repositories\\CategoryRepository.cs",
               "ViewState": "AgIAAAkAAAAAAAAAAAAAADAAAABNAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-21T10:00:58.573Z"
+              "WhenOpened": "2026-06-21T10:00:58.573Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 38,
+              "DocumentIndex": 28,
               "Title": "SystemAttributes.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Domain\\Shared\\SystemAttributes.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Domain\\Shared\\SystemAttributes.cs",
@@ -1323,11 +1549,12 @@
               "RelativeToolTip": "SHOP.CO.Domain\\Shared\\SystemAttributes.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-21T09:57:52.915Z"
+              "WhenOpened": "2026-06-21T09:57:52.915Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 59,
               "Title": "AdminProductsOdataController.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Controllers\\OData\\AdminProductsOdataController.cs",
               "RelativeDocumentMoniker": "SHOP.CO.API\\Controllers\\OData\\AdminProductsOdataController.cs",
@@ -1339,39 +1566,42 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 56,
               "Title": "AdProductDto.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\DTOs\\AdProductDto.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Application\\DTOs\\AdProductDto.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\DTOs\\AdProductDto.cs",
               "RelativeToolTip": "SHOP.CO.Application\\DTOs\\AdProductDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACQAAAA4AAAAAAAAAA==",
+              "ViewState": "AgIAACgAAAAAAAAAAAApwD0AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-21T07:26:20.321Z"
+              "WhenOpened": "2026-06-21T07:26:20.321Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 52,
               "Title": "AdProductService.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\Services\\AdProductService.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Application\\Services\\AdProductService.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\Services\\AdProductService.cs",
               "RelativeToolTip": "SHOP.CO.Application\\Services\\AdProductService.cs",
-              "ViewState": "AgIAACUAAAAAAAAAAAAAACwAAAAmAAAAAAAAAA==",
+              "ViewState": "AgIAAOUAAAAAAAAAAAApwOcAAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-16T09:45:50.485Z"
+              "WhenOpened": "2026-06-16T09:45:50.485Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 44,
+              "DocumentIndex": 38,
               "Title": "Index.cshtml",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Views\\Users\\Index.cshtml",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Areas\\Admin\\Views\\Users\\Index.cshtml",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Views\\Users\\Index.cshtml",
               "RelativeToolTip": "SHOP.CO.MVC\\Areas\\Admin\\Views\\Users\\Index.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAALcAAAAAAAAAAAAgwMMAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-15T17:43:54.901Z"
+              "WhenOpened": "2026-06-15T17:43:54.901Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -1381,74 +1611,77 @@
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Areas\\Admin\\Views\\Products\\Index.cshtml",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Views\\Products\\Index.cshtml",
               "RelativeToolTip": "SHOP.CO.MVC\\Areas\\Admin\\Views\\Products\\Index.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACYCAAADAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2026-06-15T17:43:41.021Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Views\\Orders\\Index.cshtml",
-              "RelativeDocumentMoniker": "SHOP.CO.MVC\\Areas\\Admin\\Views\\Orders\\Index.cshtml",
-              "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Views\\Orders\\Index.cshtml",
-              "RelativeToolTip": "SHOP.CO.MVC\\Areas\\Admin\\Views\\Orders\\Index.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-15T17:43:21.498Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 48,
+              "DocumentIndex": 55,
               "Title": "OrdersController.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Controllers\\OrdersController.cs",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Areas\\Admin\\Controllers\\OrdersController.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Controllers\\OrdersController.cs",
               "RelativeToolTip": "SHOP.CO.MVC\\Areas\\Admin\\Controllers\\OrdersController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAABEAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-15T17:42:19.886Z"
+              "WhenOpened": "2026-06-15T17:42:19.886Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 47,
+              "DocumentIndex": 61,
               "Title": "UsersController.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Controllers\\UsersController.cs",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Areas\\Admin\\Controllers\\UsersController.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Controllers\\UsersController.cs",
               "RelativeToolTip": "SHOP.CO.MVC\\Areas\\Admin\\Controllers\\UsersController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAUAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAABMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-06-15T17:41:52.897Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 60,
               "Title": "ProductsController.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Controllers\\ProductsController.cs",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Areas\\Admin\\Controllers\\ProductsController.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Controllers\\ProductsController.cs",
               "RelativeToolTip": "SHOP.CO.MVC\\Areas\\Admin\\Controllers\\ProductsController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAaAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-06-15T17:41:33.007Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 40,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Views\\Orders\\Index.cshtml",
+              "RelativeDocumentMoniker": "SHOP.CO.MVC\\Areas\\Admin\\Views\\Orders\\Index.cshtml",
+              "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Views\\Orders\\Index.cshtml",
+              "RelativeToolTip": "SHOP.CO.MVC\\Areas\\Admin\\Views\\Orders\\Index.cshtml",
+              "ViewState": "AgIAAMMAAAAAAAAAAAAAAM4BAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-15T17:43:21.498Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 39,
               "Title": "Index.cshtml",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Views\\Dashboard\\Index.cshtml",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Areas\\Admin\\Views\\Dashboard\\Index.cshtml",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Views\\Dashboard\\Index.cshtml",
               "RelativeToolTip": "SHOP.CO.MVC\\Areas\\Admin\\Views\\Dashboard\\Index.cshtml",
-              "ViewState": "AgIAAC4AAAAAAAAAAAAcwEgAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAFwAAAAAAAAAAAAkwGgAAAAyAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-15T16:02:08.794Z"
+              "WhenOpened": "2026-06-15T16:02:08.794Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 43,
+              "DocumentIndex": 78,
               "Title": "_ViewStart.cshtml",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Views\\_ViewStart.cshtml",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Areas\\Admin\\Views\\_ViewStart.cshtml",
@@ -1460,91 +1693,85 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 46,
               "Title": "_AdminLayout.cshtml",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Views\\Shared\\_AdminLayout.cshtml",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Areas\\Admin\\Views\\Shared\\_AdminLayout.cshtml",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Views\\Shared\\_AdminLayout.cshtml",
               "RelativeToolTip": "SHOP.CO.MVC\\Areas\\Admin\\Views\\Shared\\_AdminLayout.cshtml",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAAwBkAAAAmAAAAAAAAAA==",
+              "ViewState": "AgIAABoAAAAAAAAAAAAkwBwAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-15T16:01:30.408Z"
+              "WhenOpened": "2026-06-15T16:01:30.408Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 53,
               "Title": "DashBoardController.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Controllers\\DashBoardController.cs",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Areas\\Admin\\Controllers\\DashBoardController.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Controllers\\DashBoardController.cs",
               "RelativeToolTip": "SHOP.CO.MVC\\Areas\\Admin\\Controllers\\DashBoardController.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAAAswBgAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABEAAAAAAAAAAAAkwBUAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-15T16:00:29.182Z"
+              "WhenOpened": "2026-06-15T16:00:29.182Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 17,
               "Title": "BaseAdminController.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Controllers\\BaseAdminController.cs",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Areas\\Admin\\Controllers\\BaseAdminController.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Controllers\\BaseAdminController.cs",
               "RelativeToolTip": "SHOP.CO.MVC\\Areas\\Admin\\Controllers\\BaseAdminController.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAAswCUAAAANAAAAAAAAAA==",
+              "ViewState": "AgIAABAAAAAAAAAAAAAAACIAAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-15T15:58:37.896Z"
+              "WhenOpened": "2026-06-15T15:58:37.896Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
-              "Title": "DashboardVM.cs",
-              "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Models\\DashboardVM.cs",
-              "RelativeDocumentMoniker": "SHOP.CO.MVC\\Areas\\Admin\\Models\\DashboardVM.cs",
-              "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Areas\\Admin\\Models\\DashboardVM.cs",
-              "RelativeToolTip": "SHOP.CO.MVC\\Areas\\Admin\\Models\\DashboardVM.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAxAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-15T15:56:41.305Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 23,
               "Title": "AdminController.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Controllers\\AdminController.cs",
               "RelativeDocumentMoniker": "SHOP.CO.API\\Controllers\\AdminController.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Controllers\\AdminController.cs",
               "RelativeToolTip": "SHOP.CO.API\\Controllers\\AdminController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABcAAAAAAAAAAAAkwCwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-15T15:46:18.393Z"
+              "WhenOpened": "2026-06-15T15:46:18.393Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 26,
               "Title": "AdminService.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\Services\\AdminService.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Application\\Services\\AdminService.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\Services\\AdminService.cs",
               "RelativeToolTip": "SHOP.CO.Application\\Services\\AdminService.cs",
-              "ViewState": "AgIAAAQAAAAAAAAAAAAAwCYAAAARAAAAAAAAAA==",
+              "ViewState": "AgIAAFwAAAAAAAAAAAAkwHEAAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-15T15:35:48.619Z"
+              "WhenOpened": "2026-06-15T15:35:48.619Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 49,
               "Title": "AdDto.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\DTOs\\AdDto.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Application\\DTOs\\AdDto.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\DTOs\\AdDto.cs",
               "RelativeToolTip": "SHOP.CO.Application\\DTOs\\AdDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAsAAAAAAAAAA==",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAuwB0AAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-15T15:35:21.027Z"
+              "WhenOpened": "2026-06-15T15:35:21.027Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 46,
+              "DocumentIndex": 79,
               "Title": "AuthFilters.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Common\\AuthFilters.cs",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Common\\AuthFilters.cs",
@@ -1556,7 +1783,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 57,
+              "DocumentIndex": 83,
               "Title": "MvcConstants.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Common\\MvcConstants.cs",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Common\\MvcConstants.cs",
@@ -1568,19 +1795,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 56,
+              "DocumentIndex": 14,
               "Title": "Register.cshtml",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Views\\Auth\\Register.cshtml",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Views\\Auth\\Register.cshtml",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Views\\Auth\\Register.cshtml",
               "RelativeToolTip": "SHOP.CO.MVC\\Views\\Auth\\Register.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACQAAAAzAAAAAAAAAA==",
+              "ViewState": "AgIAAD0AAAAAAAAAAADwv0gAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-14T15:52:53.982Z"
+              "WhenOpened": "2026-06-14T15:52:53.982Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 55,
+              "DocumentIndex": 20,
               "Title": "Login.cshtml",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Views\\Auth\\Login.cshtml",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Views\\Auth\\Login.cshtml",
@@ -1588,23 +1816,25 @@
               "RelativeToolTip": "SHOP.CO.MVC\\Views\\Auth\\Login.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAA8AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-14T15:52:36.39Z"
+              "WhenOpened": "2026-06-14T15:52:36.39Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 54,
+              "DocumentIndex": 16,
               "Title": "ABaseController.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Controllers\\ABaseController.cs",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Controllers\\ABaseController.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Controllers\\ABaseController.cs",
               "RelativeToolTip": "SHOP.CO.MVC\\Controllers\\ABaseController.cs",
-              "ViewState": "AgIAABsAAAAAAAAAAAAAwDQAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABoAAAAAAAAAAADwvzAAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-14T15:30:19.214Z"
+              "WhenOpened": "2026-06-14T15:30:19.214Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 52,
+              "DocumentIndex": 82,
               "Title": "AuthVM.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Models\\AuthVM.cs",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Models\\AuthVM.cs",
@@ -1616,7 +1846,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 59,
+              "DocumentIndex": 85,
               "Title": "appsettings.Development.json",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\appsettings.Development.json",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\appsettings.Development.json",
@@ -1628,19 +1858,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 45,
+              "DocumentIndex": 15,
               "Title": "AuthController.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Controllers\\AuthController.cs",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Controllers\\AuthController.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Controllers\\AuthController.cs",
               "RelativeToolTip": "SHOP.CO.MVC\\Controllers\\AuthController.cs",
-              "ViewState": "AgIAABoAAAAAAAAAAIBGwDAAAAAfAAAAAAAAAA==",
+              "ViewState": "AgIAAD0AAAAAAAAAAAAAAEEAAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-14T09:59:49.304Z"
+              "WhenOpened": "2026-06-14T09:59:49.304Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 51,
+              "DocumentIndex": 33,
               "Title": "AppConstants.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\Common\\AppConstants.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Application\\Common\\AppConstants.cs",
@@ -1648,11 +1879,12 @@
               "RelativeToolTip": "SHOP.CO.Application\\Common\\AppConstants.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-14T09:52:23.568Z"
+              "WhenOpened": "2026-06-14T09:52:23.568Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 58,
+              "DocumentIndex": 84,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\appsettings.json",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\appsettings.json",
@@ -1664,19 +1896,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 32,
               "Title": "ResultModelT.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\Common\\ResultModelT.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Application\\Common\\ResultModelT.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\Common\\ResultModelT.cs",
               "RelativeToolTip": "SHOP.CO.Application\\Common\\ResultModelT.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAA8wCQAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABAAAAAAAAAAAAAAACQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-14T06:47:43.092Z"
+              "WhenOpened": "2026-06-14T06:47:43.092Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 62,
+              "DocumentIndex": 86,
               "Title": "TongHopCodeUtilities.txt",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\Utilities\\TongHopCodeUtilities.txt",
               "RelativeDocumentMoniker": "SHOP.CO.Application\\Utilities\\TongHopCodeUtilities.txt",
@@ -1688,43 +1921,46 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 40,
+              "DocumentIndex": 19,
               "Title": "AuthController.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Controllers\\AuthController.cs",
               "RelativeDocumentMoniker": "SHOP.CO.API\\Controllers\\AuthController.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Controllers\\AuthController.cs",
               "RelativeToolTip": "SHOP.CO.API\\Controllers\\AuthController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAATAAAAAAAAAA==",
+              "ViewState": "AgIAAEAAAAAAAAAAAADwv1gAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-14T06:17:07.217Z"
+              "WhenOpened": "2026-06-14T06:17:07.217Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 53,
+              "DocumentIndex": 25,
               "Title": "TokenGenerator.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\Utilities\\TokenGenerator.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Application\\Utilities\\TokenGenerator.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\Utilities\\TokenGenerator.cs",
               "RelativeToolTip": "SHOP.CO.Application\\Utilities\\TokenGenerator.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAuwBQAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAAADAAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-14T05:27:26.429Z"
+              "WhenOpened": "2026-06-14T05:27:26.429Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 9,
               "Title": "EmailSender.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\Utilities\\EmailSender.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Application\\Utilities\\EmailSender.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\Utilities\\EmailSender.cs",
               "RelativeToolTip": "SHOP.CO.Application\\Utilities\\EmailSender.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAABIAAAAAAAAAAADwvxgAAABEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-14T05:27:11.79Z"
+              "WhenOpened": "2026-06-14T05:27:11.79Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 11,
               "Title": "PasswordHasher.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\Utilities\\PasswordHasher.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Application\\Utilities\\PasswordHasher.cs",
@@ -1732,59 +1968,63 @@
               "RelativeToolTip": "SHOP.CO.Application\\Utilities\\PasswordHasher.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-14T05:27:10.732Z"
+              "WhenOpened": "2026-06-14T05:27:10.732Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 10,
               "Title": "AuthSetting.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\Utilities\\AuthSetting.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Application\\Utilities\\AuthSetting.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\Utilities\\AuthSetting.cs",
               "RelativeToolTip": "SHOP.CO.Application\\Utilities\\AuthSetting.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-14T04:38:34.877Z"
+              "WhenOpened": "2026-06-14T04:38:34.877Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 66,
               "Title": "UserRepository.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Infrastructure\\Repositories\\UserRepository.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Infrastructure\\Repositories\\UserRepository.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Infrastructure\\Repositories\\UserRepository.cs",
               "RelativeToolTip": "SHOP.CO.Infrastructure\\Repositories\\UserRepository.cs",
-              "ViewState": "AgIAACUAAAAAAAAAAAAAADYAAAA2AAAAAAAAAA==",
+              "ViewState": "AgIAABsAAAAAAAAAAAAQwCUAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-06-14T04:35:21.69Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 1,
               "Title": "AuthService.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\Services\\AuthService.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Application\\Services\\AuthService.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\Services\\AuthService.cs",
               "RelativeToolTip": "SHOP.CO.Application\\Services\\AuthService.cs",
-              "ViewState": "AgIAAGgAAAAAAAAAAAAawHYAAAAGAAAAAAAAAA==",
+              "ViewState": "AgIAADoAAAAAAAAAAAAuwFEAAAA4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-14T04:24:50.56Z"
+              "WhenOpened": "2026-06-14T04:24:50.56Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 24,
               "Title": "AuthDto.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\DTOs\\AuthDto.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Application\\DTOs\\AuthDto.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\DTOs\\AuthDto.cs",
               "RelativeToolTip": "SHOP.CO.Application\\DTOs\\AuthDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACgAAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAAEMAAAAAAAAAAAAkwEQAAAA5AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-14T04:09:06.755Z"
+              "WhenOpened": "2026-06-14T04:09:06.755Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 71,
+              "DocumentIndex": 90,
               "Title": "Index.cshtml",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Views\\Cart\\Index.cshtml",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Views\\Cart\\Index.cshtml",
@@ -1796,19 +2036,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 22,
               "Title": "CartController.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Controllers\\CartController.cs",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Controllers\\CartController.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Controllers\\CartController.cs",
               "RelativeToolTip": "SHOP.CO.MVC\\Controllers\\CartController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAeAAAAAAAAAA==",
+              "ViewState": "AgIAAEAAAAAAAAAAAAAAAAwAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-27T03:21:14.25Z"
+              "WhenOpened": "2026-05-27T03:21:14.25Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 50,
+              "DocumentIndex": 81,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Program.cs",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Program.cs",
@@ -1820,19 +2061,19 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 60,
+              "DocumentIndex": 69,
               "Title": "CartItemVM.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Models\\CartItemVM.cs",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Models\\CartItemVM.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Models\\CartItemVM.cs",
               "RelativeToolTip": "SHOP.CO.MVC\\Models\\CartItemVM.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAApAAAAAAAAAA==",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAuwAwAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-27T03:15:37.278Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 74,
+              "DocumentIndex": 93,
               "Title": "Index.cshtml",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Views\\Home\\Index.cshtml",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Views\\Home\\Index.cshtml",
@@ -1844,7 +2085,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 73,
+              "DocumentIndex": 92,
               "Title": "site.css",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\wwwroot\\css\\site.css",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\wwwroot\\css\\site.css",
@@ -1856,7 +2097,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 72,
+              "DocumentIndex": 91,
               "Title": "SHOP.CO.MVC.csproj",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\SHOP.CO.MVC.csproj",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\SHOP.CO.MVC.csproj",
@@ -1868,7 +2109,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 77,
+              "DocumentIndex": 96,
               "Title": "Category.cshtml",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Views\\Home\\Category.cshtml",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Views\\Home\\Category.cshtml",
@@ -1880,7 +2121,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 76,
+              "DocumentIndex": 95,
               "Title": "Details.cshtml",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Views\\Home\\Details.cshtml",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Views\\Home\\Details.cshtml",
@@ -1892,7 +2133,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 75,
+              "DocumentIndex": 94,
               "Title": "Cart.cshtml",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Views\\Home\\Cart.cshtml",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Views\\Home\\Cart.cshtml",
@@ -1904,19 +2145,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 66,
+              "DocumentIndex": 29,
               "Title": "PackageLibary.txt",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\PackageLibary.txt",
               "RelativeDocumentMoniker": "PackageLibary.txt",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\PackageLibary.txt",
               "RelativeToolTip": "PackageLibary.txt",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAeAAAAAAAAAA==",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
-              "WhenOpened": "2026-05-20T01:54:27.655Z"
+              "WhenOpened": "2026-05-20T01:54:27.655Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 82,
+              "DocumentIndex": 99,
               "Title": "bootstrap.bundle.js",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
@@ -1928,7 +2170,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 78,
+              "DocumentIndex": 21,
               "Title": "HomeController.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Controllers\\HomeController.cs",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Controllers\\HomeController.cs",
@@ -1936,11 +2178,12 @@
               "RelativeToolTip": "SHOP.CO.MVC\\Controllers\\HomeController.cs",
               "ViewState": "AgIAABQAAAAAAAAAAAAIwEIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-26T11:09:13.918Z"
+              "WhenOpened": "2026-05-26T11:09:13.918Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 49,
+              "DocumentIndex": 80,
               "Title": "_Layout.cshtml",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Views\\Shared\\_Layout.cshtml",
@@ -1952,7 +2195,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 81,
+              "DocumentIndex": 98,
               "Title": "bootstrap.esm.js",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js",
@@ -1964,7 +2207,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 80,
+              "DocumentIndex": 70,
               "Title": "ErrorViewModel.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Models\\ErrorViewModel.cs",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Models\\ErrorViewModel.cs",
@@ -1976,7 +2219,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 79,
+              "DocumentIndex": 97,
               "Title": "ProductVM.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.MVC\\Models\\ProductVM.cs",
               "RelativeDocumentMoniker": "SHOP.CO.MVC\\Models\\ProductVM.cs",
@@ -1988,43 +2231,45 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 39,
+              "DocumentIndex": 71,
               "Title": "ProductsController.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Controllers\\ProductsController.cs",
               "RelativeDocumentMoniker": "SHOP.CO.API\\Controllers\\ProductsController.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Controllers\\ProductsController.cs",
               "RelativeToolTip": "SHOP.CO.API\\Controllers\\ProductsController.cs",
-              "ViewState": "AgIAABcAAAAAAAAAAAAAACAAAAAgAAAAAAAAAA==",
+              "ViewState": "AgIAABoAAAAAAAAAAAAAACwAAAALAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-23T11:56:46.822Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 69,
+              "DocumentIndex": 8,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\appsettings.json",
               "RelativeDocumentMoniker": "SHOP.CO.API\\appsettings.json",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\appsettings.json",
               "RelativeToolTip": "SHOP.CO.API\\appsettings.json",
-              "ViewState": "AgIAABgAAAAAAAAAAAAYwCYAAAAmAAAAAAAAAA==",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAiwBwAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-05-18T04:07:20.906Z"
+              "WhenOpened": "2026-05-18T04:07:20.906Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 12,
               "Title": "ApplicationDI.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\ApplicationDI.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Application\\ApplicationDI.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\ApplicationDI.cs",
               "RelativeToolTip": "SHOP.CO.Application\\ApplicationDI.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAgwB0AAAAZAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAABFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-18T04:02:58.286Z"
+              "WhenOpened": "2026-05-18T04:02:58.286Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 65,
+              "DocumentIndex": 88,
               "Title": "SHOP.CO.Application.csproj",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\SHOP.CO.Application.csproj",
               "RelativeDocumentMoniker": "SHOP.CO.Application\\SHOP.CO.Application.csproj",
@@ -2036,7 +2281,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 93,
+              "DocumentIndex": 105,
               "Title": "SHOP.CO.Domain.csproj",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Domain\\SHOP.CO.Domain.csproj",
               "RelativeDocumentMoniker": "SHOP.CO.Domain\\SHOP.CO.Domain.csproj",
@@ -2048,31 +2293,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 84,
+              "DocumentIndex": 3,
               "Title": "ModelBuilderExtension.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Infrastructure\\Data\\ModelBuilderExtension.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Infrastructure\\Data\\ModelBuilderExtension.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Infrastructure\\Data\\ModelBuilderExtension.cs",
               "RelativeToolTip": "SHOP.CO.Infrastructure\\Data\\ModelBuilderExtension.cs",
-              "ViewState": "AgIAAHQAAAAAAAAAAAAUwJcAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAI4AAAAAAAAAAAAkwJcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-23T07:53:39.892Z"
+              "WhenOpened": "2026-05-23T07:53:39.892Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 63,
+              "DocumentIndex": 6,
               "Title": "HelpCommand.txt",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\HelpCommand.txt",
               "RelativeDocumentMoniker": "HelpCommand.txt",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\HelpCommand.txt",
               "RelativeToolTip": "HelpCommand.txt",
-              "ViewState": "AgIAAAQAAAAAAAAAAAA+wAYAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABEAAAAAAAAAAAAAACYAAABYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
-              "WhenOpened": "2026-05-23T06:59:27.047Z"
+              "WhenOpened": "2026-05-23T06:59:27.047Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 70,
+              "DocumentIndex": 89,
               "Title": "SHOP.CO.Infrastructure.csproj",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj",
               "RelativeDocumentMoniker": "SHOP.CO.Infrastructure\\SHOP.CO.Infrastructure.csproj",
@@ -2084,7 +2331,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 92,
+              "DocumentIndex": 27,
               "Title": "mockclass.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Domain\\Enums\\mockclass.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Domain\\Enums\\mockclass.cs",
@@ -2092,11 +2339,12 @@
               "RelativeToolTip": "SHOP.CO.Domain\\Enums\\mockclass.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-23T09:09:50.785Z"
+              "WhenOpened": "2026-05-23T09:09:50.785Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 83,
+              "DocumentIndex": 100,
               "Title": "SHOP.CO.API.http",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\SHOP.CO.API.http",
               "RelativeDocumentMoniker": "SHOP.CO.API\\SHOP.CO.API.http",
@@ -2108,7 +2356,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 64,
+              "DocumentIndex": 87,
               "Title": "PagedResult.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\DTOs\\PagedResult.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Application\\DTOs\\PagedResult.cs",
@@ -2120,31 +2368,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
-              "Title": "ProductDto.cs",
-              "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\DTOs\\ProductDto.cs",
-              "RelativeDocumentMoniker": "SHOP.CO.Application\\DTOs\\ProductDto.cs",
-              "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\DTOs\\ProductDto.cs",
-              "RelativeToolTip": "SHOP.CO.Application\\DTOs\\ProductDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-23T11:28:14.19Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 67,
+              "DocumentIndex": 2,
               "Title": "ShopCoDbContext.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Infrastructure\\Data\\ShopCoDbContext.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Infrastructure\\Data\\ShopCoDbContext.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Infrastructure\\Data\\ShopCoDbContext.cs",
               "RelativeToolTip": "SHOP.CO.Infrastructure\\Data\\ShopCoDbContext.cs",
-              "ViewState": "AgIAAHQBAAAAAAAAAADgv38BAAAZAAAAAAAAAA==",
+              "ViewState": "AgIAAHABAAAAAAAAAAAkwHoBAAB3AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-20T02:25:19.454Z"
+              "WhenOpened": "2026-05-20T02:25:19.454Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 42,
+              "DocumentIndex": 77,
               "Title": "ProductVariant.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Domain\\Entities\\ProductVariant.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Domain\\Entities\\ProductVariant.cs",
@@ -2156,19 +2393,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 91,
+              "DocumentIndex": 42,
               "Title": "InteractionLog.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Domain\\Entities\\InteractionLog.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Domain\\Entities\\InteractionLog.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Domain\\Entities\\InteractionLog.cs",
               "RelativeToolTip": "SHOP.CO.Domain\\Entities\\InteractionLog.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAA1AAAAAAAAAA==",
+              "ViewState": "AgIAABkAAAAAAAAAAAAwwCMAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-20T00:26:00.33Z"
+              "WhenOpened": "2026-05-20T00:26:00.33Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 86,
+              "DocumentIndex": 102,
               "Title": "CommerceRecord.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Domain\\Entities\\CommerceRecord.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Domain\\Entities\\CommerceRecord.cs",
@@ -2180,31 +2418,31 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 90,
+              "DocumentIndex": 72,
               "Title": "Order.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Domain\\Entities\\Order.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Domain\\Entities\\Order.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Domain\\Entities\\Order.cs",
               "RelativeToolTip": "SHOP.CO.Domain\\Entities\\Order.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAA8AAAAAAAAAA==",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAuwBAAAAA8AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-20T00:48:53.507Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 89,
+              "DocumentIndex": 73,
               "Title": "OrderItem.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Domain\\Entities\\OrderItem.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Domain\\Entities\\OrderItem.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Domain\\Entities\\OrderItem.cs",
               "RelativeToolTip": "SHOP.CO.Domain\\Entities\\OrderItem.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAAAB8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-20T00:48:51.738Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 85,
+              "DocumentIndex": 101,
               "Title": "CartItem.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Domain\\Entities\\CartItem.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Domain\\Entities\\CartItem.cs",
@@ -2216,7 +2454,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 87,
+              "DocumentIndex": 103,
               "Title": "CustomerActivity.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Domain\\Entities\\CustomerActivity.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Domain\\Entities\\CustomerActivity.cs",
@@ -2228,7 +2466,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 41,
+              "DocumentIndex": 76,
               "Title": "ProductImage.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Domain\\Entities\\ProductImage.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Domain\\Entities\\ProductImage.cs",
@@ -2240,19 +2478,19 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 74,
               "Title": "Product.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Domain\\Entities\\Product.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Domain\\Entities\\Product.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Domain\\Entities\\Product.cs",
               "RelativeToolTip": "SHOP.CO.Domain\\Entities\\Product.cs",
-              "ViewState": "AgIAAAcAAAAAAAAAAAAuwA4AAAAxAAAAAAAAAA==",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAuwBcAAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-20T00:38:38.032Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 75,
               "Title": "Category.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Domain\\Entities\\Category.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Domain\\Entities\\Category.cs",
@@ -2264,7 +2502,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 88,
+              "DocumentIndex": 104,
               "Title": "UserAddress.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Domain\\Entities\\UserAddress.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Domain\\Entities\\UserAddress.cs",
@@ -2276,19 +2514,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 61,
+              "DocumentIndex": 5,
               "Title": "User.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Domain\\Entities\\User.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Domain\\Entities\\User.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Domain\\Entities\\User.cs",
               "RelativeToolTip": "SHOP.CO.Domain\\Entities\\User.cs",
-              "ViewState": "AgIAAAcAAAAAAAAAAAAuwCQAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAuwBYAAAA9AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-18T04:34:41.29Z"
+              "WhenOpened": "2026-05-18T04:34:41.29Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 67,
               "Title": "ProductService.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Application\\Services\\ProductService.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Application\\Services\\ProductService.cs",
@@ -2300,51 +2539,55 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 50,
               "Title": "ProductRepository.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Infrastructure\\Repositories\\ProductRepository.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Infrastructure\\Repositories\\ProductRepository.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Infrastructure\\Repositories\\ProductRepository.cs",
               "RelativeToolTip": "SHOP.CO.Infrastructure\\Repositories\\ProductRepository.cs",
-              "ViewState": "AgIAAB4AAAAAAAAAAAAAACMAAAAwAAAAAAAAAA==",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAuwBEAAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-18T04:17:15.173Z"
+              "WhenOpened": "2026-05-18T04:17:15.173Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 30,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Program.cs",
               "RelativeDocumentMoniker": "SHOP.CO.API\\Program.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\Program.cs",
               "RelativeToolTip": "SHOP.CO.API\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAA6AAAAAAAAAA==",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAAABsAAABmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-18T04:10:57.59Z"
+              "WhenOpened": "2026-05-18T04:10:57.59Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 68,
+              "DocumentIndex": 7,
               "Title": "appsettings.Development.json",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\appsettings.Development.json",
               "RelativeDocumentMoniker": "SHOP.CO.API\\appsettings.Development.json",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.API\\appsettings.Development.json",
               "RelativeToolTip": "SHOP.CO.API\\appsettings.Development.json",
-              "ViewState": "AgIAAA0AAAAAAAAAAABOwCcAAAAjAAAAAAAAAA==",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAAACIAAAAKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-05-18T04:10:07.335Z"
+              "WhenOpened": "2026-05-18T04:10:07.335Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 13,
               "Title": "InfrastructureDI.cs",
               "DocumentMoniker": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Infrastructure\\InfrastructureDI.cs",
               "RelativeDocumentMoniker": "SHOP.CO.Infrastructure\\InfrastructureDI.cs",
               "ToolTip": "D:\\quantrong\\vs2022\\PRN232_G1_SHOPCO\\SHOP.CO.Infrastructure\\InfrastructureDI.cs",
               "RelativeToolTip": "SHOP.CO.Infrastructure\\InfrastructureDI.cs",
-              "ViewState": "AgIAABIAAAAAAAAAAAAAACMAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-18T04:02:43.888Z"
+              "WhenOpened": "2026-05-18T04:02:43.888Z",
+              "EditorCaption": ""
             }
           ]
         },

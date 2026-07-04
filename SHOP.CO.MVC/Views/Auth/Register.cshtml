@@ -1,45 +1,179 @@
-﻿@model SHOP.CO.MVC.Models.RegisterVM
-@{
-    ViewData["Title"] = "Đăng Ký";
+﻿@{
+    ViewData["Title"] = "Đăng Ký Tài Khoản";
+    Layout = "_Layout"; // Sử dụng layout của User Client
 }
 
-<div class="container mt-5">
+<div class="container mt-5 mb-5">
     <div class="row justify-content-center">
-        <div class="col-md-5 col-lg-4">
-            <div class="card shadow border-0 rounded-3">
-                <div class="card-body p-4 p-md-5">
-                    <h3 class="text-center mb-4 fw-bold">Đăng Ký</h3>
+        <div class="col-md-5">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-body p-5">
 
-                    @if (ViewBag.ErrorMessage != null)
-                    {
-                        <div class="alert alert-danger py-2">@ViewBag.ErrorMessage</div>
-                    }
-
-                    <form asp-action="Register" method="post">
-                        <div class="mb-3">
-                            <label class="form-label text-muted small">Họ và Tên</label>
-                            <input asp-for="FullName" class="form-control" placeholder="Nhập họ tên" />
-                            <span asp-validation-for="FullName" class="text-danger small"></span>
+                    <!-- BƯỚC 1: FORM ĐĂNG KÝ -->
+                    <div id="stepRegister">
+                        <h3 class="text-center font-weight-light my-4 text-primary fw-bold">TẠO TÀI KHOẢN</h3>
+                        <form id="registerForm">
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="fullName" type="text" placeholder="Họ và tên" required />
+                                <label for="fullName">Họ và Tên</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="email" type="email" placeholder="name@example.com" required />
+                                <label for="email">Địa chỉ Email</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="password" type="password" placeholder="Mật khẩu" required minlength="6" />
+                                <label for="password">Mật khẩu (Tối thiểu 6 ký tự)</label>
+                            </div>
+                            <div class="d-grid mt-4 mb-0">
+                                <button class="btn btn-primary btn-block py-3 fw-bold" type="submit" id="btnRegister">ĐĂNG KÝ NGAY</button>
+                            </div>
+                        </form>
+                        <div class="text-center mt-3">
+                            <div class="small"><a href="/Auth/Login">Đã có tài khoản? Đăng nhập!</a></div>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label text-muted small">Email</label>
-                            <input asp-for="Email" class="form-control" placeholder="shopco@example.com" />
-                            <span asp-validation-for="Email" class="text-danger small"></span>
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label text-muted small">Mật khẩu</label>
-                            <input asp-for="Password" type="password" class="form-control" placeholder="Tối thiểu 8 ký tự" />
-                            <span asp-validation-for="Password" class="text-danger small"></span>
-                        </div>
-                        <button type="submit" class="btn btn-dark w-100 py-2 mb-3">ĐĂNG KÝ MỚI</button>
-                    </form>
-
-                    <div class="text-center small">
-                        <span class="text-muted">Đã có tài khoản?</span>
-                        <a href="/Auth/Login" class="text-decoration-none text-primary fw-bold"> Đăng nhập</a>
                     </div>
+
+                    <!-- BƯỚC 2: FORM XÁC MINH OTP (Ẩn lúc đầu) -->
+                    <div id="stepVerify" class="d-none text-center">
+                        <i class="fas fa-envelope-open-text fa-4x text-success mb-3"></i>
+                        <h4 class="fw-bold text-dark">Xác Minh Email</h4>
+                        <p class="text-muted">Chúng tôi vừa gửi mã OTP 6 số đến email: <br><strong id="verifyEmailText" class="text-primary"></strong></p>
+
+                        <form id="verifyForm" class="mt-4">
+                            <div class="mb-3">
+                                <input class="form-control form-control-lg text-center fw-bold letter-spacing-5" id="otpCode" type="text" placeholder="------" maxlength="6" required />
+                            </div>
+                            <div class="d-grid">
+                                <button class="btn btn-success py-2 fw-bold" type="submit" id="btnVerify">XÁC NHẬN TÀI KHOẢN</button>
+                            </div>
+                        </form>
+
+                        <div class="mt-4">
+                            <span class="text-muted small">Chưa nhận được mã?</span>
+                            <button class="btn btn-link btn-sm p-0 fw-bold" id="btnResend" onclick="resendOtp()">Gửi lại mã</button>
+                            <span id="countdown" class="text-danger small fw-bold d-none"></span>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<input type="hidden" id="apiBaseUrl" value="@ViewBag.ApiBaseUrl" />
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const apiUrl = $('#apiBaseUrl').val();
+        let registeredEmail = "";
+
+        // 1. XỬ LÝ ĐĂNG KÝ
+          $('#registerForm').submit(function(e) {
+              e.preventDefault();
+              let data = {
+                  fullName: $('#fullName').val(),
+                  email: $('#email').val(),
+                  password: $('#password').val()
+              };
+
+              $('#btnRegister').html('<i class="fas fa-spinner fa-spin"></i> Đang xử lý...').prop('disabled', true);
+
+              // 🟢 RÀO LỖI DẤU GẠCH CHÉO GIỐNG TRANG DASHBOARD
+              let registerUrl = apiUrl.endsWith('/') ? `${apiUrl}api/auth/register` : `${apiUrl}/api/auth/register`;
+
+              $.ajax({
+                  url: registerUrl, // 🟢 DÙNG BIẾN URL ĐÃ XỬ LÝ VÀO ĐÂY
+                  type: 'POST',
+                  contentType: 'application/json',
+                  data: JSON.stringify(data),
+                  success: function(res) {
+                      $('#btnRegister').html('ĐĂNG KÝ NGAY').prop('disabled', false);
+                      if(res.isSuccess) {
+                          registeredEmail = data.email;
+                          $('#verifyEmailText').text(registeredEmail);
+
+                          // Chuyển form
+                          $('#stepRegister').addClass('d-none');
+                          $('#stepVerify').removeClass('d-none').hide().fadeIn();
+                          startCountdown(); // Bắt đầu đếm ngược 60s
+                      }
+                  },
+                  error: function(xhr) {
+                      $('#btnRegister').html('ĐĂNG KÝ NGAY').prop('disabled', false);
+                      let err = xhr.responseJSON ? xhr.responseJSON.message : "Có lỗi xảy ra!";
+                      Swal.fire('Lỗi', err, 'error');
+                  }
+              });
+          });
+
+        // 2. XỬ LÝ XÁC MINH OTP
+        $('#verifyForm').submit(function(e) {
+            e.preventDefault();
+            let data = {
+                email: registeredEmail,
+                otpCode: $('#otpCode').val()
+            };
+
+            $('#btnVerify').html('<i class="fas fa-spinner fa-spin"></i> Đang kiểm tra...').prop('disabled', true);
+
+            $.ajax({
+                url: apiUrl + 'api/auth/verify-email',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(res) {
+                    if(res.isSuccess) {
+                        Swal.fire('Tuyệt vời!', res.message, 'success').then(() => {
+                            window.location.href = '/Auth/Login'; // Thành công thì về trang Login
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    $('#btnVerify').html('XÁC NHẬN TÀI KHOẢN').prop('disabled', false);
+                    let err = xhr.responseJSON ? xhr.responseJSON.message : "Mã OTP không đúng!";
+                    Swal.fire('Lỗi', err, 'error');
+                }
+            });
+        });
+
+        // 3. XỬ LÝ GỬI LẠI MÃ & ĐẾM NGƯỢC
+        function resendOtp() {
+            $('#btnResend').prop('disabled', true).text('Đang gửi...');
+            $.ajax({
+                url: apiUrl + 'api/auth/resend-otp',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ email: registeredEmail }),
+                success: function(res) {
+                    Swal.fire('Đã gửi', 'Vui lòng kiểm tra lại hộp thư của bạn.', 'success');
+                    startCountdown();
+                },
+                error: function() {
+                    $('#btnResend').prop('disabled', false).text('Gửi lại mã');
+                    Swal.fire('Lỗi', 'Không thể gửi lại mã lúc này', 'error');
+                }
+            });
+        }
+
+        let timer;
+        function startCountdown() {
+            let timeLeft = 60;
+            $('#btnResend').addClass('d-none');
+            $('#countdown').removeClass('d-none').text(`(Gửi lại sau ${timeLeft}s)`);
+
+            clearInterval(timer);
+            timer = setInterval(() => {
+                timeLeft--;
+                $('#countdown').text(`(Gửi lại sau ${timeLeft}s)`);
+                if(timeLeft <= 0) {
+                    clearInterval(timer);
+                    $('#countdown').addClass('d-none');
+                    $('#btnResend').removeClass('d-none').prop('disabled', false).text('Gửi lại mã');
+                }
+            }, 1000);
+        }
+    </script>
+}
