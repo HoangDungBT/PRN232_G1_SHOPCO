@@ -20,7 +20,7 @@ static IEdmModel GetEdmModel()
 
     odataBuilder.EntitySet<ProductDto>("Products").EntityType.HasKey(p => p.ProductId);
 
-    odataBuilder.EntitySet<ProductDto>("AdminProductsOdata").EntityType.HasKey(p => p.ProductId);
+    odataBuilder.EntitySet<ProductDto>("AdminProductsOData").EntityType.HasKey(p => p.ProductId);
     odataBuilder.EntitySet<CategoryDto>("AdminCategoriesOData").EntityType.HasKey(c => c.CategoryId);
     odataBuilder.EntitySet<UserDto>("AdminUsersOData").EntityType.HasKey(u => u.UserId);
 

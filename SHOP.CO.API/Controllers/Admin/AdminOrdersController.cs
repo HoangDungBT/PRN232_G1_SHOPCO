@@ -10,9 +10,9 @@ namespace SHOP.CO.API.Controllers
     [Authorize(Roles = "Admin,Staff")]
     public class AdminOrdersController : ControllerBase
     {
-        private readonly IOrderAdminService _service;
+        private readonly IAdminOrderService _service;
 
-        public AdminOrdersController(IOrderAdminService service)
+        public AdminOrdersController(IAdminOrderService service)
         {
             _service = service;
         }

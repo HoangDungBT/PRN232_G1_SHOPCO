@@ -11,9 +11,9 @@ namespace SHOP.CO.API.Controllers
     [Authorize(Roles = "Admin,Staff")]
     public class AdminCategoriesController : ControllerBase
     {
-        private readonly ICategoryAdminService _service;
+        private readonly IAdminCategoryService _service;
 
-        public AdminCategoriesController(ICategoryAdminService service)
+        public AdminCategoriesController(IAdminCategoryService service)
         {
             _service = service;
         }

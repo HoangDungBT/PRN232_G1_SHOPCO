@@ -291,7 +291,7 @@
             let skip = (currentPage - 1) * pageSize;
 
             // Khởi tạo Base OData Query kèm OrderBy động
-            let odataQuery = `odata/AdminProductsOdata?$count=true&$top=${pageSize}&$skip=${skip}&$orderby=${sortColumn} ${sortDirection}`;
+            let odataQuery = `odata/AdminProductsOData?$count=true&$top=${pageSize}&$skip=${skip}&$orderby=${sortColumn} ${sortDirection}`;
 
             // Mảng chứa các điều kiện Lọc (Filter)
             let filters = [];

@@ -11,9 +11,9 @@ namespace SHOP.CO.API.Controllers
     [Authorize(Roles = "Admin")] 
     public class AdminUsersController : ControllerBase
     {
-        private readonly IUserAdminService _service;
+        private readonly IAdminUserService _service;
 
-        public AdminUsersController(IUserAdminService service)
+        public AdminUsersController(IAdminUserService service)
         {
             _service = service;
         }

@@ -11,9 +11,9 @@ namespace SHOP.CO.API.Controllers
     [Authorize(Roles = "Admin,Staff")]
     public class AdminController : ControllerBase
     {
-        private readonly IAdminService _adminService;
+        private readonly IAdminDashboardService _adminService;
 
-        public AdminController(IAdminService adminService)
+        public AdminController(IAdminDashboardService adminService)
         {
             _adminService = adminService;
         }
@@ -36,8 +36,16 @@ namespace SHOP.CO.API.Controllers
         [HttpPost("inventory/adjust")]
         public async Task<IActionResult> AdjustStock([FromBody] StockAdjustmentDto dto)
         {
-            // logType có thể truyền từ client hoặc định nghĩa cứng ở đây
-            var result = await _adminService.AdjustStockAsync(dto.VariantId, dto.QuantityChange, dto.Reason, "StockMovement");
+            // 🟢 THAY THẾ TOÀN BỘ CODE CŨ BẰNG CÁCH GỌI HÀM BẠN VỪA VIẾT
+            string logType = dto.QuantityChange >= 0 ? "StockImport" : "StockExport";
+
+            var result = await _adminService.AdjustStockAsync(
+                dto.VariantId,
+                dto.QuantityChange,
+                dto.Reason,
+                logType
+            );
+
             return StatusCode(result.Code, result);
         }
     }

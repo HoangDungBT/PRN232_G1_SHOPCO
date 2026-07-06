@@ -87,7 +87,7 @@ namespace SHOP.CO.Application.Services
                         <p>Mã này sẽ hết hạn sau <strong>15 phút</strong>.</p>
                         <p>Vui lòng không chia sẻ mã này cho bất kỳ ai.</p>
                     </div>";
-                await _userRepo.AddUserAsync(user);
+                await _userRepo.AddAsync(user);
 
                 await _emailSender.SendEmailAsync(user.Email, "Xác minh tài khoản SHOP.CO", emailBody);
 
@@ -128,7 +128,7 @@ namespace SHOP.CO.Application.Services
                 user.RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(7);
                 user.LastLoginAt = DateTime.UtcNow;
 
-                await _userRepo.UpdateUserAsync(user);
+                await _userRepo.UpdateAsync(user);
 
                 var data = new AuthResponseDto
                 {
@@ -165,7 +165,7 @@ namespace SHOP.CO.Application.Services
                 // 4. Cập nhật lại vào DB
                 user.RefreshToken = newRefreshToken;
                 user.RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(7);
-                await _userRepo.UpdateUserAsync(user);
+                await _userRepo.UpdateAsync(user);
 
                 // 5. Trả về
                 var data = new AuthResponseDto { AccessToken = newAccessToken, RefreshToken = newRefreshToken };
@@ -181,14 +181,14 @@ namespace SHOP.CO.Application.Services
         {
             try
             {
-                var user = await _userRepo.GetUserByIdAsync(userId);
+                var user = await _userRepo.GetByIdAsync(userId);
 
                 if (user != null)
                 {
                     // xóa hoàn toàn Token 
                     user.RefreshToken = null;
                     user.RefreshTokenExpiresAt = null;
-                    await _userRepo.UpdateUserAsync(user);
+                    await _userRepo.UpdateAsync(user);
                 }
                 return ResultModel<string>.Success(null, "Đăng xuất thành công!");
             }
@@ -215,7 +215,7 @@ namespace SHOP.CO.Application.Services
                 user.VerificationToken = null;
                 user.VerificationExpiresAt = null;
 
-                await _userRepo.UpdateUserAsync(user);
+                await _userRepo.UpdateAsync(user);
 
                 return ResultModel<string>.Success(null, "Xác minh Email thành công! Bạn có thể đăng nhập ngay bây giờ.", 200);
             }
@@ -236,7 +236,7 @@ namespace SHOP.CO.Application.Services
                 string newOtp = new Random().Next(100000, 999999).ToString();
                 user.VerificationToken = newOtp;
                 user.VerificationExpiresAt = DateTime.UtcNow.AddMinutes(15);
-                await _userRepo.UpdateUserAsync(user);
+                await _userRepo.UpdateAsync(user);
 
                 // Gửi lại Email
                 string emailBody = $@"
@@ -269,7 +269,7 @@ namespace SHOP.CO.Application.Services
                 // Lưu vào cột ResetPassword
                 user.ResetPasswordToken = otpCode;
                 user.ResetPasswordExpiresAt = DateTime.UtcNow.AddMinutes(15);
-                await _userRepo.UpdateUserAsync(user);
+                await _userRepo.UpdateAsync(user);
 
                 // Gửi Email
                 string emailBody = $@"
@@ -307,7 +307,7 @@ namespace SHOP.CO.Application.Services
                 // Nếu tài khoản chưa verify, verify luôn cho họ
                 if (user.Status == "Unverified") user.Status = "Active";
 
-                await _userRepo.UpdateUserAsync(user);
+                await _userRepo.UpdateAsync(user);
 
                 return ResultModel<string>.Success(null, "Đặt lại mật khẩu thành công! Bạn có thể đăng nhập ngay.", 200);
             }

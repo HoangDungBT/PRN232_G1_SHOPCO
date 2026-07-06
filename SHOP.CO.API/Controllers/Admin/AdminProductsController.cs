@@ -1,15 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting; // 🟢 THÊM THƯ VIỆN NÀY
-using Microsoft.AspNetCore.Http;    // 🟢 THÊM THƯ VIỆN NÀY
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SHOP.CO.Application.DTOs;
 using SHOP.CO.Application.Services;
 using SHOP.CO.Infrastructure.Persistence;
-using System;
-using System.Collections.Generic;
-using System.IO;                    // 🟢 THÊM THƯ VIỆN NÀY
-using System.Threading.Tasks;
+
 
 namespace SHOP.CO.API.Controllers
 {
@@ -18,13 +12,13 @@ namespace SHOP.CO.API.Controllers
     [Authorize(Roles = "Admin,Staff")]
     public class AdminProductsController : ControllerBase
     {
-        private readonly IProductAdminService _service;
+        private readonly IAdminProductService _service;
         private readonly IWebHostEnvironment _env; // 🟢 INJECT WEB HOST ENVIRONMENT
 
         // tạm
         private readonly ShopCoDbContext _context;
         // 🟢 CẬP NHẬT CONSTRUCTOR
-        public AdminProductsController(IProductAdminService service, IWebHostEnvironment env,
+        public AdminProductsController(IAdminProductService service, IWebHostEnvironment env,
             ShopCoDbContext context)
         {
             _service = service;
@@ -51,7 +45,7 @@ namespace SHOP.CO.API.Controllers
         public async Task<IActionResult> UpdateProduct(int id, [FromBody] UpdateProductRequestDto request)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var result = await _service.UpdateProductAsync(id, request);
+            var result = await _service.UpdateAsync(id, request);
             return StatusCode(result.Code, result);
         }
         // Thêm 2 API này vào trong AdminProductsController để xử lý hàng loạt
