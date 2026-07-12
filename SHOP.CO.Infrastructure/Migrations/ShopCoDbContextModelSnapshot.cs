@@ -17,7 +17,7 @@ namespace SHOP.CO.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.27")
+                .HasAnnotation("ProductVersion", "8.0.28")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -1730,6 +1730,13 @@ namespace SHOP.CO.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("VerificationExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("VerificationToken")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.HasKey("UserId");
 
                     b.HasIndex("Email")
@@ -1740,7 +1747,7 @@ namespace SHOP.CO.Infrastructure.Migrations
                         {
                             t.HasCheckConstraint("CK_Users_Role", "[Role] IN (N'Customer', N'Staff', N'Admin')");
 
-                            t.HasCheckConstraint("CK_Users_Status", "[Status] IN (N'Active', N'Locked', N'Deleted')");
+                            t.HasCheckConstraint("CK_Users_Status", "[Status] IN (N'Unverified', N'Active', N'Locked', N'Deleted')");
                         });
 
                     b.HasData(

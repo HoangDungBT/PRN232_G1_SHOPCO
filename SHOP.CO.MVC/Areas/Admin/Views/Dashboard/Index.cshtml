@@ -11,9 +11,9 @@
 <div class="row g-4">
     <!-- Card Tổng Doanh Thu -->
     <div class="col-md-3">
-        <div class="card shadow-sm border-0 border-start border-success border-4">
+        <div class="card shadow-sm border-0 border-start border-success border-4 h-100">
             <div class="card-body">
-                <div class="text-muted small fw-bold">TỔNG DOANH THU</div>
+                <div class="text-muted small fw-bold"><i class="fas fa-wallet me-1"></i> TỔNG DOANH THU</div>
                 <div class="fs-3 fw-bold text-success mt-2">
                     @Model.TotalRevenue.ToString("N0") VNĐ
                 </div>
@@ -23,11 +23,11 @@
 
     <!-- Card Đơn Hàng -->
     <div class="col-md-3">
-        <div class="card shadow-sm border-0 border-start border-primary border-4">
+        <div class="card shadow-sm border-0 border-start border-primary border-4 h-100">
             <div class="card-body">
-                <div class="text-muted small fw-bold">TỔNG ĐƠN HÀNG</div>
+                <div class="text-muted small fw-bold"><i class="fas fa-shopping-cart me-1"></i> TỔNG ĐƠN HÀNG</div>
                 <div class="fs-3 fw-bold text-primary mt-2">
-                    @Model.TotalOrders
+                    @Model.TotalOrders <span class="fs-6 text-muted fw-normal">Đơn</span>
                 </div>
             </div>
         </div>
@@ -35,11 +35,11 @@
 
     <!-- Card Người Dùng -->
     <div class="col-md-3">
-        <div class="card shadow-sm border-0 border-start border-info border-4">
+        <div class="card shadow-sm border-0 border-start border-info border-4 h-100">
             <div class="card-body">
-                <div class="text-muted small fw-bold">KHÁCH HÀNG</div>
+                <div class="text-muted small fw-bold"><i class="fas fa-users me-1"></i> KHÁCH HÀNG</div>
                 <div class="fs-3 fw-bold text-info mt-2">
-                    @Model.TotalUsers
+                    @Model.TotalUsers <span class="fs-6 text-muted fw-normal">User</span>
                 </div>
             </div>
         </div>
@@ -47,26 +47,152 @@
 
     <!-- Card Cảnh báo Tồn kho -->
     <div class="col-md-3">
-        <div class="card shadow-sm border-0 border-start border-danger border-4">
+        <div class="card shadow-sm border-0 border-start border-danger border-4 h-100">
             <div class="card-body">
-                <div class="text-muted small fw-bold">CẢNH BÁO SẮP HẾT HÀNG</div>
+                <div class="text-muted small fw-bold"><i class="fas fa-exclamation-triangle me-1"></i> SẮP HẾT HÀNG</div>
                 <div class="fs-3 fw-bold text-danger mt-2">
-                    @Model.LowStockProducts Sản phẩm
+                    @Model.LowStockProducts <span class="fs-6 text-muted fw-normal">Sản phẩm</span>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row mt-5">
+<div class="row mt-4">
     <div class="col-12">
         <div class="card shadow-sm border-0">
-            <div class="card-header bg-white fw-bold">
-                Hoạt Động Gần Đây (Mở rộng sau)
+            <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                <h6 class="fw-bold m-0"><i class="fas fa-chart-line text-primary me-2"></i> Biểu Đồ Doanh Thu</h6>
+                <!-- Dropdown lọc theo ngày -->
+                <select id="chartFilter" class="form-select form-select-sm w-auto shadow-none" onchange="loadChartData(this.value)">
+                    <option value="7" selected>7 Ngày Qua</option>
+                    <option value="30">30 Ngày Qua</option>
+                </select>
             </div>
-            <div class="card-body text-center text-muted py-5">
-                <p>Khu vực này dùng để gắn biểu đồ Chart.js thống kê doanh thu theo từng tháng.</p>
+            <div class="card-body p-4">
+                <div style="height: 350px; width: 100%;">
+                    <canvas id="revenueChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Input ẩn chứa cấu hình API -->
+<input type="hidden" id="apiBaseUrl" value="@ViewBag.ApiBaseUrl" />
+<input type="hidden" id="jwtToken" value="@ViewBag.Token" />
+
+@section Scripts {
+    <!-- Thư viện Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const apiUrl = $('#apiBaseUrl').val();
+        const token = $('#jwtToken').val();
+
+         
+
+        let revenueChartInstance = null; // Biến lưu trữ biểu đồ hiện tại
+
+        $(document).ready(function () {
+            // Load mặc định biểu đồ 7 ngày khi vừa vào trang
+            loadChartData(7);
+        });
+
+        function loadChartData(days) {
+
+            let url = apiUrl.endsWith('/') ? `${apiUrl}api/admin/dashboard/revenue-chart?days=${days}` : `${apiUrl}/api/admin/dashboard/revenue-chart?days=${days}`;
+            console.log("Đang gọi API tới:", url);
+            $.ajax({
+                url: url,
+                type: 'GET',
+                headers: { 'Authorization': 'Bearer ' + token },
+                success: function (res) {
+                    if (res.isSuccess) {
+                        let data = res.data;
+
+                        // Tách mảng trả về thành 2 mảng nhỏ: 1 mảng Nhãn (Trục X), 1 mảng Dữ liệu (Trục Y)
+                        let labels = data.map(item => item.date);
+                        let revenueValues = data.map(item => item.revenue);
+
+                        renderChart(labels, revenueValues);
+                    }
+                },
+                error: function (xhr) {
+                    console.error("Lỗi lấy dữ liệu biểu đồ", xhr);
+                }
+            });
+        }
+
+        function renderChart(labels, data) {
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+
+            // Hủy biểu đồ cũ nếu đã vẽ trước đó (Để vẽ lại biểu đồ mới khi User chọn 30 ngày)
+            if (revenueChartInstance != null) {
+                revenueChartInstance.destroy();
+            }
+
+            // Cấu hình Gradient màu sắc xanh đẹp mắt
+            let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(13, 110, 253, 0.5)'); // Xanh dương nhạt
+            gradient.addColorStop(1, 'rgba(13, 110, 253, 0.0)'); // Mờ dần xuống dưới
+
+            revenueChartInstance = new Chart(ctx, {
+                type: 'line', // Biểu đồ đường
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Doanh thu (VNĐ)',
+                        data: data,
+                        borderColor: '#0d6efd',
+                        backgroundColor: gradient,
+                        borderWidth: 2,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#0d6efd',
+                        pointRadius: 4,
+                        fill: true, // Điền màu dưới đường line
+                        tension: 0.3 // Tạo độ cong mềm mại cho đường line
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }, // Ẩn label chú thích mặc định
+                        tooltip: {
+                            callbacks: {
+                                // Định dạng số tiền trong ô Tooltip khi trỏ chuột vào
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(context.parsed.y);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                // Rút gọn số tiền trên trục Y (VD: 1.000.000 -> 1 Tr)
+                                callback: function(value, index, values) {
+                                    if (value >= 1000000) return (value / 1000000) + ' Tr';
+                                    if (value >= 1000) return (value / 1000) + ' K';
+                                    return value;
+                                }
+                            }
+                        },
+                        x: {
+                            grid: { display: false } // Ẩn lưới sọc dọc cho đỡ rối mắt
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+}

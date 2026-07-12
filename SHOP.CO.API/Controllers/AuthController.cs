@@ -54,6 +54,35 @@ namespace SHOP.CO.API.Controllers
             }
             return Unauthorized();
         }
+        
+        // 🟢 BỔ SUNG API XÁC MINH OTP
+        [HttpPost("verify-email")]
+        public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailDto request)
+        {
+            var result = await _authService.VerifyEmailAsync(request);
+            return StatusCode(result.Code, result);
+        }
 
+        // 🟢 BỔ SUNG API YÊU CẦU GỬI LẠI MÃ
+        [HttpPost("resend-otp")]
+        public async Task<IActionResult> ResendOtp([FromBody] ResendOtpDto request)
+        {
+            var result = await _authService.ResendVerificationEmailAsync(request);
+            return StatusCode(result.Code, result);
+        }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto request)
+        {
+            var result = await _authService.ForgotPasswordAsync(request);
+            return StatusCode(result.Code, result);
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto request)
+        {
+            var result = await _authService.ResetPasswordAsync(request);
+            return StatusCode(result.Code, result);
+        }
     }
 }

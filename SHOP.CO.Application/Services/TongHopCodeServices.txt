@@ -1,0 +1,1446 @@
+﻿// === File: AdCategoryService.cs ===
+using Microsoft.EntityFrameworkCore;
+using SHOP.CO.Application.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
+namespace SHOP.CO.Application.Services
+{
+    public interface ICategoryAdminService
+    {
+        IQueryable<CategoryDto> GetODataQuery();
+        Task<ResultModel<CategoryDto>> GetByIdAsync(int id);
+        Task<ResultModel<int>> CreateAsync(SaveCategoryRequestDto dto);
+        Task<ResultModel<bool>> UpdateAsync(int id, SaveCategoryRequestDto dto);
+        Task<ResultModel<bool>> SoftDeleteAsync(int id);
+        Task<ResultModel<bool>> ToggleCategoryStatusAsync(int id);
+    }
+
+    public class CategoryAdminService : ICategoryAdminService
+    {
+        private readonly ICategoryRepository _repo;
+
+        public CategoryAdminService(ICategoryRepository repo)
+        {
+            _repo = repo;
+        }
+
+        public IQueryable<CategoryDto> GetODataQuery()
+        {
+            return _repo.GetCategoriesAsQueryable()
+                .Select(c => new CategoryDto
+                {
+                    CategoryId = c.CategoryId,
+                    ParentCategoryId = c.ParentCategoryId,
+                    ParentCategoryName = c.ParentCategory != null ? c.ParentCategory.CategoryName : null,
+                    CategoryName = c.CategoryName,
+                    Slug = c.Slug,
+                    Description = c.Description,
+                    SortOrder = c.SortOrder,
+                    IsActive = c.IsActive,
+                    CreatedAt = c.CreatedAt
+
+                });
+        }
+        public async Task<ResultModel<CategoryDto>> GetByIdAsync(int id)
+        {
+            try
+            {
+                var c = await _repo.GetByIdAsync(id);
+                if (c == null) { return ResultModel<CategoryDto>.Error("Không tìm thấy Category này!", 404); }
+
+                var data = new CategoryDto
+                {
+                    CategoryId = c.CategoryId,
+                    ParentCategoryId = c.ParentCategoryId,
+                    CategoryName= c.CategoryName,
+                    Description = c.Description,    
+                    SortOrder = c.SortOrder,
+                    IsActive = c.IsActive,
+                };
+
+                return ResultModel<CategoryDto>.Success(data);
+
+            }
+            catch (Exception ex )
+            {
+
+                return ResultModel<CategoryDto>.Exception(ex);
+            }
+        }
+
+
+        public async Task<ResultModel<int>> CreateAsync(SaveCategoryRequestDto dto)
+        {
+            try
+            {
+                // Tránh lỗi gán cha bằng chính nó (Mặc dù Create thì chưa có ID nhưng rào cho chắc)
+                if (dto.ParentCategoryId.HasValue && dto.ParentCategoryId <= 0) dto.ParentCategoryId = null;
+
+                string generatedSlug = GenerateSlug(dto.CategoryName);
+                if (await _repo.IsSlugExistsAsync(generatedSlug))
+                {
+                    generatedSlug += $"-{Guid.NewGuid().ToString().Substring(0, 5)}";
+                }
+
+                var newCat = new Category
+                {
+                    ParentCategoryId = dto.ParentCategoryId,
+                    CategoryName = dto.CategoryName,
+                    Slug = generatedSlug,
+                    Description = dto.Description,
+                    ImageUrl = dto.ImageUrl,
+                    SortOrder = dto.SortOrder,
+                    IsActive = dto.IsActive,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                await _repo.AddAsync(newCat);
+                return ResultModel<int>.Success(newCat.CategoryId, "Thêm danh mục thành công!", 201);
+            }
+            catch (Exception ex) { return ResultModel<int>.Exception(ex); }
+        }
+
+        public async Task<ResultModel<bool>> UpdateAsync(int id, SaveCategoryRequestDto dto)
+        {
+            try
+            {
+                var cat = await _repo.GetByIdAsync(id);
+                if (cat == null) return ResultModel<bool>.Error("Không tìm thấy danh mục", 404);
+
+                // Validation: Chống vòng lặp đệ quy vô tận (Lấy chính nó làm cha)
+                if (dto.ParentCategoryId == id)
+                    return ResultModel<bool>.Error("Danh mục không thể nhận chính nó làm danh mục cha!", 400);
+
+                string newSlug = GenerateSlug(dto.CategoryName);
+                if (await _repo.IsSlugExistsAsync(newSlug, id))
+                {
+                    newSlug += $"-{Guid.NewGuid().ToString().Substring(0, 5)}";
+                }
+
+                cat.ParentCategoryId = dto.ParentCategoryId;
+                cat.CategoryName = dto.CategoryName;
+                cat.Slug = newSlug;
+                cat.Description = dto.Description;
+                cat.ImageUrl = dto.ImageUrl;
+                cat.SortOrder = dto.SortOrder;
+                cat.IsActive = dto.IsActive;
+                cat.UpdatedAt = DateTime.UtcNow;
+
+                await _repo.UpdateAsync(cat);
+                return ResultModel<bool>.Success(true, "Cập nhật thành công!");
+            }
+            catch (Exception ex) { return ResultModel<bool>.Exception(ex); }
+        }
+        public async Task<ResultModel<bool>> ToggleCategoryStatusAsync(int id)
+        {
+            try
+            {
+                var category = await _repo.GetByIdAsync(id);
+                if (category == null) return ResultModel<bool>.Error("Không tìm thấy danh mục", 404);
+
+                // Đảo ngược trạng thái: Đang hoạt động -> Khóa, Đã khóa -> Hoạt động
+                category.IsActive = !category.IsActive;
+                category.UpdatedAt = DateTime.UtcNow;
+
+                await _repo.UpdateAsync(category);
+
+                string msg = category.IsActive ? "Đã mở khóa danh mục!" : "Đã khóa danh mục!";
+                return ResultModel<bool>.Success(true, msg);
+            }
+            catch (Exception ex)
+            {
+                return ResultModel<bool>.Exception(ex);
+            }
+        }
+        public async Task<ResultModel<bool>> SoftDeleteAsync(int id)
+        {
+            try
+            {
+                var cat = await _repo.GetByIdAsync(id);
+                if (cat == null) return ResultModel<bool>.Error("Không tìm thấy danh mục", 404);
+
+                // Validation: Nếu đang có danh mục con, không cho xóa để tránh mồ côi
+                if (await _repo.HasChildrenAsync(id))
+                    return ResultModel<bool>.Error("Không thể khóa! Danh mục này đang chứa các danh mục con.", 400);
+                if(cat.IsActive == false) {
+                    cat.IsActive = true;
+                    cat.UpdatedAt = DateTime.UtcNow;
+                    await _repo.UpdateAsync(cat);
+
+                    return ResultModel<bool>.Success(true, "Đã mở khóa danh mục thành công!");
+                }
+                cat.IsActive = false; // Xóa mềm = Ẩn đi
+                cat.UpdatedAt = DateTime.UtcNow;
+                await _repo.UpdateAsync(cat);
+
+                return ResultModel<bool>.Success(true, "Đã khóa danh mục thành công!");
+            }
+            catch (Exception ex) { return ResultModel<bool>.Exception(ex); }
+        }
+
+        // Hàm tiện ích nội bộ để tự tạo chữ không dấu làm đường dẫn (VD: "Áo Thun" -> "ao-thun")
+        private string GenerateSlug(string phrase)
+        {
+            string str = phrase.ToLower();
+            str = Regex.Replace(str, @"á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ặ|ẵ|â|ấ|ầ|ẩ|ậ|ẫ", "a");
+            str = Regex.Replace(str, @"é|è|ẻ|ẹ|ẽ|ê|ế|ề|ể|ệ|ễ", "e");
+            str = Regex.Replace(str, @"í|ì|ỉ|ị|ĩ", "i");
+            str = Regex.Replace(str, @"ó|ò|ỏ|ọ|õ|ô|ố|ồ|ổ|ộ|ỗ|ơ|ớ|ờ|ở|ợ|ỡ", "o");
+            str = Regex.Replace(str, @"ú|ù|ủ|ụ|ũ|ư|ứ|ừ|ử|ự|ữ", "u");
+            str = Regex.Replace(str, @"ý|ỳ|ỷ|ỵ|ỹ", "y");
+            str = Regex.Replace(str, @"đ", "d");
+            str = Regex.Replace(str, @"[^a-z0-9\s-]", ""); // Xóa ký tự đặc biệt
+            str = Regex.Replace(str, @"\s+", " ").Trim(); // Xóa khoảng trắng thừa
+            str = Regex.Replace(str, @"\s", "-"); // Thay khoảng trắng bằng dấu -
+            return str;
+        }
+    }
+}
+
+// === File: AdminService.cs ===
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using SHOP.CO.Application.Common;
+using SHOP.CO.Infrastructure.Persistence;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SHOP.CO.Application.Services
+{
+    public interface IAdminService
+    {
+        Task<ResultModel<DashboardSummaryDto>> GetDashBoardSummaryAsync();
+        Task<ResultModel<List<RevenueByDayDto>>> GetRevenueChartAsync(int days);
+        Task<ResultModel<bool>> AdjustStockAsync(int variantId, int quantityChange, string reason, string logType);
+        IQueryable<ProductVariant> GetInventoryODataQuery();
+
+
+
+    }
+
+    public class AdminService : IAdminService
+    {
+        private readonly ShopCoDbContext _context;
+        private readonly IEmailSender _emailSender;
+        private readonly EmailSettings _emailSettings;
+
+        // 🟢 1. CẬP NHẬT CONSTRUCTOR ĐỂ GỌI ĐƯỢC EMAIL SENDER
+        public AdminService(
+            ShopCoDbContext context,
+            IEmailSender emailSender,
+            IOptions<EmailSettings> emailSettings)
+        {
+            _context = context;
+            _emailSender = emailSender;
+            _emailSettings = emailSettings.Value;
+        }
+
+        public async Task<ResultModel<DashboardSummaryDto>> GetDashBoardSummaryAsync()
+        {
+            try
+            {
+                var totalUsers = await _context.Users.CountAsync(u => u.Role == "Customer");
+                var totalOrders = await _context.Orders.CountAsync();
+
+                var totalRevenue = await _context.Orders
+                    .Where(o => o.OrderStatus == "Completed")
+                    .SumAsync(o => o.TotalAmount);
+
+                var lowStock = await _context.ProductVariants
+                    .CountAsync(v => v.StockQuantity <= v.LowStockThreshold);
+                var data = new DashboardSummaryDto
+                {
+                    TotalUsers = totalUsers,
+                    TotalOrders = totalOrders,
+                    LowStockProducts = lowStock,
+                    TotalRevenue = totalRevenue
+                };
+                return ResultModel<DashboardSummaryDto>.Success(data, "Lấy dữ liệu thông kê thành công");
+
+            }
+            catch (Exception ex)
+            {
+
+                return ResultModel<DashboardSummaryDto>.Exception(ex);
+            }
+
+        }
+
+        public async Task<ResultModel<List<RevenueByDayDto>>> GetRevenueChartAsync(int days)
+        {
+            try
+            {
+                var endDate = DateTime.UtcNow.Date;
+                var startDate = endDate.AddDays(-days + 1);
+                var order = await _context.Orders
+                    .Where(o => o.OrderStatus == "Completed" && o.CreatedAt >= startDate && o.CreatedAt <= endDate.AddDays(1))
+                    .ToListAsync();
+
+                var groupedRevenue = order
+                    .GroupBy(o => o.CreatedAt.Date)
+                    .ToDictionary(g => g.Key, g => g.Sum(o => o.TotalAmount));
+
+                var result = new List<RevenueByDayDto>();
+                for (int i = 0; i < days; i++)
+                {
+                    var currentDate = startDate.AddDays(i);
+                    result.Add(new RevenueByDayDto
+                    {
+                        Date = currentDate.ToString("dd/MM"),
+                        Revenue = groupedRevenue.ContainsKey(currentDate)
+                        ? groupedRevenue[currentDate] : 0
+                    });
+                }
+                return ResultModel<List<RevenueByDayDto>>.Success(result);
+
+            }
+            catch (Exception ex)
+            {
+                return ResultModel<List<RevenueByDayDto>>.Exception(ex);
+            }
+        }
+        public IQueryable<ProductVariant> GetInventoryODataQuery()
+        {
+            return _context.ProductVariants
+                .Include(v => v.Product) // Để lấy tên sản phẩm hiển thị ra View
+                .AsQueryable();
+        }
+
+        public async Task<ResultModel<bool>> AdjustStockAsync(int variantId, int quantityChange, string reason, string logType)
+        {
+            try
+            {
+                string[] allowedLogTypes = { "Chatbot", "Notification", "Email", "Audit", "StockMovement", "StockAlert", "ReportExport" };
+                string finalLogType = allowedLogTypes.Contains(logType) ? logType : "StockMovement";
+
+                // Thay FindAsync bằng FirstOrDefaultAsync + Include để lấy tên Product gửi Email
+                var variant = await _context.ProductVariants
+                    .Include(v => v.Product)
+                    .FirstOrDefaultAsync(v => v.VariantId == variantId);
+
+                if (variant == null) return ResultModel<bool>.Error("Không tìm thấy biến thể", 404);
+
+                // Lưu lại số lượng cũ để check xem có phải VỪA MỚI rớt xuống ngưỡng báo động không
+                int oldStock = variant.StockQuantity;
+                int threshold = variant.LowStockThreshold;
+
+                // Cập nhật tồn kho hiện tại
+                variant.StockQuantity += quantityChange;
+                int newStock = variant.StockQuantity;
+
+                // Ghi Log Chuyển động kho (StockMovement)
+                var log = new InteractionLog
+                {
+                    VariantId = variantId,
+                    ProductId = variant.ProductId,
+                    LogType = finalLogType,
+                    QuantityChanged = quantityChange,
+                    Message = $"[OriginalType: {logType}] {reason}",
+                    CreatedAt = DateTime.UtcNow,
+                    Status = "Success"
+                };
+                _context.InteractionLogs.Add(log);
+
+                // 🟢 3. LOGIC GỬI EMAIL CẢNH BÁO TỒN KHO 🟢
+                // Chỉ gửi khi: Số lượng giảm (<0) VÀ Vượt qua ngưỡng báo động
+                if (quantityChange < 0 && oldStock > threshold && newStock <= threshold)
+                {
+                    // Tạo một Log riêng cho việc cảnh báo
+                    var alertLog = new InteractionLog
+                    {
+                        VariantId = variantId,
+                        ProductId = variant.ProductId,
+                        LogType = "StockAlert",
+                        SenderType = "System",
+                        Title = "Cảnh báo tồn kho thấp",
+                        Message = $"Sản phẩm {variant.Product?.ProductName} (SKU: {variant.Sku}) chỉ còn {newStock} sản phẩm.",
+                        IsRead = false,
+                        CreatedAt = DateTime.UtcNow,
+                        Status = "Sent"
+                    };
+                    _context.InteractionLogs.Add(alertLog);
+
+                    // Bắn Email (Dùng _ = Task.Run để gửi ngầm, không làm chậm quá trình của Admin)
+                    string emailBody = $@"
+                        <div style='font-family: Arial, sans-serif; border: 1px solid #ddd; padding: 20px; border-radius: 5px;'>
+                            <h2 style='color: #dc3545;'><i class='fas fa-exclamation-triangle'></i> Cảnh báo Hết hàng</h2>
+                            <p>Hệ thống SHOP.CO thông báo một sản phẩm vừa chạm ngưỡng tồn kho thấp:</p>
+                            <ul>
+                                <li><strong>Sản phẩm:</strong> {variant.Product?.ProductName}</li>
+                                <li><strong>Phân loại (Màu/Size):</strong> {variant.Color} - {variant.Size}</li>
+                                <li><strong>Mã SKU:</strong> {variant.Sku}</li>
+                                <li><strong style='color: #dc3545;'>Tồn kho hiện tại: {newStock}</strong> (Ngưỡng: {threshold})</li>
+                            </ul>
+                            <p>Vui lòng kiểm tra và nhập thêm hàng sớm nhất có thể!</p>
+                        </div>";
+
+                    if (!string.IsNullOrEmpty(_emailSettings.AdminEmail))
+                    {
+                        _ = _emailSender.SendEmailAsync(_emailSettings.AdminEmail, $"[CẢNH BÁO KHO] Sắp hết hàng: {variant.Sku}", emailBody);
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+
+                return ResultModel<bool>.Success(true, "Cập nhật kho thành công");
+            }
+            catch (Exception ex)
+            {
+                var innerEx = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return ResultModel<bool>.Error(innerEx, 500);
+            }
+        }
+
+    }
+}
+
+// === File: AdOrderService.cs ===
+using Microsoft.EntityFrameworkCore;
+using SHOP.CO.Application.Common;
+using SHOP.CO.Domain.Entities;
+using SHOP.CO.Infrastructure.Persistence;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace SHOP.CO.Application.Services
+{
+    public interface IOrderAdminService
+    {
+        IQueryable<OrderDto> GetOrdersODataQuery();
+        Task<ResultModel<OrderDetailAdminDto>> GetOrderDetailsAsync(int orderId);
+        Task<ResultModel<bool>> UpdateOrderStatusAsync(int orderId, UpdateOrderStatusDto dto);
+        Task<ResultModel<bool>> MarkAsPaidAsync(int orderId);
+    }
+
+    public class OrderAdminService : IOrderAdminService
+    {
+        private readonly IOrderRepository _orderRepo;
+        private readonly ShopCoDbContext _context; // Inject DbContext để chọc vào Tồn kho
+
+        public OrderAdminService(IOrderRepository orderRepo, ShopCoDbContext context)
+        {
+            _orderRepo = orderRepo;
+            _context = context;
+        }
+
+        public IQueryable<OrderDto> GetOrdersODataQuery()
+        {
+            return _orderRepo.GetOrdersAsQueryable().Select(o => new OrderDto
+            {
+                OrderId = o.OrderId,
+                OrderCode = o.OrderCode,
+                ReceiverName = o.ReceiverName,
+                TotalAmount = o.TotalAmount,
+                OrderStatus = o.OrderStatus,
+                PaymentStatus = o.PaymentStatus,
+                CreatedAt = o.CreatedAt
+            });
+        }
+
+        public async Task<ResultModel<OrderDetailAdminDto>> GetOrderDetailsAsync(int orderId)
+        {
+            try
+            {
+                var order = await _orderRepo.GetOrderWithDetailsAsync(orderId);
+                if (order == null) return ResultModel<OrderDetailAdminDto>.Error("Không tìm thấy đơn hàng", 404);
+
+                var data = new OrderDetailAdminDto
+                {
+                    OrderId = order.OrderId,
+                    OrderCode = order.OrderCode,
+                    ReceiverName = order.ReceiverName,
+                    ReceiverPhone = order.ReceiverPhone,
+                    ShippingAddressText = order.ShippingAddressText,
+                    TotalAmount = order.TotalAmount,
+                    SubtotalAmount = order.SubtotalAmount,
+                    ShippingFee = order.ShippingFee,
+                    DiscountAmount = order.DiscountAmount,
+                    OrderStatus = order.OrderStatus,
+                    PaymentStatus = order.PaymentStatus,
+                    CustomerNote = order.CustomerNote,
+                    StaffNote = order.StaffNote,
+                    CancelReason = order.CancelReason,
+                    CreatedAt = order.CreatedAt,
+                    Items = order.OrderItems.Select(i => new OrderItemAdminDto
+                    {
+                        VariantId = i.VariantId,
+                        ProductName = i.ProductNameSnapshot,
+                        Sku = i.SkuSnapshot,
+                        Size = i.SizeSnapshot,
+                        Color = i.ColorSnapshot,
+                        ImageUrl = i.ImageUrlSnapshot,
+                        Quantity = i.Quantity,
+                        UnitPrice = i.UnitPrice,
+                        SalePrice = i.SalePrice ?? i.UnitPrice,
+                        LineTotal = i.LineTotal
+                    }).ToList()
+                };
+
+                return ResultModel<OrderDetailAdminDto>.Success(data);
+            }
+            catch (Exception ex) { return ResultModel<OrderDetailAdminDto>.Exception(ex); }
+        }
+
+        public async Task<ResultModel<bool>> UpdateOrderStatusAsync(int orderId, UpdateOrderStatusDto dto)
+        {
+            try
+            {
+                var order = await _orderRepo.GetOrderWithDetailsAsync(orderId);
+                if (order == null) return ResultModel<bool>.Error("Không tìm thấy đơn hàng", 404);
+
+                if (order.OrderStatus == "Completed" || order.OrderStatus == "Canceled")
+                    return ResultModel<bool>.Error("Đơn hàng đã đóng, không thể thay đổi trạng thái!", 400);
+
+                // 🟢 LOGIC: TRỪ TỒN KHO KHI CHUYỂN SANG ĐANG GIAO (Shipping)
+                if (dto.Status == "Shipping" && order.OrderStatus != "Shipping")
+                {
+                    foreach (var item in order.OrderItems)
+                    {
+                        var variant = await _context.ProductVariants.FindAsync(item.VariantId);
+                        if (variant != null)
+                        {
+                            if (variant.StockQuantity < item.Quantity)
+                                return ResultModel<bool>.Error($"Sản phẩm '{item.SkuSnapshot}' không đủ tồn kho để giao hàng!", 400);
+
+                            //variant.StockQuantity -= item.Quantity; // Trừ tồn kho
+                        }
+                    }
+                }
+
+                // 🟢 LOGIC: HOÀN TRẢ TỒN KHO NẾU KHÁCH HỦY KHI ĐANG GIAO (Boom hàng)
+                if (dto.Status == "Canceled" && order.OrderStatus == "Shipping")
+                {
+                    foreach (var item in order.OrderItems)
+                    {
+                        var variant = await _context.ProductVariants.FindAsync(item.VariantId);
+                        if (variant != null) variant.StockQuantity += item.Quantity;
+                    }
+                }
+
+                order.OrderStatus = dto.Status;
+                if (dto.Status == "Canceled")
+                {
+                    order.CanceledAt = DateTime.UtcNow;
+                    order.CancelReason = dto.CancelReason ?? "Admin hủy đơn";
+                }
+                if (dto.Status == "Completed")
+                {
+                    order.CompletedAt = DateTime.UtcNow;
+                    order.PaymentStatus = "Paid"; // Giao thành công coi như thu tiền xong (COD)
+                }
+
+                order.UpdatedAt = DateTime.UtcNow;
+                await _orderRepo.UpdateOrderAsync(order);
+
+                return ResultModel<bool>.Success(true, $"Cập nhật trạng thái thành: {dto.Status}");
+            }
+            catch (Exception ex) { return ResultModel<bool>.Exception(ex); }
+        }
+
+        public async Task<ResultModel<bool>> MarkAsPaidAsync(int orderId)
+        {
+            try
+            {
+                var order = await _orderRepo.GetOrderWithDetailsAsync(orderId);
+                if (order == null) return ResultModel<bool>.Error("Không tìm thấy đơn hàng", 404);
+
+                order.PaymentStatus = "Paid";
+                order.UpdatedAt = DateTime.UtcNow;
+                await _orderRepo.UpdateOrderAsync(order);
+
+                return ResultModel<bool>.Success(true, "Đã cập nhật trạng thái thanh toán thành Đã thanh toán!");
+            }
+            catch (Exception ex) { return ResultModel<bool>.Exception(ex); }
+        }
+    }
+   
+}
+
+// === File: AdProductService.cs ===
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using SHOP.CO.Application.Common;
+using SHOP.CO.Domain.Shared;
+using SHOP.CO.Infrastructure.Persistence;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
+namespace SHOP.CO.Application.Services
+{
+    public interface IProductAdminService
+    {
+        IQueryable<ProductDto> GetProductODataQuery();
+
+        Task<ResultModel<ProductDetailAdminDto>> GetProductByIdAsync(int id);
+        Task<ResultModel<int>> CreateProductAsync(CreateProductRequestDto dto);
+        Task<ResultModel<bool>> UpdateAsync(int id, UpdateProductRequestDto dto);
+        Task<ResultModel<bool>> DeleteProductAsync(int id);
+        Task<ResultModel<bool>> DeleteProductImageAsync(int imageId);
+        Task<ResultModel<ProductFormAttributesDto>> GetFormAttributesAsync();
+    }
+    public class ProductAdminService : IProductAdminService
+    {
+        private readonly IProductRepository _repo;
+        private readonly ICategoryRepository _cateRepo;
+        private readonly ShopCoDbContext _context;
+        private readonly IWebHostEnvironment _env;
+
+
+        public ProductAdminService(IProductRepository repository, ICategoryRepository cateRepo, ShopCoDbContext context,IWebHostEnvironment env )
+        {
+            _repo = repository;
+            _cateRepo = cateRepo;
+            _context = context;
+            _env = env;
+        }
+        // HÀM LẤY ATTRIBUTES(TỰ HỌC TỪ DATABASE) 🟢
+        public async Task<ResultModel<ProductFormAttributesDto>> GetFormAttributesAsync()
+        {
+            try
+            {
+                // 1. Lấy danh sách Category 
+                var categoryEntities = _cateRepo.GetCategoriesAsQueryable();
+                var categories = await categoryEntities.Select(c => new CategorySimpleDto { Id = c.CategoryId, Name = c.CategoryName }).ToListAsync();
+
+                // 2. Tự học các giá trị mới từ DB (Quét các giá trị không bị trùng)
+                var dbBrands = await _context.Products.Where(p => !string.IsNullOrEmpty(p.Brand)).Select(p => p.Brand!).Distinct().ToListAsync();
+                var dbMaterials = await _context.Products.Where(p => !string.IsNullOrEmpty(p.Material)).Select(p => p.Material!).Distinct().ToListAsync();
+                var dbSizes = await _context.ProductVariants.Where(v => !string.IsNullOrEmpty(v.Size)).Select(v => v.Size!).Distinct().ToListAsync();
+                var dbColors = await _context.ProductVariants.Where(v => !string.IsNullOrEmpty(v.Color)).Select(v => v.Color!).Distinct().ToListAsync();
+
+                // 3. Trộn dữ liệu tĩnh (SystemAttributes) với dữ liệu mới từ DB
+                var finalBrands = SHOP.CO.Domain.Shared.SystemAttributes.Brands.Union(dbBrands).Distinct().ToList();
+                var finalMaterials = SHOP.CO.Domain.Shared.SystemAttributes.Materials.Union(dbMaterials).Distinct().ToList();
+                var finalSizes = SHOP.CO.Domain.Shared.SystemAttributes.Sizes.Union(dbSizes).Distinct().ToList();
+                var finalColors = SHOP.CO.Domain.Shared.SystemAttributes.Colors.Union(dbColors).Distinct().ToList();
+
+                var data = new ProductFormAttributesDto
+                {
+                    Categories = categories,
+                    Brands = finalBrands,
+                    Materials = finalMaterials,
+                    Sizes = finalSizes,
+                    Colors = finalColors
+                };
+
+                return ResultModel<ProductFormAttributesDto>.Success(data);
+            }
+            catch (Exception ex)
+            {
+                return ResultModel<ProductFormAttributesDto>.Exception(ex);
+            }
+        }
+
+        public IQueryable<ProductDto> GetProductODataQuery()
+        {
+            return _repo.GetProductsAsQueryable().Select(p => new ProductDto
+            {
+                ProductId = p.ProductId,
+                ProductName = p.ProductName,
+                Slug = p.Slug,
+                SalePrice = p.SalePrice,
+                BasePrice = p.BasePrice,
+                CategoryName = p.Category != null ? p.Category.CategoryName : "Không có",
+                IsActive = p.IsActive,
+                ThumbnailUrl = p.ProductImages.Where(i => i.IsThumbnail).Select(i => i.ImageUrl).FirstOrDefault()
+                               ?? p.ProductImages.Select(i => i.ImageUrl).FirstOrDefault(),
+                HasLowStock = p.ProductVariants.Any(v => v.StockQuantity <= v.LowStockThreshold),
+            });
+        }
+
+        public async Task<ResultModel<ProductDetailAdminDto>> GetProductByIdAsync(int id)
+        {
+            try
+            {
+                var product = await _repo.GetProductWithVariantsByIdAsync(id);
+                if (product == null) { return ResultModel<ProductDetailAdminDto>.Error("Không tìm thấy sản phẩm", 404); }
+
+                var data = new ProductDetailAdminDto
+                {
+                    ProductId = product.ProductId,
+                    CategoryId = product.CategoryId,
+                    ProductName = product.ProductName,
+                    Brand = product.Brand,
+                    Description = product.Description,
+                    Material = product.Material,
+                    GenderTarget = product.GenderTarget,
+                    BasePrice = product.BasePrice,
+                    SalePrice = product.SalePrice,
+                    IsFeatured = product.IsFeatured,
+                    IsBestSeller = product.IsBestSeller,
+                    IsNewArrival = product.IsNewArrival,
+                    IsActive = product.IsActive,
+                    Variants = product.ProductVariants.Select(pv => new CreateVariantDto
+                    {
+                        Sku = pv.Sku,
+                        Size = pv.Size,
+                        Color = pv.Color,
+                        ExtraPrice = pv.ExtraPrice,
+                        StockQuantity = pv.StockQuantity,
+                    }).ToList(),
+                    Images = product.ProductImages.Select(i => new ProductImageDto
+                    {
+                        ImageId = i.ImageId,
+                        ImageUrl = i.ImageUrl,
+                        IsThumbnail = i.IsThumbnail
+                    }).ToList()
+
+                };
+                return ResultModel<ProductDetailAdminDto>.Success(data);
+
+            }
+            catch (Exception ex)
+            {
+
+                return ResultModel<ProductDetailAdminDto>.Exception(ex);
+            }
+        }
+        // Tạo mới Sản phẩm kèm theo Biến thể
+        public async Task<ResultModel<int>> CreateProductAsync(CreateProductRequestDto dto)
+        {
+            try
+            {
+                // 1. Tạo Slug tự động từ Tên sản phẩm
+                string generatedSlug = GenerateSlug(dto.ProductName);
+
+                // Chống trùng Slug
+                if (await _repo.IsSlugExistsAsync(generatedSlug))
+                {
+                    generatedSlug += $"-{Guid.NewGuid().ToString().Substring(0, 5)}";
+                }
+
+                // 2. Kiểm tra danh sách biến thể có bị trùng mã SKU không
+                foreach (var variant in dto.Variants)
+                {
+                    if (await _repo.IsSkuExistsAsync(variant.Sku))
+                    {
+                        return ResultModel<int>.Error($"Mã SKU '{variant.Sku}' đã tồn tại trong hệ thống. Vui lòng chọn mã khác!", 400);
+                    }
+                }
+
+                // 3. Khởi tạo Entity Product (Core)
+                var newProduct = new Product
+                {
+                    CategoryId = dto.CategoryId,
+                    ProductName = dto.ProductName,
+                    Slug = generatedSlug,
+                    Brand = dto.Brand,
+                    Description = dto.Description,
+                    Material = dto.Material,
+                    GenderTarget = dto.GenderTarget,
+                    BasePrice = dto.BasePrice,
+                    SalePrice = dto.SalePrice,
+                    IsFeatured = dto.IsFeatured,
+                    IsActive = dto.IsActive,
+                    CreatedAt = DateTime.UtcNow,
+                    AverageRating = 0,
+                    ReviewCount = 0,
+                    ViewCount = 0,
+                    IsBestSeller = false,
+                    IsNewArrival = true // Sản phẩm mới tạo mặc định là New Arrival
+                };
+                if (dto.ImageUrls != null && dto.ImageUrls.Count > 0)
+                {
+                    for (int i = 0; i < dto.ImageUrls.Count; i++)
+                    {
+                        newProduct.ProductImages.Add(new ProductImage
+                        {
+                            ImageUrl = dto.ImageUrls[i],
+                            IsThumbnail = (i == 0), // Ảnh đầu tiên được ưu tiên làm Thumbnail
+                            CreatedAt = DateTime.UtcNow
+                        });
+                    }
+                }
+
+                // 4. Khởi tạo danh sách Entity Variants (Biến thể)
+                foreach (var vDto in dto.Variants)
+                {
+                    var newVariant = new ProductVariant
+                    {
+                        Sku = vDto.Sku,
+                        Size = vDto.Size,
+                        Color = vDto.Color,
+                        ExtraPrice = vDto.ExtraPrice,
+                        StockQuantity = vDto.StockQuantity,
+                        LowStockThreshold = 5, // Cảnh báo khi tồn kho <= 5
+                        IsActive = true,
+                        CreatedAt = DateTime.UtcNow
+                    };
+
+                    // Nối Variant vào Product (Entity Framework sẽ tự xử lý khóa ngoại ProductId)
+                    newProduct.ProductVariants.Add(newVariant);
+                }
+
+                // 5. Lưu vào Database thông qua Repository
+                var savedProduct = await _repo.CreateProductWithVariantsAsync(newProduct);
+
+                // Trả về ProductId vừa được tạo
+                return ResultModel<int>.Success(savedProduct.ProductId, "Thêm mới sản phẩm và biến thể thành công!", 201);
+            }
+            catch (Exception ex)
+            {
+                return ResultModel<int>.Exception(ex);
+            }
+        }
+
+        public async Task<ResultModel<bool>> UpdateAsync(int id, UpdateProductRequestDto dto)
+        {
+            try
+            {
+                var product = await _repo.GetProductWithVariantsByIdAsync(id);
+                if (product == null) return ResultModel<bool>.Error("Không tìm thấy sản phẩm", 404);
+
+                // Tạo Slug mới nếu đổi tên
+                string newSlug = GenerateSlug(dto.ProductName);
+                if (await _repo.IsSlugExistsAsync(newSlug, id))
+                {
+                    newSlug += $"-{Guid.NewGuid().ToString().Substring(0, 5)}";
+                }
+
+                // Cập nhật thông tin
+                product.CategoryId = dto.CategoryId;
+                product.ProductName = dto.ProductName;
+                product.Slug = newSlug;
+                product.Brand = dto.Brand;
+                product.Description = dto.Description;
+                product.Material = dto.Material;
+                product.GenderTarget = dto.GenderTarget;
+                product.BasePrice = dto.BasePrice;
+                product.SalePrice = dto.SalePrice;
+                product.IsFeatured = dto.IsFeatured;
+                product.IsBestSeller = dto.IsBestSeller;
+                product.IsNewArrival = dto.IsNewArrival;
+                product.IsActive = dto.IsActive;
+                product.UpdatedAt = DateTime.UtcNow;
+
+                if (dto.ImageUrls != null && dto.ImageUrls.Count > 0)
+                {
+                    // Bước A: Xóa bỏ các record ảnh cũ trong bảng ProductImages
+                    _context.ProductImages.RemoveRange(product.ProductImages);
+
+                    // Bước B: Thêm các record ảnh mới vào
+                    foreach (var url in dto.ImageUrls)
+                    {
+                        product.ProductImages.Add(new ProductImage
+                        {
+                            ProductId = product.ProductId,
+                            ImageUrl = url,
+                            IsThumbnail = (product.ProductImages.Count == 0), // Ảnh đầu tiên làm Thumbnail
+                            CreatedAt = DateTime.UtcNow
+                        });
+                    }
+                }
+
+                if (dto.Variants != null && dto.Variants.Any())
+                {
+                    var dtoSkus = dto.Variants.Select(v => v.Sku).ToList();
+
+                    var varianToRemove = product.ProductVariants.Where(v => !dtoSkus.Contains(v.Sku)).ToList();
+                    foreach (var v in varianToRemove)
+                    {
+                        v.IsActive = false;
+                    }
+
+                    foreach (var vDto in dto.Variants)
+                    {
+                        var existingVariant = product.ProductVariants.FirstOrDefault(v => v.Sku == vDto.Sku);
+                        if(existingVariant != null)
+                        {
+                            existingVariant.Size = vDto.Size;
+                            existingVariant.Color = vDto.Color;
+                            existingVariant.ExtraPrice = vDto.ExtraPrice;
+                            existingVariant.StockQuantity = vDto.StockQuantity;
+                            existingVariant.IsActive = true; // Kích hoạt lại nếu lỡ bị khóa trước đó
+                            existingVariant.UpdatedAt = DateTime.UtcNow;
+                        }
+                        else
+                        {
+                            if (await _repo.IsSkuExistsAsync(vDto.Sku))
+                            {
+                                return ResultModel<bool>.Error($"Mã SKU '{vDto.Sku}' đã tồn tại ở một sản phẩm khác. Vui lòng chọn mã khác!", 400);
+                            }
+                            // Thêm mới
+                            product.ProductVariants.Add(new ProductVariant
+                            {
+                                ProductId = product.ProductId,
+                                Sku = vDto.Sku,
+                                Size = vDto.Size,
+                                Color = vDto.Color,
+                                ExtraPrice = vDto.ExtraPrice,
+                                StockQuantity = vDto.StockQuantity,
+                                LowStockThreshold = 5,
+                                IsActive = true,
+                                CreatedAt = DateTime.UtcNow
+                            });
+                        }
+
+                    }
+
+
+                }
+                else
+                {
+                    return ResultModel<bool>.Error("Sản phẩm phải có ít nhất 1 biến thể!", 400);
+                }
+
+
+
+                await _repo.UpdateAsync(product);
+                return ResultModel<bool>.Success(true, "Cập nhật sản phẩm thành công!");
+            }
+            catch (Exception ex) { return ResultModel<bool>.Exception(ex); }
+        }
+    
+
+
+        public async Task<ResultModel<bool>> DeleteProductAsync(int id)
+        {
+            try
+            {
+                var product = await _repo.GetProductWithVariantsByIdAsync(id);
+                if (product == null) return ResultModel<bool>.Error("Không tìm thấy sản phẩm", 404);
+
+                await _repo.SoftDeleteProductAsync(product);
+                return ResultModel<bool>.Success(true, "Đã xóa sản phẩm!");
+            }
+            catch (Exception ex) { return ResultModel<bool>.Exception(ex); }
+        }
+        public async Task<ResultModel<bool>> DeleteProductImageAsync(int imageId)
+        {
+            try
+            {
+                // Lấy ảnh từ Database
+                var image = await _context.ProductImages.FindAsync(imageId);
+                if (image == null) return ResultModel<bool>.Error("Không tìm thấy ảnh", 404);
+
+                // Xóa file vật lý trong thư mục wwwroot
+                if (!string.IsNullOrEmpty(image.ImageUrl))
+                {
+                    // Lấy WebRootPath, nếu rỗng thì tự build đường dẫn
+                    string webRootPath = _env.WebRootPath;
+                    if (string.IsNullOrWhiteSpace(webRootPath))
+                    {
+                        webRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                    }
+
+                    // Loại bỏ dấu '/' ở đầu ImageUrl để nối chuỗi cho chuẩn (VD: /uploads/products/anh.jpg -> uploads/products/anh.jpg)
+                    string imageRelativePath = image.ImageUrl.TrimStart('/');
+                    string exactFilePath = Path.Combine(webRootPath, imageRelativePath);
+
+                    // Xóa file nếu nó tồn tại trên ổ cứng
+                    if (System.IO.File.Exists(exactFilePath))
+                    {
+                        System.IO.File.Delete(exactFilePath);
+                    }
+                }
+
+                // Xóa dòng dữ liệu trong Database
+                _context.ProductImages.Remove(image);
+                await _context.SaveChangesAsync();
+
+                return ResultModel<bool>.Success(true, "Xóa ảnh thành công!");
+            }
+            catch (Exception ex)
+            {
+                return ResultModel<bool>.Exception(ex);
+            }
+        }
+
+        // Hàm tiện ích nội bộ để tự tạo chữ không dấu làm đường dẫn (VD: "Áo Thun" -> "ao-thun")
+        private string GenerateSlug(string phrase)
+        {
+            string str = phrase.ToLower();
+            str = Regex.Replace(str, @"á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ặ|ẵ|â|ấ|ầ|ẩ|ậ|ẫ", "a");
+            str = Regex.Replace(str, @"é|è|ẻ|ẹ|ẽ|ê|ế|ề|ể|ệ|ễ", "e");
+            str = Regex.Replace(str, @"í|ì|ỉ|ị|ĩ", "i");
+            str = Regex.Replace(str, @"ó|ò|ỏ|ọ|õ|ô|ố|ồ|ổ|ộ|ỗ|ơ|ớ|ờ|ở|ợ|ỡ", "o");
+            str = Regex.Replace(str, @"ú|ù|ủ|ụ|ũ|ư|ứ|ừ|ử|ự|ữ", "u");
+            str = Regex.Replace(str, @"ý|ỳ|ỷ|ỵ|ỹ", "y");
+            str = Regex.Replace(str, @"đ", "d");
+            str = Regex.Replace(str, @"[^a-z0-9\s-]", ""); // Xóa ký tự đặc biệt
+            str = Regex.Replace(str, @"\s+", " ").Trim(); // Xóa khoảng trắng thừa
+            str = Regex.Replace(str, @"\s", "-"); // Thay khoảng trắng bằng dấu -
+            return str;
+        }
+    }
+}
+
+// === File: AdUserService.cs ===
+using SHOP.CO.Application.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SHOP.CO.Application.Services
+{
+    public interface IUserAdminService
+    {
+        IQueryable<UserDto> GetUserODataQuery();
+        Task<ResultModel<bool>> UpdateUserStatusAsync(int userId, string newStatus);
+        Task<ResultModel<bool>> UpdateUserRoleAsync(int userId, string newRole);
+    }
+    public class UserAdminService : IUserAdminService
+    {
+        private readonly IUserRepository _userRepo;
+
+        public UserAdminService(IUserRepository userRepo)
+        {
+            _userRepo = userRepo;
+        }
+
+        public IQueryable<UserDto> GetUserODataQuery()
+        {
+            return _userRepo.GetUsersAsQueryable().Select(
+                u => new UserDto
+                {
+                    UserId = u.UserId,
+                    FullName = u.FullName,
+                    Email = u.Email,
+                    Phone = u.Phone,
+                    Role = u.Role,
+                    Status = u.Status,
+                    CreateAt = u.CreatedAt,
+                    LastLoginAt = u.LastLoginAt,
+                }
+                );
+        }
+
+        public async Task<ResultModel<bool>> UpdateUserRoleAsync(int userId, string newRole)
+        {
+            try
+            {
+               var user = await _userRepo.GetUserByIdAsync( userId );
+                if (user == null) { return ResultModel<bool>.Error("Lỗi không tìm thấy người dùng này", 404); }
+                if (user.Role == "Admin") { ResultModel<bool>.Error("Không thể sửa đổi tài khoản này", 404); }
+
+                user.Role = newRole;
+                user.UpdatedAt = DateTime.UtcNow;
+                await _userRepo.UpdateAsync( user );
+                return ResultModel<bool>.Success(true, $"Đã phân quyền tài khoản thành: {newRole}");
+
+            }
+            catch (Exception ex)
+            {
+                return ResultModel<bool>.Exception(ex);
+            }
+        }
+
+        public async Task<ResultModel<bool>> UpdateUserStatusAsync(int userId, string newStatus)
+        {
+            try
+            {
+                var user = await _userRepo.GetUserByIdAsync(userId);
+                if (user == null) { return ResultModel<bool>.Error("Lỗi không tìm thấy người dùng này", 404); }
+                if (user.Role == "Admin") { ResultModel<bool>.Error("Không thể sửa đổi tài khoản này", 404); }
+
+                user.Status = newStatus;
+                user.UpdatedAt = DateTime.UtcNow;
+                await _userRepo.UpdateAsync(user);
+                return ResultModel<bool>.Success(true, $"Đã cập nhật trạng thái thành: {newStatus}");
+
+            }
+            catch (Exception ex)
+            {
+                return ResultModel<bool>.Exception(ex);
+            }
+        }
+    }
+}
+
+// === File: AuthService.cs ===
+using Microsoft.AspNetCore.Http;
+using SHOP.CO.Application.Common;
+using System.Security.Claims;
+namespace SHOP.CO.Application.Services
+{
+    public interface IAuthService
+    {
+        Task<ResultModel<string>> RegisterAsync(RegisterDto dto);
+        Task<ResultModel<AuthResponseDto>> LoginAsync(LoginDto dto);
+
+        Task<ResultModel<AuthResponseDto>> RefreshTokenAsync(RefreshTokenDto dto);
+        Task<ResultModel<string>> LogoutAsync(int userId);
+
+        Task<ResultModel<string>> VerifyEmailAsync(VerifyEmailDto dto);
+        Task<ResultModel<string>> ResendVerificationEmailAsync(ResendOtpDto dto);
+        Task<ResultModel<string>> ForgotPasswordAsync(ForgotPasswordDto dto);
+        Task<ResultModel<string>> ResetPasswordAsync(ResetPasswordDto dto);
+
+    }
+
+    public class AuthService : IAuthService
+    {
+        private readonly IUserRepository _userRepo;
+        private readonly ITokenGenerator _tokenGenerator;
+        private readonly IPasswordHasher _passwordHasher;
+        protected readonly IHttpContextAccessor _http;
+        private readonly IEmailSender _emailSender;
+
+        public AuthService(
+             IUserRepository userRepo,
+             IPasswordHasher passwordHasher,
+             ITokenGenerator tokenService,
+             IHttpContextAccessor http,
+            IEmailSender emailSender
+            )
+        {
+            _userRepo = userRepo;
+            _passwordHasher = passwordHasher;
+            _tokenGenerator = tokenService;
+            _http = http;
+            _emailSender = emailSender;
+        }
+
+
+
+        protected int CurrentUserId()
+        {
+            return int.Parse(_http.HttpContext.User
+                .FindFirst(ClaimTypes.NameIdentifier)!
+                .Value);
+        }
+
+        protected string CurrentUserRole()
+        {
+            return _http.HttpContext.User
+                .FindFirst("Role")!.Value;
+        }
+
+        public async Task<ResultModel<string>> RegisterAsync(RegisterDto dto)
+        {
+            try
+            {
+                if (await _userRepo.EmailExistsAsync(dto.Email))
+                {
+                    return ResultModel<string>.Error("Email này đã được sử dụng!", 400);
+                }
+                // 🟢 1. SINH MÃ OTP 6 SỐ
+              string otpCode = GenerateRandomOtp(6);
+
+                var user = new User
+                {
+                    FullName = dto.FullName,
+                    Email = dto.Email,
+                    PasswordHash = _passwordHasher.HashPassword(dto.Password),
+                    VerificationToken = otpCode,
+                    VerificationExpiresAt = DateTime.UtcNow.AddMinutes(15),
+                    Role = "Customer",
+                    Status = "Unverified",
+                    CreatedAt = DateTime.UtcNow
+                };
+                string emailBody = $@"
+                    <div style='font-family: Arial, sans-serif; padding: 20px;'>
+                        <h2>Chào mừng đến với SHOP.CO!</h2>
+                        <p>Xin chào <strong>{user.FullName}</strong>,</p>
+                        <p>Cảm ơn bạn đã đăng ký tài khoản. Mã xác minh (OTP) của bạn là:</p>
+                        <h1 style='color: #0d6efd; letter-spacing: 5px;'>{otpCode}</h1>
+                        <p>Mã này sẽ hết hạn sau <strong>15 phút</strong>.</p>
+                        <p>Vui lòng không chia sẻ mã này cho bất kỳ ai.</p>
+                    </div>";
+                await _userRepo.AddUserAsync(user);
+
+                await _emailSender.SendEmailAsync(user.Email, "Xác minh tài khoản SHOP.CO", emailBody);
+
+                return ResultModel<string>.Success(null, "Đăng ký thành công! Vui lòng kiểm tra Email để lấy mã xác minh.", 201);
+            }
+            catch (Exception ex)
+            {
+
+                var innerEx = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return ResultModel<string>.Error(innerEx, 500);
+                //return ResultModel<string>.Exception(ex);
+            }
+        }
+
+        public async Task<ResultModel<AuthResponseDto>> LoginAsync(LoginDto dto)
+        {
+            try
+            {
+
+                var user = await _userRepo.GetUserByEmailAsync(dto.Email);
+
+                if (user == null) return ResultModel<AuthResponseDto>.Error("Sai tài khoản hoặc mật khẩu!", 400);
+
+                // 🟢 CHẶN ĐĂNG NHẬP NẾU CHƯA XÁC MINH EMAIL
+                if (user.Status == "Unverified")
+                    return ResultModel<AuthResponseDto>.Error("Tài khoản chưa được xác minh. Vui lòng kiểm tra Email!", 403);
+
+                if (user.Status == "Locked" || user.Status == "Deleted")
+                    return ResultModel<AuthResponseDto>.Error("Tài khoản của bạn đã bị khóa hoặc vô hiệu hóa!", 403);
+
+                if (!_passwordHasher.VerifyPassword(dto.Password, user.PasswordHash))
+                    return ResultModel<AuthResponseDto>.Error("Sai tài khoản hoặc mật khẩu!", 400);
+
+                var accessToken = _tokenGenerator.GenerateAccessToken(user);
+                var refreshToken = _tokenGenerator.GenerateRefreshToken();
+
+                user.RefreshToken = refreshToken;
+                user.RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(7);
+                user.LastLoginAt = DateTime.UtcNow;
+
+                await _userRepo.UpdateAsync(user);
+
+                var data = new AuthResponseDto
+                {
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken
+                };
+
+                return ResultModel<AuthResponseDto>.Success(data, "Đăng nhập thành công!", 200);
+            }
+            catch (Exception ex)
+            {
+
+                return ResultModel<AuthResponseDto>.Exception(ex);
+            }
+        }
+
+        public async Task<ResultModel<AuthResponseDto>> RefreshTokenAsync(RefreshTokenDto dto)
+        {
+            try
+            {
+                // 1. Tìm User có chứa RefreshToken này
+                var user = await _userRepo.GetUserByRefreshTokenAsync(dto.RefreshToken);
+
+                // 2. Kiểm tra Token có tồn tại và còn hạn không
+                if (user == null || user.RefreshTokenExpiresAt == null || user.RefreshTokenExpiresAt <= DateTime.UtcNow)
+                {
+                    return ResultModel<AuthResponseDto>.Error("Refresh Token không hợp lệ hoặc đã hết hạn. Vui lòng đăng nhập lại!", 401);
+                }
+
+                // 3. Sinh cặp Token mới
+                var newAccessToken = _tokenGenerator.GenerateAccessToken(user);
+                var newRefreshToken = _tokenGenerator.GenerateRefreshToken();
+
+                // 4. Cập nhật lại vào DB
+                user.RefreshToken = newRefreshToken;
+                user.RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(7);
+                await _userRepo.UpdateAsync(user);
+
+                // 5. Trả về
+                var data = new AuthResponseDto { AccessToken = newAccessToken, RefreshToken = newRefreshToken };
+                return ResultModel<AuthResponseDto>.Success(data, "Làm mới token thành công!");
+            }
+            catch (Exception ex)
+            {
+                return ResultModel<AuthResponseDto>.Exception(ex);
+            }
+        }
+
+        public async Task<ResultModel<string>> LogoutAsync(int userId)
+        {
+            try
+            {
+                var user = await _userRepo.GetUserByIdAsync(userId);
+
+                if (user != null)
+                {
+                    // xóa hoàn toàn Token 
+                    user.RefreshToken = null;
+                    user.RefreshTokenExpiresAt = null;
+                    await _userRepo.UpdateAsync(user);
+                }
+                return ResultModel<string>.Success(null, "Đăng xuất thành công!");
+            }
+            catch (Exception ex)
+            {
+                return ResultModel<string>.Exception(ex);
+            }
+        }
+        public async Task<ResultModel<string>> VerifyEmailAsync(VerifyEmailDto dto)
+        {
+            try
+            {
+                var user = await _userRepo.GetUserByEmailAsync(dto.Email);
+                if (user == null) return ResultModel<string>.Error("Không tìm thấy tài khoản!", 404);
+
+                if (user.Status != "Unverified") return ResultModel<string>.Error("Tài khoản này đã được xác minh trước đó!", 400);
+
+                if (user.VerificationToken != dto.OtpCode) return ResultModel<string>.Error("Mã xác minh không chính xác!", 400);
+
+                if (user.VerificationExpiresAt < DateTime.UtcNow) return ResultModel<string>.Error("Mã xác minh đã hết hạn. Vui lòng yêu cầu gửi lại mã mới!", 400);
+
+                // Xác minh thành công -> Đổi Status và xóa Token
+                user.Status = "Active";
+                user.VerificationToken = null;
+                user.VerificationExpiresAt = null;
+
+                await _userRepo.UpdateAsync(user);
+
+                return ResultModel<string>.Success(null, "Xác minh Email thành công! Bạn có thể đăng nhập ngay bây giờ.", 200);
+            }
+            catch (Exception ex) { return ResultModel<string>.Exception(ex); }
+        }
+
+        // 🟢 HÀM YÊU CẦU GỬI LẠI MÃ OTP
+        public async Task<ResultModel<string>> ResendVerificationEmailAsync(ResendOtpDto dto)
+        {
+            try
+            {
+                var user = await _userRepo.GetUserByEmailAsync(dto.Email);
+                if (user == null) return ResultModel<string>.Error("Không tìm thấy tài khoản!", 404);
+
+                if (user.Status != "Unverified") return ResultModel<string>.Error("Tài khoản này đã được xác minh trước đó!", 400);
+
+                // Sinh mã mới
+                string newOtp = new Random().Next(100000, 999999).ToString();
+                user.VerificationToken = newOtp;
+                user.VerificationExpiresAt = DateTime.UtcNow.AddMinutes(15);
+                await _userRepo.UpdateAsync(user);
+
+                // Gửi lại Email
+                string emailBody = $@"
+                    <div style='font-family: Arial, sans-serif; padding: 20px;'>
+                        <h2>Gửi lại mã xác minh SHOP.CO!</h2>
+                        <p>Xin chào <strong>{user.FullName}</strong>,</p>
+                        <p>Bạn vừa yêu cầu gửi lại mã xác minh. Mã OTP mới của bạn là:</p>
+                        <h1 style='color: #dc3545; letter-spacing: 5px;'>{newOtp}</h1>
+                        <p>Mã này sẽ hết hạn sau <strong>15 phút</strong>.</p>
+                    </div>";
+
+                await _emailSender.SendEmailAsync(user.Email, "Mã xác minh mới từ SHOP.CO", emailBody);
+
+                return ResultModel<string>.Success(null, "Đã gửi lại mã xác minh vào Email của bạn.", 200);
+            }
+            catch (Exception ex) { return ResultModel<string>.Exception(ex); }
+        }
+        
+        // 🟢 HÀM 1: GỬI OTP QUÊN MẬT KHẨU
+        public async Task<ResultModel<string>> ForgotPasswordAsync(ForgotPasswordDto dto)
+        {
+            try
+            {
+                var user = await _userRepo.GetUserByEmailAsync(dto.Email);
+                if (user == null) return ResultModel<string>.Error("Không tìm thấy tài khoản với email này!", 404);
+
+                // Sinh mã OTP 6 số
+                string otpCode = new Random().Next(100000, 999999).ToString();
+
+                // Lưu vào cột ResetPassword
+                user.ResetPasswordToken = otpCode;
+                user.ResetPasswordExpiresAt = DateTime.UtcNow.AddMinutes(15);
+                await _userRepo.UpdateAsync(user);
+
+                // Gửi Email
+                string emailBody = $@"
+                    <div style='font-family: Arial, sans-serif; padding: 20px;'>
+                        <h2>Yêu cầu đặt lại mật khẩu!</h2>
+                        <p>Xin chào <strong>{user.FullName}</strong>,</p>
+                        <p>Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn. Mã OTP của bạn là:</p>
+                        <h1 style='color: #dc3545; letter-spacing: 5px;'>{otpCode}</h1>
+                        <p>Mã này sẽ hết hạn sau <strong>15 phút</strong>. Nếu bạn không yêu cầu, vui lòng bỏ qua email này.</p>
+                    </div>";
+
+                await _emailSender.SendEmailAsync(user.Email, "Khôi phục mật khẩu SHOP.CO", emailBody);
+
+                return ResultModel<string>.Success(null, "Mã OTP khôi phục đã được gửi vào Email của bạn.", 200);
+            }
+            catch (Exception ex) { return ResultModel<string>.Exception(ex); }
+        }
+
+        // 🟢 HÀM 2: ĐẶT LẠI MẬT KHẨU MỚI BẰNG OTP
+        public async Task<ResultModel<string>> ResetPasswordAsync(ResetPasswordDto dto)
+        {
+            try
+            {
+                var user = await _userRepo.GetUserByEmailAsync(dto.Email);
+                if (user == null) return ResultModel<string>.Error("Không tìm thấy tài khoản!", 404);
+
+                if (user.ResetPasswordToken != dto.OtpCode) return ResultModel<string>.Error("Mã OTP không chính xác!", 400);
+                if (user.ResetPasswordExpiresAt < DateTime.UtcNow) return ResultModel<string>.Error("Mã OTP đã hết hạn!", 400);
+
+                // Cập nhật mật khẩu mới và xóa OTP
+                user.PasswordHash = _passwordHasher.HashPassword(dto.NewPassword);
+                user.ResetPasswordToken = null;
+                user.ResetPasswordExpiresAt = null;
+
+                // Nếu tài khoản chưa verify, verify luôn cho họ
+                if (user.Status == "Unverified") user.Status = "Active";
+
+                await _userRepo.UpdateAsync(user);
+
+                return ResultModel<string>.Success(null, "Đặt lại mật khẩu thành công! Bạn có thể đăng nhập ngay.", 200);
+            }
+            catch (Exception ex) { return ResultModel<string>.Exception(ex); }
+        }
+        private string GenerateRandomOtp(int length)
+        {
+            using var rng = System.Security.Cryptography.RandomNumberGenerator.Create();
+            byte[] bytes = new byte[length];
+            rng.GetBytes(bytes);
+            return string.Concat(bytes.Select(b => (b % 10).ToString()));
+        }
+    }
+}
+
+// === File: ProductService.cs ===
+
+namespace SHOP.CO.Application.Services
+{
+    public interface IProductService
+    {
+        // test
+        Task<PagedResult<ProductDto>> GetProductsAsync(string? searchTerm, int pageNumber, int pageSize);
+        // test
+
+    }
+    public class ProductService : IProductService
+    {
+        private readonly IProductRepository _repo;
+
+        public ProductService(IProductRepository repository)
+        {
+            _repo= repository;
+        }
+
+
+
+        public async Task<PagedResult<ProductDto>> GetProductsAsync(string? searchTerm, int pageNumber, int pageSize)
+        {
+            // Logic mặc định chống lỗi
+            if (pageNumber < 1) pageNumber = 1;
+            if (pageSize < 1 || pageSize > 100) pageSize = 10; // Chặn request lấy quá nhiều data
+
+
+            var result = await _repo.GetPagedProductAsync(searchTerm, pageNumber, pageSize);
+
+            // chuyển entity => dto
+            var dtos = result.Items.Select(p => new ProductDto
+            {
+                ProductId = p.ProductId,
+                ProductName = p.ProductName,
+                Slug = p.Slug,
+                CategoryName = p.Category?.CategoryName,
+                BasePrice = p.BasePrice,
+                SalePrice = p.SalePrice,
+            }).ToList();
+
+            //trả kq
+            return new PagedResult<ProductDto>
+            { 
+                Items = dtos ,
+                TotalCount = dtos.Count,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            
+            };
+
+        }
+    }
+}
+

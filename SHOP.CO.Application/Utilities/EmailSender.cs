@@ -18,11 +18,17 @@ namespace SHOP.CO.Application.Utilities
         public EmailSender(IOptions<EmailSettings> emailSettings)
         {
             _emailSettings = emailSettings.Value;
+            // 🟢 Debug để xem app đang đọc cái gì
+            Console.WriteLine("DEBUG: Email: " + _emailSettings.Email);
+            // Chỉ in 3 ký tự đầu của mật khẩu để biết có nhận được mật khẩu không
+            string passMask = string.IsNullOrEmpty(_emailSettings.Password) ? "NULL" : _emailSettings.Password.Substring(0, Math.Min(3, _emailSettings.Password.Length)) + "...";
+            Console.WriteLine("DEBUG: Password start: " + passMask);
         }
 
         public async Task SendEmailAsync(string toEmail, string subjet, string body)
         {
             var email = new MimeMessage();
+            Console.WriteLine("DEBUG: Host value: " + (_emailSettings.Host ?? "NULL"));
             email.From.Add(new MailboxAddress("SHOP.CO System", _emailSettings.Email));
             email.To.Add(MailboxAddress.Parse(toEmail));
             email.Subject = subjet;

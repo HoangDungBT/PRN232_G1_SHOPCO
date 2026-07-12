@@ -1,0 +1,143 @@
+﻿@{
+    ViewData["Title"] = "Quản Lý Kho";
+}
+<div class="card shadow-sm border-0 mt-3">
+    <div class="card-header bg-white">
+        <h5 class="mb-0 fw-bold"><i class="fas fa-warehouse me-2"></i> Quản Lý Tồn Kho</h5>
+    </div>
+    <div class="card-body">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th>SKU</th>
+                    <th>Mẫu</th>
+                    <th>Còn lại</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody id="inventoryBody">
+                <!-- Data đổ từ OData -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Điều chỉnh -->
+<div class="modal fade" id="adjustModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Điều chỉnh tồn kho</h5>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="vId" />
+                <input type="number" id="qChange" class="form-control" placeholder="Số lượng (+/-)">
+                <input type="text" id="reason" class="form-control mt-2" placeholder="Lý do">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="submitAdjust()">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const apiUrl = '@ViewBag.ApiBaseUrl';
+        const token = '@ViewBag.Token';
+
+        // let url = `${apiUrl}odata/AdminInventoryOData?$expand=Product`;
+
+        let currentPage = 1;
+        let pageSize = 10;
+        
+        $(document).ready(loadInventory);
+
+        function resetAndLoad() {
+            currentPage = 1;
+            loadInventory();
+        }
+         function loadInventory() {
+            let skip = (currentPage - 1) * pageSize;
+            let keyword = $('#searchInput').val();
+
+            // 🟢 XÂY DỰNG URL ODATA
+            // 1. $expand: Lấy thông tin Product
+            // 2. $filter: Chỉ lấy IsActive = true và lọc theo tên nếu có
+            // 3. $orderby: Tồn kho thấp nhất lên đầu
+            let filterQuery = `Product/IsActive eq true`;
+            if (keyword) {
+                filterQuery += ` and contains(tolower(Product/ProductName), '${keyword.toLowerCase()}')`;
+            }
+
+            let url = `${apiUrl}odata/AdminInventoryOData?$expand=Product&$filter=${filterQuery}&$orderby=StockQuantity asc&$top=${pageSize}&$skip=${skip}&$count=true`;
+
+            $.ajax({
+                url: url,
+                headers: { 'Authorization': 'Bearer ' + token },
+                success: function(res) {
+                    let html = '';
+                    let totalCount = res['@@odata.count'] || 0;
+
+                    if (res.value && res.value.length > 0) {
+                        res.value.forEach(v => {
+                            let pName = v.Product ? v.Product.ProductName : "N/A";
+                            html += `<tr>
+                                <td>${pName}</td>
+                                <td><code>${v.Sku}</code></td>
+                                <td>${v.Color || ''} - ${v.Size || ''}</td>
+                                <td class="fw-bold ${v.StockQuantity <= (v.LowStockThreshold || 5) ? 'text-danger' : 'text-dark'}">
+                                    ${v.StockQuantity}
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="showAdjustModal(${v.VariantId})">Điều chỉnh</button>
+                                </td>
+                            </tr>`;
+                        });
+                    } else {
+                        html = '<tr><td colspan="5" class="text-center">Không tìm thấy sản phẩm!</td></tr>';
+                    }
+                    $('#inventoryBody').html(html);
+                    renderPagination(totalCount);
+                }
+            });
+        }
+
+        function showAdjustModal(id) {
+            $('#vId').val(id);
+            new bootstrap.Modal('#adjustModal').show();
+        }
+
+        function submitAdjust() {
+            let data = { variantId: $('#vId').val(), quantityChange: parseInt($('#qChange').val()), reason: $('#reason').val() };
+            $.ajax({
+                url: apiUrl + 'api/admin/inventory/adjust',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                headers: { 'Authorization': 'Bearer ' + token },
+                success: function() {
+                    $('#adjustModal').modal('hide');
+                    loadInventory();
+                    },
+                    error: function(xhr) {
+            let errorMsg = xhr.responseJSON ? xhr.responseJSON.message : "Có lỗi xảy ra!";
+            Swal.fire('Lỗi', errorMsg, 'error');
+        }
+            });
+        }
+
+        function renderPagination(total) {
+            let totalPages = Math.ceil(total / pageSize);
+            let html = '';
+            for(let i=1; i<=totalPages; i++) {
+                html += `<li class="page-item ${i === currentPage ? 'active' : ''}"><a class="page-link" href="#" onclick="currentPage=${i}; loadInventory(); return false;">${i}</a></li>`;
+            }
+            $('#paginationUl').html(html);
+
+        }
+
+    </script>
+}

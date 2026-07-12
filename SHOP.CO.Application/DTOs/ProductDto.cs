@@ -24,6 +24,7 @@ namespace SHOP.CO.Application.DTOs
         public bool IsActive { get; set; }
         public string? CategoryName { get; set; }
         public string? ThumbnailUrl { get; set; }
+        public bool HasLowStock { get; set; }
 
         public virtual List<ProductVariantDto> Variants { get; set; } = new List<ProductVariantDto>();
         public virtual List<ProductImageDto> Images { get; set; } = new List<ProductImageDto>();

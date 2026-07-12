@@ -12,7 +12,7 @@ using SHOP.CO.Infrastructure.Persistence;
 namespace SHOP.CO.Infrastructure.Migrations
 {
     [DbContext(typeof(ShopCoDbContext))]
-    [Migration("20260523120619_Init")]
+    [Migration("20260704204458_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace SHOP.CO.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.27")
+                .HasAnnotation("ProductVersion", "8.0.28")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -94,6 +94,8 @@ namespace SHOP.CO.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsSelected = true,
                             Quantity = 2,
+                            SelectedColor = "Trắng",
+                            SelectedSize = "M",
                             UnitPrice = 120000m,
                             UserId = 2,
                             VariantId = 1
@@ -104,19 +106,23 @@ namespace SHOP.CO.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsSelected = true,
                             Quantity = 1,
-                            UnitPrice = 300000m,
+                            SelectedColor = "Xanh Denim",
+                            SelectedSize = "30",
+                            UnitPrice = 399000m,
                             UserId = 2,
-                            VariantId = 3
+                            VariantId = 5
                         },
                         new
                         {
                             CartItemId = 3,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsSelected = true,
+                            IsSelected = false,
                             Quantity = 1,
-                            UnitPrice = 400000m,
+                            SelectedColor = "Trắng",
+                            SelectedSize = "M",
+                            UnitPrice = 250000m,
                             UserId = 3,
-                            VariantId = 4
+                            VariantId = 7
                         });
                 });
 
@@ -199,11 +205,50 @@ namespace SHOP.CO.Infrastructure.Migrations
                         new
                         {
                             CategoryId = 3,
+                            CategoryName = "Unisex",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsActive = true,
+                            Slug = "thoi-trang-unisex",
+                            SortOrder = 0
+                        },
+                        new
+                        {
+                            CategoryId = 4,
                             CategoryName = "Áo Thun Nam",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsActive = true,
                             ParentCategoryId = 1,
                             Slug = "ao-thun-nam",
+                            SortOrder = 0
+                        },
+                        new
+                        {
+                            CategoryId = 5,
+                            CategoryName = "Quần Jeans Nam",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsActive = true,
+                            ParentCategoryId = 1,
+                            Slug = "quan-jeans-nam",
+                            SortOrder = 0
+                        },
+                        new
+                        {
+                            CategoryId = 6,
+                            CategoryName = "Váy Nữ",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsActive = true,
+                            ParentCategoryId = 2,
+                            Slug = "vay-nu",
+                            SortOrder = 0
+                        },
+                        new
+                        {
+                            CategoryId = 7,
+                            CategoryName = "Áo Sơ Mi Nữ",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsActive = true,
+                            ParentCategoryId = 2,
+                            Slug = "ao-so-mi-nu",
                             SortOrder = 0
                         });
                 });
@@ -332,17 +377,21 @@ namespace SHOP.CO.Infrastructure.Migrations
                             Amount = 240000m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             OrderId = 1,
+                            PaymentMethod = "Online",
+                            PaymentProvider = "VNPay",
                             RecordType = "Payment",
                             Status = "Success",
+                            TransactionCode = "VNP123456",
                             UsedCount = 0,
                             UserId = 2
                         },
                         new
                         {
                             RecordId = 2,
-                            Code = "GIAM10K",
+                            Code = "FREESHIP19K",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DiscountValue = 10000m,
+                            DiscountType = "Fixed",
+                            DiscountValue = 19000m,
                             OrderId = 2,
                             RecordType = "VoucherUsage",
                             Status = "Applied",
@@ -352,13 +401,42 @@ namespace SHOP.CO.Infrastructure.Migrations
                         new
                         {
                             RecordId = 3,
-                            Amount = 400000m,
+                            Amount = 300000m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             OrderId = 3,
+                            PaymentMethod = "COD",
                             RecordType = "Payment",
-                            Status = "Success",
+                            Status = "Pending",
                             UsedCount = 0,
                             UserId = 3
+                        },
+                        new
+                        {
+                            RecordId = 4,
+                            Code = "WELCOME50",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DiscountType = "Fixed",
+                            DiscountValue = 50000m,
+                            EndAt = new DateTime(2024, 2, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            MinOrderAmount = 200000m,
+                            Name = "Giảm 50K cho thành viên mới",
+                            RecordType = "Voucher",
+                            StartAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Status = "Active",
+                            UsageLimit = 1000,
+                            UsedCount = 150
+                        },
+                        new
+                        {
+                            RecordId = 5,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EndAt = new DateTime(2024, 1, 2, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Sale 11.11",
+                            PayloadJson = "{\"discountPercent\": 10}",
+                            RecordType = "FlashSale",
+                            StartAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Status = "Active",
+                            UsedCount = 0
                         });
                 });
 
@@ -451,9 +529,10 @@ namespace SHOP.CO.Infrastructure.Migrations
                         {
                             ActivityId = 1,
                             ActivityType = "Review",
-                            Comment = "Áo mặc mát mẻ, đẹp",
+                            Comment = "Áo chất lượng rất tốt, form chuẩn.",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsActive = true,
+                            OrderItemId = 1,
                             ProductId = 1,
                             Rating = 5,
                             UserId = 2
@@ -464,7 +543,7 @@ namespace SHOP.CO.Infrastructure.Migrations
                             ActivityType = "Wishlist",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsActive = true,
-                            ProductId = 2,
+                            ProductId = 5,
                             UserId = 3
                         },
                         new
@@ -473,8 +552,27 @@ namespace SHOP.CO.Infrastructure.Migrations
                             ActivityType = "Search",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsActive = true,
-                            Keyword = "Áo khoác mùa đông",
+                            Keyword = "quần jeans nam",
                             UserId = 2
+                        },
+                        new
+                        {
+                            ActivityId = 4,
+                            ActivityType = "RecentlyViewed",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsActive = true,
+                            ProductId = 2,
+                            UserId = 3
+                        },
+                        new
+                        {
+                            ActivityId = 5,
+                            ActivityType = "AiColorSearch",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            InputJson = "{\"imageUrl\": \"/uploads/user-search-1.jpg\"}",
+                            IsActive = true,
+                            ResultJson = "{\"dominantColor\": \"#FF0000\", \"matchScore\": 95}",
+                            UserId = 3
                         });
                 });
 
@@ -598,18 +696,22 @@ namespace SHOP.CO.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsRead = true,
                             LogType = "Chatbot",
-                            Message = "Cho tôi hỏi size áo thun",
+                            Message = "Cho tôi hỏi quần jeans size 30 còn hàng không?",
                             SenderType = "User",
+                            SessionId = "sess_123",
                             UserId = 2
                         },
                         new
                         {
                             LogId = 2,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EntitiesJson = "{\"product\": \"quần jeans\", \"size\": \"30\"}",
+                            IntentName = "check_stock",
                             IsRead = true,
                             LogType = "Chatbot",
-                            Message = "Dạ, size M phù hợp với người từ 50-60kg ạ.",
+                            Message = "Dạ, quần jeans nam slimfit size 30 hiện còn 40 sản phẩm ạ.",
                             SenderType = "Bot",
+                            SessionId = "sess_123",
                             UserId = 2
                         },
                         new
@@ -618,9 +720,37 @@ namespace SHOP.CO.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsRead = false,
                             LogType = "Notification",
-                            Message = "Đơn hàng ORD003 của bạn đang được giao",
+                            Message = "Đơn hàng ORD-0003 của bạn đã được giao cho đơn vị vận chuyển.",
+                            OrderId = 3,
+                            Status = "Sent",
                             Title = "Đơn hàng đang giao",
                             UserId = 3
+                        },
+                        new
+                        {
+                            LogId = 4,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsRead = false,
+                            LogType = "StockAlert",
+                            Message = "Biến thể QJN-XANH-31 chỉ còn 3 sản phẩm trong kho.",
+                            ProductId = 4,
+                            SenderType = "System",
+                            Title = "Cảnh báo tồn kho thấp",
+                            UserId = 1,
+                            VariantId = 6
+                        },
+                        new
+                        {
+                            LogId = 5,
+                            ActionName = "UpdateProductPrice",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsRead = false,
+                            LogType = "Audit",
+                            NewValueJson = "{\"price\": 399000}",
+                            OldValueJson = "{\"price\": 400000}",
+                            SenderType = "Admin",
+                            Title = "Cập nhật giá sản phẩm",
+                            UserId = 1
                         });
                 });
 
@@ -752,43 +882,46 @@ namespace SHOP.CO.Infrastructure.Migrations
                         new
                         {
                             OrderId = 1,
+                            AddressId = 1,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             DiscountAmount = 0m,
-                            OrderCode = "ORD001",
+                            OrderCode = "ORD-0001",
                             OrderStatus = "Completed",
                             PaymentStatus = "Paid",
                             ReceiverName = "Nguyễn Văn A",
                             ReceiverPhone = "0901234567",
                             ShippingAddressText = "123 Lê Lợi, Quận 1, TP.HCM",
                             ShippingFee = 0m,
-                            ShippingStatus = "Delivered",
-                            SubtotalAmount = 0m,
+                            ShippingStatus = "Completed",
+                            SubtotalAmount = 240000m,
                             TotalAmount = 240000m,
                             UserId = 2
                         },
                         new
                         {
                             OrderId = 2,
+                            AddressId = 2,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DiscountAmount = 0m,
-                            OrderCode = "ORD002",
+                            DiscountAmount = 19000m,
+                            OrderCode = "ORD-0002",
                             OrderStatus = "Pending",
                             PaymentStatus = "Unpaid",
-                            ReceiverName = "Nguyễn Văn A",
+                            ReceiverName = "Nguyễn Văn A (Công ty)",
                             ReceiverPhone = "0901234567",
                             ShippingAddressText = "456 Nguyễn Huệ, Quận 1, TP.HCM",
                             ShippingFee = 0m,
                             ShippingStatus = "NotShipped",
-                            SubtotalAmount = 0m,
-                            TotalAmount = 300000m,
+                            SubtotalAmount = 399000m,
+                            TotalAmount = 380000m,
                             UserId = 2
                         },
                         new
                         {
                             OrderId = 3,
+                            AddressId = 3,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             DiscountAmount = 0m,
-                            OrderCode = "ORD003",
+                            OrderCode = "ORD-0003",
                             OrderStatus = "Shipping",
                             PaymentStatus = "Paid",
                             ReceiverName = "Trần Thị B",
@@ -796,7 +929,26 @@ namespace SHOP.CO.Infrastructure.Migrations
                             ShippingAddressText = "789 Hai Bà Trưng, Quận 3, TP.HCM",
                             ShippingFee = 0m,
                             ShippingStatus = "Shipping",
-                            SubtotalAmount = 0m,
+                            SubtotalAmount = 300000m,
+                            TotalAmount = 300000m,
+                            UserId = 3
+                        },
+                        new
+                        {
+                            OrderId = 4,
+                            AddressId = 3,
+                            CancelReason = "Đổi ý",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DiscountAmount = 0m,
+                            OrderCode = "ORD-0004",
+                            OrderStatus = "Canceled",
+                            PaymentStatus = "Refunded",
+                            ReceiverName = "Trần Thị B",
+                            ReceiverPhone = "0987654321",
+                            ShippingAddressText = "789 Hai Bà Trưng, Quận 3, TP.HCM",
+                            ShippingFee = 0m,
+                            ShippingStatus = "NotShipped",
+                            SubtotalAmount = 400000m,
                             TotalAmount = 400000m,
                             UserId = 3
                         });
@@ -895,15 +1047,18 @@ namespace SHOP.CO.Infrastructure.Migrations
                         new
                         {
                             OrderItemId = 1,
+                            ColorSnapshot = "Trắng",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             DiscountAmount = 0m,
+                            ImageUrlSnapshot = "https://via.placeholder.com/600x800.png?text=Ao+Thun+Trang",
                             LineTotal = 240000m,
                             OrderId = 1,
                             ProductId = 1,
                             ProductNameSnapshot = "Áo Thun Cổ Tròn Basic",
                             Quantity = 2,
-                            ReviewStatus = "NotReviewed",
+                            ReviewStatus = "Reviewed",
                             SalePrice = 120000m,
+                            SizeSnapshot = "M",
                             SkuSnapshot = "ATB-TR-M",
                             UnitPrice = 150000m,
                             VariantId = 1
@@ -911,31 +1066,56 @@ namespace SHOP.CO.Infrastructure.Migrations
                         new
                         {
                             OrderItemId = 2,
+                            ColorSnapshot = "Xanh Denim",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             DiscountAmount = 0m,
-                            LineTotal = 300000m,
+                            ImageUrlSnapshot = "https://via.placeholder.com/600x800.png?text=Jeans+Denim",
+                            LineTotal = 399000m,
                             OrderId = 2,
+                            ProductId = 4,
+                            ProductNameSnapshot = "Quần Jeans Nam Slimfit",
+                            Quantity = 1,
+                            ReviewStatus = "NotReviewed",
+                            SalePrice = 399000m,
+                            SizeSnapshot = "30",
+                            SkuSnapshot = "QJN-XANH-30",
+                            UnitPrice = 450000m,
+                            VariantId = 5
+                        },
+                        new
+                        {
+                            OrderItemId = 3,
+                            ColorSnapshot = "Đỏ",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DiscountAmount = 0m,
+                            ImageUrlSnapshot = "https://via.placeholder.com/600x800.png?text=Vay+Hoa",
+                            LineTotal = 300000m,
+                            OrderId = 3,
                             ProductId = 2,
                             ProductNameSnapshot = "Váy Hoa Mùa Hè",
                             Quantity = 1,
                             ReviewStatus = "NotReviewed",
                             SalePrice = 300000m,
+                            SizeSnapshot = "S",
                             SkuSnapshot = "VHM-DO-S",
                             UnitPrice = 350000m,
                             VariantId = 3
                         },
                         new
                         {
-                            OrderItemId = 3,
+                            OrderItemId = 4,
+                            ColorSnapshot = "Xám",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             DiscountAmount = 0m,
+                            ImageUrlSnapshot = "https://via.placeholder.com/600x800.png?text=Hoodie+Xam",
                             LineTotal = 400000m,
-                            OrderId = 3,
+                            OrderId = 4,
                             ProductId = 3,
                             ProductNameSnapshot = "Áo Khoác Hoodie Unisex",
                             Quantity = 1,
                             ReviewStatus = "NotReviewed",
                             SalePrice = 400000m,
+                            SizeSnapshot = "XL",
                             SkuSnapshot = "AKH-XA-XL",
                             UnitPrice = 400000m,
                             VariantId = 4
@@ -1055,16 +1235,18 @@ namespace SHOP.CO.Infrastructure.Migrations
                         new
                         {
                             ProductId = 1,
-                            AverageRating = 0m,
+                            AverageRating = 4.5m,
                             BasePrice = 150000m,
-                            CategoryId = 3,
+                            Brand = "Shop.Co",
+                            CategoryId = 4,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsActive = true,
-                            IsBestSeller = false,
+                            IsBestSeller = true,
                             IsFeatured = false,
                             IsNewArrival = false,
+                            Material = "Cotton",
                             ProductName = "Áo Thun Cổ Tròn Basic",
-                            ReviewCount = 0,
+                            ReviewCount = 10,
                             SalePrice = 120000m,
                             Slug = "ao-thun-co-tron-basic",
                             ViewCount = 0
@@ -1072,16 +1254,18 @@ namespace SHOP.CO.Infrastructure.Migrations
                         new
                         {
                             ProductId = 2,
-                            AverageRating = 0m,
+                            AverageRating = 4.8m,
                             BasePrice = 350000m,
-                            CategoryId = 2,
+                            Brand = "Shop.Co",
+                            CategoryId = 6,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsActive = true,
                             IsBestSeller = false,
                             IsFeatured = false,
-                            IsNewArrival = false,
+                            IsNewArrival = true,
+                            Material = "Voan",
                             ProductName = "Váy Hoa Mùa Hè",
-                            ReviewCount = 0,
+                            ReviewCount = 25,
                             SalePrice = 300000m,
                             Slug = "vay-hoa-mua-he",
                             ViewCount = 0
@@ -1089,18 +1273,57 @@ namespace SHOP.CO.Infrastructure.Migrations
                         new
                         {
                             ProductId = 3,
-                            AverageRating = 0m,
+                            AverageRating = 4.2m,
                             BasePrice = 400000m,
-                            CategoryId = 1,
+                            Brand = "Shop.Co",
+                            CategoryId = 3,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsActive = true,
+                            IsBestSeller = false,
+                            IsFeatured = true,
+                            IsNewArrival = false,
+                            Material = "Nỉ",
+                            ProductName = "Áo Khoác Hoodie Unisex",
+                            ReviewCount = 5,
+                            SalePrice = 400000m,
+                            Slug = "ao-khoac-hoodie-unisex",
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductId = 4,
+                            AverageRating = 4.9m,
+                            BasePrice = 450000m,
+                            Brand = "DenimX",
+                            CategoryId = 5,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsActive = true,
+                            IsBestSeller = true,
+                            IsFeatured = false,
+                            IsNewArrival = false,
+                            Material = "Denim",
+                            ProductName = "Quần Jeans Nam Slimfit",
+                            ReviewCount = 50,
+                            SalePrice = 399000m,
+                            Slug = "quan-jeans-nam-slimfit",
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductId = 5,
+                            AverageRating = 4.0m,
+                            BasePrice = 250000m,
+                            Brand = "OfficeWear",
+                            CategoryId = 7,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsActive = true,
                             IsBestSeller = false,
                             IsFeatured = false,
                             IsNewArrival = false,
-                            ProductName = "Áo Khoác Hoodie Unisex",
-                            ReviewCount = 0,
-                            SalePrice = 400000m,
-                            Slug = "ao-khoac-hoodie-unisex",
+                            Material = "Lụa",
+                            ProductName = "Áo Sơ Mi Lụa Công Sở",
+                            ReviewCount = 2,
+                            Slug = "ao-so-mi-lua-cong-so",
                             ViewCount = 0
                         });
                 });
@@ -1178,28 +1401,68 @@ namespace SHOP.CO.Infrastructure.Migrations
                         {
                             ImageId = 1,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            ImageUrl = "/images/ao-thun-trang.jpg",
+                            ImageUrl = "https://via.placeholder.com/600x800.png?text=Ao+Thun+Trang",
                             IsThumbnail = true,
                             ProductId = 1,
-                            SortOrder = 0
+                            SortOrder = 1,
+                            VariantId = 1
                         },
                         new
                         {
                             ImageId = 2,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            ImageUrl = "/images/vay-hoa.jpg",
-                            IsThumbnail = true,
-                            ProductId = 2,
-                            SortOrder = 0
+                            ImageUrl = "https://via.placeholder.com/600x800.png?text=Ao+Thun+Den",
+                            IsThumbnail = false,
+                            ProductId = 1,
+                            SortOrder = 2,
+                            VariantId = 2
                         },
                         new
                         {
                             ImageId = 3,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            ImageUrl = "/images/hoodie-xam.jpg",
+                            ImageUrl = "https://via.placeholder.com/600x800.png?text=Vay+Hoa",
+                            IsThumbnail = true,
+                            ProductId = 2,
+                            SortOrder = 1
+                        },
+                        new
+                        {
+                            ImageId = 4,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ImageUrl = "https://via.placeholder.com/600x800.png?text=Hoodie+Xam",
                             IsThumbnail = true,
                             ProductId = 3,
-                            SortOrder = 0
+                            SortOrder = 1
+                        },
+                        new
+                        {
+                            ImageId = 5,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ImageUrl = "https://via.placeholder.com/600x800.png?text=Jeans+Denim",
+                            IsThumbnail = true,
+                            ProductId = 4,
+                            SortOrder = 1,
+                            VariantId = 5
+                        },
+                        new
+                        {
+                            ImageId = 6,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ImageUrl = "https://via.placeholder.com/600x800.png?text=Jeans+Dam",
+                            IsThumbnail = false,
+                            ProductId = 4,
+                            SortOrder = 2,
+                            VariantId = 6
+                        },
+                        new
+                        {
+                            ImageId = 7,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ImageUrl = "https://via.placeholder.com/600x800.png?text=So+Mi+Trang",
+                            IsThumbnail = true,
+                            ProductId = 5,
+                            SortOrder = 1
                         });
                 });
 
@@ -1290,10 +1553,11 @@ namespace SHOP.CO.Infrastructure.Migrations
                         {
                             VariantId = 1,
                             Color = "Trắng",
+                            ColorHex = "#FFFFFF",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             ExtraPrice = 0m,
                             IsActive = true,
-                            LowStockThreshold = 0,
+                            LowStockThreshold = 5,
                             ProductId = 1,
                             Size = "M",
                             Sku = "ATB-TR-M",
@@ -1303,10 +1567,11 @@ namespace SHOP.CO.Infrastructure.Migrations
                         {
                             VariantId = 2,
                             Color = "Đen",
+                            ColorHex = "#000000",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             ExtraPrice = 0m,
                             IsActive = true,
-                            LowStockThreshold = 0,
+                            LowStockThreshold = 5,
                             ProductId = 1,
                             Size = "L",
                             Sku = "ATB-DE-L",
@@ -1316,10 +1581,11 @@ namespace SHOP.CO.Infrastructure.Migrations
                         {
                             VariantId = 3,
                             Color = "Đỏ",
+                            ColorHex = "#FF0000",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             ExtraPrice = 0m,
                             IsActive = true,
-                            LowStockThreshold = 0,
+                            LowStockThreshold = 2,
                             ProductId = 2,
                             Size = "S",
                             Sku = "VHM-DO-S",
@@ -1329,14 +1595,57 @@ namespace SHOP.CO.Infrastructure.Migrations
                         {
                             VariantId = 4,
                             Color = "Xám",
+                            ColorHex = "#808080",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             ExtraPrice = 0m,
                             IsActive = true,
-                            LowStockThreshold = 0,
+                            LowStockThreshold = 10,
                             ProductId = 3,
                             Size = "XL",
                             Sku = "AKH-XA-XL",
                             StockQuantity = 100
+                        },
+                        new
+                        {
+                            VariantId = 5,
+                            Color = "Xanh Denim",
+                            ColorHex = "#1560BD",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ExtraPrice = 0m,
+                            IsActive = true,
+                            LowStockThreshold = 5,
+                            ProductId = 4,
+                            Size = "30",
+                            Sku = "QJN-XANH-30",
+                            StockQuantity = 40
+                        },
+                        new
+                        {
+                            VariantId = 6,
+                            Color = "Xanh Đậm",
+                            ColorHex = "#00008B",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ExtraPrice = 0m,
+                            IsActive = true,
+                            LowStockThreshold = 5,
+                            ProductId = 4,
+                            Size = "31",
+                            Sku = "QJN-XANH-31",
+                            StockQuantity = 3
+                        },
+                        new
+                        {
+                            VariantId = 7,
+                            Color = "Trắng",
+                            ColorHex = "#FFFFFF",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ExtraPrice = 0m,
+                            IsActive = true,
+                            LowStockThreshold = 5,
+                            ProductId = 5,
+                            Size = "M",
+                            Sku = "ASM-TR-M",
+                            StockQuantity = 15
                         });
                 });
 
@@ -1424,6 +1733,13 @@ namespace SHOP.CO.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("VerificationExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("VerificationToken")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.HasKey("UserId");
 
                     b.HasIndex("Email")
@@ -1434,7 +1750,7 @@ namespace SHOP.CO.Infrastructure.Migrations
                         {
                             t.HasCheckConstraint("CK_Users_Role", "[Role] IN (N'Customer', N'Staff', N'Admin')");
 
-                            t.HasCheckConstraint("CK_Users_Status", "[Status] IN (N'Active', N'Locked', N'Deleted')");
+                            t.HasCheckConstraint("CK_Users_Status", "[Status] IN (N'Unverified', N'Active', N'Locked', N'Deleted')");
                         });
 
                     b.HasData(
@@ -1454,6 +1770,7 @@ namespace SHOP.CO.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Email = "nguyenvana@gmail.com",
                             FullName = "Nguyễn Văn A",
+                            Gender = "Nam",
                             PasswordHash = "hashed123",
                             Role = "Customer",
                             Status = "Active"
@@ -1464,6 +1781,7 @@ namespace SHOP.CO.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Email = "tranthib@gmail.com",
                             FullName = "Trần Thị B",
+                            Gender = "Nữ",
                             PasswordHash = "hashed123",
                             Role = "Customer",
                             Status = "Active"

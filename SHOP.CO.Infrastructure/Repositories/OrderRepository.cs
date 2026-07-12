@@ -1,21 +1,28 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using SHOP.CO.Application.Repositories;
+using SHOP.CO.Domain.Entities;
+using SHOP.CO.Infrastructure.Data;
 
 namespace SHOP.CO.Infrastructure.Repositories
 {
-    public interface IOrderRepository
+    public class OrderRepository : BaseRepository<Order>, IOrderRepository
     {
-        Task<List<Order>> GetOrdersByUserIdAsync(int userId);
-        Task<Order> GetOrderByIdAsync(int orderId);
-    }
+        public OrderRepository(ShopCoDbContext context) : base(context) { }
 
-    public class OrderRepository : IOrderRepository
-    {
-        private readonly ShopCoDbContext _context;
-        public OrderRepository(ShopCoDbContext context) => _context = context;
+        public IQueryable<Order> GetOrdersAsQueryable()
+        {
+            return _context.Orders.AsQueryable();
+        }
+        
+        public async Task<Order?> GetOrderWithDetailsAsync(int orderId)
+        {
+            return await _dbSet
+                .Include(o => o.OrderItems)
+                .FirstOrDefaultAsync(o => o.OrderId == orderId);
+        }
 
         public async Task<List<Order>> GetOrdersByUserIdAsync(int userId)
         {
@@ -31,7 +38,7 @@ namespace SHOP.CO.Infrastructure.Repositories
             return await _context.Orders
                 .Include(o => o.OrderItems)
                 .Include(o => o.UserAddress)
-                .FirstOrDefaultAsync(o => o.OrderId == orderId);
+                .FirstOrDefaultAsync(o => o.OrderId == orderId) ?? throw new Exception("Order not found");
         }
     }
 }

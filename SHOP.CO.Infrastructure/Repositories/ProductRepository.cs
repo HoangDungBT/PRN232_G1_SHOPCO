@@ -1,117 +1,76 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using SHOP.CO.Application.Repositories;
+using SHOP.CO.Domain.Entities;
+using SHOP.CO.Infrastructure.Data;
 
 namespace SHOP.CO.Infrastructure.Repositories
 {
-    public interface IProductRepository
+    public class ProductRepository : BaseRepository<Product>, IProductRepository
     {
-        IQueryable<Product> GetProductsAsQueryable();
-        Task<Product?> GetProductWithVariantsByIdAsync(int productId);
-        Task<Product> CreateProductWithVariantsAsync(Product product);
-        Task UpdateProductAsync(Product product);
-        Task SoftDeleteProductAsync(Product product);
-        Task<bool> IsSlugExistsAsync(string slug, int? excludeProductId = null);
-        Task<bool> IsSkuExistsAsync(string sku);
+        public ProductRepository(ShopCoDbContext context) : base(context) { }
 
-        // test 
-        Task<(List<Product> Items, int TotalCount)> GetPagedProductAsync(string? searchTerm, int pageNumber, int pageSize);
-        // test
-
-        IQueryable<Product> GetProductsQuery();
-        Task<Product?> GetProductByIdAsync(int id);
-        Task<List<Product>> GetRelatedProductsAsync(int categoryId, int excludeProductId, int limit);
-        Task<List<CustomerActivity>> GetReviewsByProductIdAsync(int productId);
-        Task AddReviewAsync(CustomerActivity review);
-        Task<List<Category>> GetActiveCategoriesAsync();
-        Task<CustomerActivity?> GetWishlistItemAsync(int productId, int userId);
-        Task AddWishlistItemAsync(CustomerActivity wishlistActivity);
-        Task RemoveWishlistItemAsync(CustomerActivity wishlistActivity);
-        Task<List<Product>> GetWishlistProductsAsync(int userId);
-    }
-    public class ProductRepository : IProductRepository
-    {
-        private readonly ShopCoDbContext _context;
-        public ProductRepository(ShopCoDbContext context)
+        public async Task<Product?> GetProductWithVariantsByIdAsync(int productId)
         {
-            _context = context;
-        }
-
-       public async Task<Product?> GetProductWithVariantsByIdAsync(int productId){
-        return await _context.Products
+            return await _dbSet
                 .Include(p => p.ProductVariants)
-                .FirstOrDefaultAsync(p =>  p.ProductId == productId);
-                }
-       public async Task<Product> CreateProductWithVariantsAsync(Product product)
-        {
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
-            return product;
+                .Include(p => p.ProductImages)
+                .FirstOrDefaultAsync(p => p.ProductId == productId);
         }
-       public async Task UpdateProductAsync(Product product)
-        {
-            _context.Products.Update(product);
-            await _context.SaveChangesAsync();
-        }
-       public async Task SoftDeleteProductAsync(Product product)
+
+        public async Task SoftDeleteProductAsync(Product product)
         {
             product.IsActive = false;
             product.DeletedAt = DateTime.UtcNow;
-            _context.Products.Update(product);
+            _dbSet.Update(product);
             await _context.SaveChangesAsync();
-
         }
-       public async Task<bool> IsSlugExistsAsync(string slug, int? excludeProductId = null)
+
+        public async Task<bool> IsSlugExistsAsync(string slug, int? excludeProductId = null)
         {
-            var query =  _context.Products.Where(p => p.Slug == slug);
-            if(excludeProductId.HasValue)
+            var query = _dbSet.Where(p => p.Slug == slug);
+            if (excludeProductId.HasValue)
             {
                 query = query.Where(p => p.ProductId != excludeProductId.Value);
             }
             return await query.AnyAsync();
         }
-       public async Task<bool> IsSkuExistsAsync(string sku)
+
+        public async Task<bool> IsSkuExistsAsync(string sku)
         {
             return await _context.ProductVariants.AnyAsync(v => v.Sku == sku);
-            
         }
 
-        public IQueryable<Product> GetProductsAsQueryable()
+        public IQueryable<Product> GetProductsWithDetailsAsQueryable()
         {
-            return _context.Products
+            return _dbSet
                 .Include(p => p.Category)
+                .Include(p => p.ProductImages)
                 .AsQueryable();
         }
 
         public async Task<(List<Product> Items, int TotalCount)> GetPagedProductAsync(string? searchTerm, int pageNumber, int pageSize)
         {
-            // khởi tạo query
-            var query = _context.Products.Include(p => p.Category).AsQueryable();
+            var query = _dbSet.Include(p => p.Category).AsQueryable();
 
-            // xử lí search 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 var term = searchTerm.Trim().ToLower();
-                query = query.Where(p => p.ProductName.ToLower().Contains(term)
-                || p.Slug.ToLower().Contains(term));
+                query = query.Where(p => p.ProductName.ToLower().Contains(term) || p.Slug.ToLower().Contains(term));
             }
 
-            // đếm tổng item để phân trang 
             int totalCount = await query.CountAsync();
 
-            // phân trang và lấy dữ liệu(sắp xếp theo mới nhất)
             var items = await query
                 .OrderByDescending(p => p.CreatedAt)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
-            // trả dữ liệu
             return (items, totalCount);
-
         }
 
         public IQueryable<Product> GetProductsQuery()
@@ -155,22 +114,17 @@ namespace SHOP.CO.Infrastructure.Repositories
 
         public async Task AddReviewAsync(CustomerActivity review)
         {
-            // 1. Thêm đánh giá vào Tracker bộ nhớ của EF
             await _context.CustomerActivities.AddAsync(review);
-
-            // 2. Truy vấn các rating hiện tại từ DB (chưa lưu đánh giá mới)
             var ratings = await _context.CustomerActivities
                 .Where(a => a.ProductId == review.ProductId && a.ActivityType == "Review" && a.IsActive)
                 .Select(a => a.Rating)
                 .ToListAsync();
 
-            // 3. Đưa đánh giá mới đang ở bộ nhớ vào danh sách tính toán luôn
             if (review.IsActive && review.ActivityType == "Review")
             {
                 ratings.Add(review.Rating);
             }
 
-            // 4. Tìm sản phẩm và cập nhật các chỉ số tổng hợp
             var product = await _context.Products.FindAsync(review.ProductId);
             if (product != null)
             {
@@ -178,7 +132,6 @@ namespace SHOP.CO.Infrastructure.Repositories
                 product.AverageRating = ratings.Any() ? Math.Round((decimal)ratings.Average(r => r ?? 0), 2) : 0;
             }
 
-            // 5. Lưu toàn bộ thay đổi trong một Transaction duy nhất
             await _context.SaveChangesAsync();
         }
 
@@ -223,4 +176,3 @@ namespace SHOP.CO.Infrastructure.Repositories
         }
     }
 }
-

@@ -17,7 +17,8 @@ namespace SHOP.CO.Domain.Entities
         public DateOnly? DateOfBirth { get; set; }
         public string? PreferredSize { get; set; }
         public string? PreferredStyle { get; set; }
-
+        public string? VerificationToken { get; set; }
+        public DateTime? VerificationExpiresAt { get; set; }
         public string? ResetPasswordToken { get; set; }
         public DateTime? ResetPasswordExpiresAt { get; set; }
         public string? RefreshToken { get; set; }
@@ -25,6 +26,7 @@ namespace SHOP.CO.Domain.Entities
         public DateTime? LastLoginAt { get; set; }
         public DateTime CreatedAt { get; set; } 
         public DateTime? UpdatedAt { get; set; }
+
 
         public virtual ICollection<UserAddress> UserAddresses { get; set; } = new List<UserAddress>();
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();

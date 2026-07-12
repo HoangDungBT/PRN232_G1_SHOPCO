@@ -11,9 +11,9 @@ namespace SHOP.CO.API.Controllers
     [Authorize(Roles = "Admin,Staff")]
     public class AdminCategoriesController : ControllerBase
     {
-        private readonly ICategoryAdminService _service;
+        private readonly IAdminCategoryService _service;
 
-        public AdminCategoriesController(ICategoryAdminService service)
+        public AdminCategoriesController(IAdminCategoryService service)
         {
             _service = service;
         }
@@ -45,6 +45,13 @@ namespace SHOP.CO.API.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _service.SoftDeleteAsync(id);
+            return StatusCode(result.Code, result);
+        }
+
+        [HttpPut("{id}/status")]
+        public async Task<IActionResult> ToggleStatus(int id)
+        {
+            var result = await _service.ToggleCategoryStatusAsync(id);
             return StatusCode(result.Code, result);
         }
     }
