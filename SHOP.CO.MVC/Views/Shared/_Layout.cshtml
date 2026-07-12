@@ -9,115 +9,79 @@
 }
 
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - SHOP.CO</title>
-    <!-- CSS Bootstrap 5 -->
+    <!-- CSS Bootstrap 5 (needed for grid, dropdowns, and admin forms) -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/SHOP.CO.MVC.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">SHOP.CO</a>
-
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <!-- Menu Trái -->
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="/Home/Index">Trang Chủ</a>
-                        </li>
-                    </ul>
-
-                    <!-- Menu Phải (Auth) -->
-                    <ul class="navbar-nav">
-                        @if (string.IsNullOrEmpty(token))
-                        {
-                            <!-- CHƯA LOGIN: Nút Đăng nhập -->
-                            <li class="nav-item">
-                                <a class="btn btn-outline-dark" href="/Auth/Login">Đăng Nhập</a>
-                            </li>
-                        }
-                        else
-                        {
-                            <!-- ĐÃ LOGIN: Dropdown User -->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-dark fw-bold" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Chào, @fullName
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="navbarDropdown">
-                                    @if (role == "Admin" || role == "Staff")
-                                    {
-                                        <li><a class="dropdown-item text-danger" href="/Admin/Dashboard">Khu Vực Quản Trị</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                    }
-                                    <li><a class="dropdown-item" href="/Profile">Trang Cá Nhân</a></li>
-                                    <li><a class="dropdown-item" href="/Cart">Giỏ Hàng</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item text-danger" href="/Auth/Logout">Đăng Xuất</a></li>
-                                </ul>
-                            </li>
-                        }
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <span>Sign up and get 20% off to your first order. <a href="/Auth/Register" style="color: white; text-decoration: underline; font-weight: 600;">Sign Up Now</a></span>
+        <button class="top-bar-close" onclick="this.parentElement.style.display='none'">&times;</button>
     </div>
 
-    <footer class="border-top footer text-muted mt-5">
-        <div class="container text-center py-3">
-            &copy; 2026 - SHOP.CO
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="logo">
+            <a href="/" style="text-decoration: none; color: black; font-family: 'Poppins', sans-serif; font-weight: 800; letter-spacing: -0.5px;">SHOP.CO</a>
         </div>
         <ul class="nav-links">
             <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-            <li><a asp-controller="Home" asp-action="Category">Shop</a></li>
+            <li class="dropdown">
+                <a href="/Home/Category">Shop <span style="font-size: 10px;">▼</span></a>
+            </li>
             <li><a href="#">On Sale</a></li>
             <li><a href="#">New Arrivals</a></li>
             <li><a href="#">Brands</a></li>
-            
+        </ul>
 
         <div class="search-box">
-
-            <input type="text" placeholder="Search for products..." />
-
+            <span class="search-icon" style="cursor: pointer;" onclick="triggerHeaderSearch()">🔍</span>
+            <input type="text" id="headerSearchInput" placeholder="Search for products..." value="@ViewBag.SearchTerm" onkeypress="handleSearchKeyPress(event)" />
         </div>
             <div class="nav-icons">
                 <!-- Giỏ hàng -->
                 <a href="/Home/Cart" style="text-decoration: none; font-size: 24px; color: black; display: inline-block; margin-right: 15px;">🛒</a>
 
+                <a href="/Home/Wishlist" class="nav-icon" title="Danh sách yêu thích" style="text-decoration: none; font-size: 16px;">❤️</a>
                 <!-- Menu Tài khoản thay cho nút 👤 -->
-                <div class="dropdown">
-                    <button class="dropbtn">
-                        <span>👤▾</span>
-                    </button>
-                    <div class="dropdown-content">
-                        <a asp-controller="User" asp-action="Profile">Hồ sơ</a>
-                        <a asp-controller="User" asp-action="AddressBook">Sổ địa chỉ</a>
-                        <a asp-controller="Order" asp-action="History">Lịch sử đơn hàng</a>
-                        <a asp-controller="Notification" asp-action="Index">Thông báo</a>
-                        <hr style="margin: 5px 0; border: 0; border-top: 1px solid #eee;">
-                        <a href="#">Đăng xuất</a>
+                @if (string.IsNullOrEmpty(token))
+                {
+                    <a href="/Auth/Login" class="nav-icon" title="Đăng nhập">👤</a>
+                }
+                else
+                {
+                    <div class="dropdown d-inline-block">
+                        <a href="#" class="nav-icon dropdown-toggle text-dark" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none; font-size: 16px;">
+                            👤 <span style="font-size: 14px; font-weight: 500; font-family: 'Plus Jakarta Sans', sans-serif;">@fullName</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown" style="border-radius: 8px; border: 1px solid #eee; margin-top: 10px;">
+                            @if (role == "Admin" || role == "Staff")
+                            {
+                                <li><a class="dropdown-item text-danger fw-bold" href="/Admin/Dashboard">Khu Vực Quản Trị</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                            }
+                            <li><a class="dropdown-item" href="/Profile">Trang Cá Nhân (Hồ sơ)</a></li>
+                            <li><a class="dropdown-item" asp-controller="User" asp-action="AddressBook">Sổ địa chỉ</a></li>
+                            <li><a class="dropdown-item" asp-controller="Order" asp-action="History">Lịch sử đơn hàng</a></li>
+                            <li><a class="dropdown-item" asp-controller="Notification" asp-action="Index">Thông báo</a></li>
+                            <li><a class="dropdown-item" href="/Cart">Giỏ Hàng</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="/Auth/Logout">Đăng Xuất</a></li>
+                        </ul>
                     </div>
-                </div>
+                }
             </div>
-
-            <a href="/Cart">🛒</a>
-            <span>👤</span>
         </div>
-
     </nav>
 
     <!-- BODY -->
@@ -136,100 +100,88 @@
             </div>
         }
 
-        @RenderBody()
+        <main class="main-content">
+            @RenderBody()
+        </main>
     </div>
 
     <!-- NEWSLETTER -->
-
     <section class="newsletter">
-
         <div class="newsletter-left">
-
-            <h2>
-                STAY UPTO DATE ABOUT OUR LATEST OFFERS
-            </h2>
-
+            <h2>STAY UPTO DATE ABOUT OUR LATEST OFFERS</h2>
         </div>
-
         <div class="newsletter-right">
-
-            <input type="email" placeholder="Enter your email address" />
-
-            <button>
-                Subscribe to Newsletter
-            </button>
-
+            <div class="input-with-icon">
+                <span class="email-icon">✉</span>
+                <input type="email" placeholder="Enter your email address" />
+            </div>
+            <button>Subscribe to Newsletter</button>
         </div>
-
     </section>
 
     <!-- FOOTER -->
-
     <footer class="footer">
-
         <div class="footer-top">
-
             <div class="footer-brand">
-
                 <h2>SHOP.CO</h2>
-
-                <p>
-                    We have clothes that suits your style and which you’re proud to wear.
-                </p>
-
+                <p>We have clothes that suits your style and which you're proud to wear. From women to men.</p>
+                <div class="social-links">
+                    <a href="#">🐦</a>
+                    <a href="#" class="social-active">📘</a>
+                    <a href="#">📷</a>
+                    <a href="#">🐙</a>
+                </div>
             </div>
-
             <div class="footer-links">
-
                 <div>
-
                     <h4>COMPANY</h4>
-
                     <a asp-controller="Home" asp-action="AboutUs">About</a>
                     <a href="#">Features</a>
                     <a href="#">Works</a>
-
+                    <a href="#">Career</a>
                 </div>
-
                 <div>
-
                     <h4>HELP</h4>
-
-                    <a href="#">Support</a>
-                    <a href="#">Delivery</a>
-                    <a href="#">Terms</a>
-
+                    <a href="#">Customer Support</a>
+                    <a href="#">Delivery Details</a>
+                    <a href="#">Terms & Conditions</a>
+                    <a href="#">Privacy Policy</a>
                 </div>
-
                 <div>
-
                     <h4>FAQ</h4>
-
                     <a asp-controller="Home" asp-action="Faq">FAQ</a>
+                    <a href="#">Account</a>
+                    <a href="#">Manage Deliveries</a>
                     <a asp-controller="Order" asp-action="History">Orders</a>
                     <a asp-controller="Contact" asp-action="Index">Payments / Contact</a>
-
                 </div>
-
+                <div>
+                    <h4>RESOURCES</h4>
+                    <a href="#">Free eBooks</a>
+                    <a href="#">Development Tutorial</a>
+                    <a href="#">How to - Blog</a>
+                    <a href="#">Youtube Playlist</a>
+                </div>
             </div>
-
         </div>
-
         <div class="footer-bottom">
-
-            © 2026 SHOP.CO. All Rights Reserved.
-
+            <p>Shop.co © 2000-2023, All Rights Reserved</p>
+            <div class="payment-methods">
+                <span class="payment-card">Visa</span>
+                <span class="payment-card">Mastercard</span>
+                <span class="payment-card">PayPal</span>
+                <span class="payment-card">Apple Pay</span>
+                <span class="payment-card">Google Pay</span>
+            </div>
         </div>
     </footer>
 
-    <!-- BẮT BUỘC có JS Bootstrap để Dropdown chạy được -->
+    <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- THÊM ĐOẠN SCRIPT NÀY VÀO CUỐI BODY -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <script>
         $(document).ready(function () {
             // Lấy đường dẫn URL hiện tại
@@ -238,18 +190,27 @@
             // Tìm thẻ <a> trong sidebar có href khớp với đường dẫn hiện tại và thêm class 'active'
             $('.sidebar a').each(function () {
                 var href = $(this).attr('href');
-                // Khớp chính xác hoặc URL bắt đầu bằng href (vd: /Admin/Products/Create)
                 if (href !== '/' && currentPath.startsWith(href)) {
                     $(this).css({
                         'background-color': '#495057',
                         'color': '#fff',
-                        'border-left': '4px solid #0d6efd' // Thêm vạch xanh bên trái cho đẹp
+                        'border-left': '4px solid #0d6efd'
                     });
                 }
             });
         });
-    </script>
 
+        function triggerHeaderSearch() {
+            var keyword = document.getElementById("headerSearchInput").value.trim();
+            window.location.href = "/Home/Category?searchTerm=" + encodeURIComponent(keyword);
+        }
+
+        function handleSearchKeyPress(event) {
+            if (event.key === "Enter") {
+                triggerHeaderSearch();
+            }
+        }
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

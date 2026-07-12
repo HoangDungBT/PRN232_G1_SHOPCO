@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using SHOP.CO.Application.DTOs;
@@ -46,7 +46,7 @@ namespace SHOP.CO.API.Controllers
         public async Task<IActionResult> Logout()
         {
             // Trích xuất ID của User đang gọi API từ JWT Token
-            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("sub")?.Value;
             if (int.TryParse(userIdClaim, out int userId))
             {
                 var result = await _authService.LogoutAsync(userId);

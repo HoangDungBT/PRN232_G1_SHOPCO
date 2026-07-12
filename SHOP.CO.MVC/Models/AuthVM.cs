@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace SHOP.CO.MVC.Models
 {
@@ -21,9 +22,21 @@ namespace SHOP.CO.MVC.Models
     // Class bọc kết quả giống hệt ResultModel bên Application
     public class ApiResponse<T>
     {
-        public bool IsSuccess { get; set; }
+        [JsonPropertyName("success")]
+        public bool Success { get; set; }
+
+        public bool IsSuccess
+        {
+            get => Success;
+            set => Success = value;
+        }
+
         public int Code { get; set; }
-        public string Message { get; set; } = string.Empty;
+
+        [JsonPropertyName("message")]
+        public string? Message { get; set; } = string.Empty;
+
+        [JsonPropertyName("data")]
         public T? Data { get; set; }
     }
 

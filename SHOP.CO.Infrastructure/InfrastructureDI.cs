@@ -4,7 +4,12 @@ global using SHOP.CO.Domain.Entities;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
+<<<<<<< HEAD
 global using SHOP.CO.Infrastructure.Data;
+=======
+global using SHOP.CO.Infrastructure.Data; 
+
+>>>>>>> origin/duy
 namespace SHOP.CO.Infrastructure
 {
     public static class InfrastructureDI
@@ -31,6 +36,7 @@ namespace SHOP.CO.Infrastructure
 
             // Đăng ký Repositories với vòng đời Scoped
             services.AddScoped<IProductRepository, ProductRepository>();
+<<<<<<< HEAD
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICartRepository, CartRepository>();
@@ -38,6 +44,12 @@ namespace SHOP.CO.Infrastructure
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
             services.AddScoped<IContactRepository, ContactRepository>();
+=======
+            services.AddScoped<ICartRepository, CartRepository>();
+            services.AddScoped<SHOP.CO.Domain.Repositories.IProductUiRepository, MockProductUiRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+>>>>>>> origin/duy
 
             return services;
         }

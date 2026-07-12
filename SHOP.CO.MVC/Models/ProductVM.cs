@@ -1,4 +1,4 @@
-﻿namespace SHOP.CO.MVC.Models
+namespace SHOP.CO.MVC.Models
 {
     public class ProductVM
     {
@@ -13,5 +13,9 @@
         public string Description { get; set; }
 
         public string Category { get; set; }
+
+        public decimal BasePrice { get; set; }
+
+        public decimal? SalePrice { get; set; }
     }
 }

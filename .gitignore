@@ -481,8 +481,9 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 
-# Bỏ qua file cấu hình chứa chuỗi kết nối và key nhạy cảm ở local
-appsettings.Development.json
+# Bỏ qua file cấu hình chứa chuỗi kết nối và key nhạy cảm ở local (chỉ bỏ qua API, vẫn giữ MVC)
+SHOP.CO.API/appsettings.json
+SHOP.CO.API/appsettings.Development.json
 appsettings.Local.json
 .env
 
@@ -496,3 +497,6 @@ obj/
 *.user
 *.suo
 *.cache
+
+# Bỏ qua dự án test local theo yêu cầu của dự án
+SHOP.CO.Tests/

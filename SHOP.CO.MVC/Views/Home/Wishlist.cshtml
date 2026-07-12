@@ -1,0 +1,154 @@
+@model List<SHOP.CO.MVC.Models.ProductVM>
+
+@{
+    ViewData["Title"] = "My Wishlist";
+}
+
+<div class="category-container" style="padding-top: 20px;">
+    <!-- BREADCRUMB -->
+    <div class="breadcrumb-trail" style="margin-bottom: 24px;">
+        <a href="/">Home</a> <span>&gt;</span> <span class="current-crumb">Wishlist</span>
+    </div>
+
+    <div class="wishlist-header-title" style="margin-bottom: 32px;">
+        <h1 style="font-family: 'Poppins', sans-serif; font-size: 36px; font-weight: 800; text-transform: uppercase;">My Wishlist</h1>
+        <p style="color: rgba(0,0,0,0.5); font-size: 15px; margin-top: 4px;">Sản phẩm yêu thích của bạn</p>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="product-grid" id="wishlistGrid">
+        @if (Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                // Calculate mock rating for premium aesthetics
+                var displayRating = 4.0 + (item.Id % 10) * 0.1;
+                if (displayRating > 5.0) displayRating = 5.0;
+
+                var hasDiscount = item.SalePrice.HasValue && item.SalePrice < item.BasePrice;
+                var discountPercent = hasDiscount ? (int)Math.Round((1 - (item.SalePrice!.Value / item.BasePrice)) * 100) : 0;
+
+                <div class="product-card" id="product-card-@item.Id" style="position: relative; transition: all 0.3s ease;">
+                    <a href="/Home/Detail/@item.Id" class="card-image-link">
+                        <div class="card-image-wrapper" style="position: relative;">
+                            <img src="@(string.IsNullOrEmpty(item.Image) ? "/images/heroimg.png" : item.Image)" onerror="this.onerror=null; this.src='/images/heroimg.png';" alt="@item.Name" />
+                        </div>
+                    </a>
+                    
+                    <button type="button" class="btn-wishlist-toggle" onclick="ajaxRemoveFromWishlist(event, @item.Id)" style="position: absolute; top: 12px; right: 12px; border: none; background: #FFFFFF; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer; transition: all 0.2s ease; z-index: 10;" title="Xóa khỏi yêu thích">
+                        <span class="wishlist-heart-icon" id="heart-@item.Id" style="font-size: 18px; color: #FF3333; transition: color 0.2s ease;">♥</span>
+                    </button>
+                    
+                    <div class="card-details">
+                        <a href="/Home/Detail/@item.Id" style="text-decoration: none; color: inherit;">
+                            <h3 class="product-name" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@item.Name</h3>
+                        </a>
+                        <div class="rating-row">
+                            <div class="star-rating">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= Math.Round(displayRating))
+                                    {
+                                        <span class="star-filled">★</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="star-empty">★</span>
+                                    }
+                                }
+                            </div>
+                            <span class="rating-score">@displayRating.ToString("F1")/5</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="sale-price">$@item.Price.ToString("F0")</span>
+                            @if (hasDiscount)
+                            {
+                                <span class="original-price">$@item.BasePrice.ToString("F0")</span>
+                                <span class="discount-tag">-@discountPercent%</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyWishlistState" style="display: @(Model.Any() ? "none" : "block"); text-align: center; padding: 100px 0; color: rgba(0,0,0,0.5);">
+        <div style="font-size: 64px; margin-bottom: 20px;">❤️</div>
+        <p style="font-size: 20px; font-weight: 700; margin-bottom: 8px; color: #000;">Danh sách yêu thích trống</p>
+        <p style="font-size: 14px; margin-bottom: 24px;">Hãy thêm các sản phẩm bạn yêu thích vào đây để xem lại bất cứ lúc nào.</p>
+        <a href="/Home/Category" class="apply-filter-btn" style="display: inline-block; width: auto; padding: 14px 32px; text-decoration: none;">Tiếp tục mua sắm</a>
+    </div>
+</div>
+
+<script>
+    function ajaxRemoveFromWishlist(event, productId) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        Swal.fire({
+            title: 'Xác nhận xóa?',
+            text: 'Bạn có chắc chắn muốn xóa sản phẩm này khỏi danh sách yêu thích?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#000',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Xóa',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('/Home/ToggleWishlist/' + productId, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && !data.isAdded) {
+                        // Fade out card dynamically
+                        var card = document.getElementById('product-card-' + productId);
+                        if (card) {
+                            card.style.opacity = '0';
+                            card.style.transform = 'scale(0.9)';
+                            setTimeout(function() {
+                                card.remove();
+                                // Check if grid is now empty
+                                var grid = document.getElementById('wishlistGrid');
+                                if (grid && grid.children.length === 0) {
+                                    document.getElementById('emptyWishlistState').style.display = 'block';
+                                }
+                            }, 300);
+                        }
+
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'info',
+                            title: 'Đã xóa khỏi yêu thích',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi',
+                            text: 'Không thể thực hiện yêu cầu.',
+                            confirmButtonColor: '#000'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error toggling wishlist:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi kết nối',
+                        text: 'Lỗi kết nối máy chủ.',
+                        confirmButtonColor: '#000'
+                    });
+                });
+            }
+        });
+    }
+</script>

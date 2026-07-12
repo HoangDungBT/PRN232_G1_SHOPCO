@@ -2,7 +2,7 @@ using SHOP.CO.MVC.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var apiBaseUrl = builder.Configuration.GetSection("ApiSettings:BaseUrl").Value;
+var apiBaseUrl = builder.Configuration.GetSection("ApiSettings:BaseUrl").Value ?? "https://localhost:7196/";
 
 builder.Services.AddHttpContextAccessor();
 
@@ -13,32 +13,44 @@ builder.Services.AddSession(option =>
     option.Cookie.IsEssential = true;
 });
 
-// Configure HttpClient to call SHOP.CO.API
+// Configure HttpClients to call SHOP.CO.API
 builder.Services.AddHttpClient("ShopCoApi", client =>
 {
-    client.BaseAddress = new Uri(apiBaseUrl ?? "https://localhost:7196/");
+    client.BaseAddress = new Uri(apiBaseUrl);
+    client.Timeout = TimeSpan.FromSeconds(30);
+}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+{
+    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
 });
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-builder.Services.AddSession();
-// Configure HttpClient to call SHOP.CO.API
 builder.Services.AddHttpClient("ShopApi", client =>
 {
-    // Base URL for the API - fallback to localhost API if not configured
-    client.BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7196/");
+    client.BaseAddress = new Uri(apiBaseUrl);
     client.Timeout = TimeSpan.FromSeconds(30);
+}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+{
+    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
 });
+
 builder.Services.AddHttpClient<IProductApiClient, ProductApiClient>(client =>
 {
-    client.BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7196/");
+    client.BaseAddress = new Uri(apiBaseUrl);
     client.Timeout = TimeSpan.FromSeconds(30);
+}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+{
+    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
 });
+
 builder.Services.AddHttpClient<ICartApiClient, CartApiClient>(client =>
 {
-    client.BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7196/");
+    client.BaseAddress = new Uri(apiBaseUrl);
     client.Timeout = TimeSpan.FromSeconds(30);
+}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+{
+    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
 });
+// Add services to the container.
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
@@ -64,13 +76,11 @@ app.UseAuthorization();
 #region Route
 app.MapControllerRoute(
     name: "areas",
-    pattern: "{area:exists}/ {controller=Dashboard}/{action=Index}/{id?}");
-
+    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
 #endregion
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-app.UseSession();
 
 app.Run();
