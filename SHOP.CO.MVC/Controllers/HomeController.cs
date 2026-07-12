@@ -59,5 +59,15 @@ namespace SHOP.CO.MVC.Controllers
         {
             return View();
         }
+
+        public IActionResult AboutUs()
+        {
+            return View();
+        }
+
+        public IActionResult Faq()
+        {
+            return View();
+        }
     }
 }

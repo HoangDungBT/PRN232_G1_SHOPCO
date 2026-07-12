@@ -1,0 +1,43 @@
+﻿@model List<SHOP.CO.MVC.Models.AddressViewModel>
+
+<div class="page-wrapper">
+    <h1 class="page-title" style="display: flex; justify-content: space-between; align-items: center;">
+        Sổ địa chỉ
+        <a href="#" class="btn-primary">+ Thêm địa chỉ mới</a>
+    </h1>
+
+    <div class="addr-grid">
+        @if (!Model.Any())
+        {
+            <p>Bạn chưa có địa chỉ nào.</p>
+        }
+        else
+        {
+            @foreach (var item in Model)
+            {
+                <div class="custom-card" style="position: relative; padding: 20px;">
+                    <div class="item-header">
+                        <h4 style="margin: 0;">@item.ReceiverName</h4>
+                        @if (item.IsDefault)
+                        {
+                            <span class="badge-status" style="background:#000; color:#fff;">Mặc định</span>
+                        }
+                    </div>
+                    <p style="font-size: 14px; color: #666; margin: 5px 0;">@item.ReceiverPhone</p>
+                    <p style="font-size: 14px; color: #444; line-height: 1.5;">
+                        @item.StreetAddress, @item.Ward, @item.District, @item.Province
+                    </p>
+                    <div style="margin-top: 15px; display: flex; gap: 10px;">
+                        <form asp-action="DeleteAddress" method="post" asp-route-id="@item.AddressId" onsubmit="return confirm('Bạn chắc chắn muốn xóa địa chỉ này?');">
+                            <button type="submit" class="btn-danger" style="padding: 6px 15px; font-size: 13px;">Xóa</button>
+                        </form>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    <div style="text-align: center; margin-top: 30px;">
+        <a asp-action="Profile" style="color: #666; text-decoration: underline;">Quay lại hồ sơ</a>
+    </div>
+</div>

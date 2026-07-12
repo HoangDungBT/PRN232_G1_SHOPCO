@@ -4,6 +4,7 @@ global using SHOP.CO.Infrastructure.Repositories;
 global using SHOP.CO.Domain.Entities;
 global using SHOP.CO.Application.Utilities;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace SHOP.CO.Application
@@ -37,6 +38,11 @@ namespace SHOP.CO.Application
 
 
             #endregion
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IContactService, ContactService>();
+            services.AddScoped<IPasswordHasher<SHOP.CO.Domain.Entities.User>, PasswordHasher<SHOP.CO.Domain.Entities.User>>();
             //services.AddValidatorsFromAssemblyContaining<CreateProductValidator>();
 
 

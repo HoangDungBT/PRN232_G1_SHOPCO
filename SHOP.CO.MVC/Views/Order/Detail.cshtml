@@ -1,0 +1,39 @@
+﻿@model SHOP.CO.MVC.Models.OrderHistoryViewModel
+
+<div class="page-wrapper">
+    <h1 class="page-title">Chi tiết đơn hàng #@Model.OrderCode</h1>
+    <div class="custom-card">
+        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+            <div>
+                <p><strong>Ngày đặt:</strong> @Model.CreatedAt</p>
+                <p><strong>Trạng thái:</strong> <span class="badge-status" style="background:#eab308; color:#000;">@Model.OrderStatus</span></p>
+            </div>
+            <div style="text-align: right;">
+                <p><strong>Tổng thanh toán:</strong></p>
+                <h2 style="margin: 0;">$@Model.TotalAmount</h2>
+            </div>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <h4>Danh sách sản phẩm</h4>
+            @foreach (var item in Model.Items)
+            {
+                <div style="display: flex; align-items: center; padding: 15px 0; border-bottom: 1px solid #f5f5f5;">
+                    <img src="@item.ImageUrlSnapshot" style="width: 70px; height: 70px; object-fit: cover; border-radius: 8px; margin-right: 20px;" />
+                    <div style="flex: 1;">
+                        <h5 style="margin: 0 0 5px 0;">@item.ProductNameSnapshot</h5>
+                        <p style="margin: 0; font-size: 13px; color: #666;">Size: @item.SizeSnapshot | Màu: @item.ColorSnapshot</p>
+                        <p style="margin: 3px 0 0 0; font-weight: 500;">x@item.Quantity</p>
+                    </div>
+                    <div style="font-weight: bold; text-align: right;">
+                        $@item.LineTotal
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div style="margin-top: 25px;">
+            <a asp-action="History" class="btn-secondary">Quay lại lịch sử</a>
+        </div>
+    </div>
+</div>

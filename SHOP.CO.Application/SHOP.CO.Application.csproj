@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -9,6 +9,8 @@
   <ItemGroup>
     <ProjectReference Include="..\SHOP.CO.Infrastructure\SHOP.CO.Infrastructure.csproj" />
     <ProjectReference Include="..\SHOP.CO.Domain\SHOP.CO.Domain.csproj" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.*" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="8.0.28" />
   </ItemGroup>
 
   <ItemGroup>
