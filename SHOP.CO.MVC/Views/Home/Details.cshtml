@@ -1,4 +1,4 @@
-﻿@model SHOP.CO.MVC.Models.ProductVM
+@model SHOP.CO.MVC.Models.ProductVM
 
 <div class="detail-page">
 
@@ -18,9 +18,9 @@
             @Model.Description
         </p>
 
-        <button>
+        <a class="btn btn-primary" href="/Cart/AddToCart?id=@Model.Id&name=@Model.Name&price=@Model.Price&image=@Model.Image" style="display: inline-block; padding: 10px 20px; background-color: #000; color: #fff; text-decoration: none; border-radius: 5px;">
             Add To Cart
-        </button>
+        </a>
 
     </div>
 

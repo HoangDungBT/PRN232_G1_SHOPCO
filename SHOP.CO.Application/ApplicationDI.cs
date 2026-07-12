@@ -1,4 +1,4 @@
-﻿global using SHOP.CO.Application.DTOs;
+global using SHOP.CO.Application.DTOs;
 global using SHOP.CO.Application.Services;
 global using SHOP.CO.Infrastructure.Repositories;
 global using SHOP.CO.Domain.Entities;
@@ -19,6 +19,8 @@ namespace SHOP.CO.Application
             services.AddHttpContextAccessor();
             // Đăng ký Services
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ICartService, CartService>();
+            services.AddScoped<IProductUiService, ProductUiService>();
 
             services.AddScoped<IAuthService, AuthService>();
 

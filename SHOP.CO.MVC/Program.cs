@@ -1,10 +1,8 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+using SHOP.CO.MVC.Services;
+
+var builder = WebApplication.CreateBuilder(args);
 
 var apiBaseUrl = builder.Configuration.GetSection("ApiSettings:BaseUrl").Value;
-builder.Services.AddHttpClient("ShopCoApi", client =>
-{
-    client.BaseAddress = new Uri(apiBaseUrl!);
-});
 
 builder.Services.AddHttpContextAccessor();
 
@@ -15,18 +13,32 @@ builder.Services.AddSession(option =>
     option.Cookie.IsEssential = true;
 });
 
-
-// 3. Đăng ký HttpClient để kết nối tới Web API
+// Configure HttpClient to call SHOP.CO.API
 builder.Services.AddHttpClient("ShopCoApi", client =>
 {
-    client.BaseAddress = new Uri(apiBaseUrl);
+    client.BaseAddress = new Uri(apiBaseUrl ?? "https://localhost:7196/");
 });
-
-
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
+// Configure HttpClient to call SHOP.CO.API
+builder.Services.AddHttpClient("ShopApi", client =>
+{
+    // Base URL for the API - fallback to localhost API if not configured
+    client.BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7196/");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+builder.Services.AddHttpClient<IProductApiClient, ProductApiClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7196/");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+builder.Services.AddHttpClient<ICartApiClient, CartApiClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7196/");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
 
 var app = builder.Build();
 

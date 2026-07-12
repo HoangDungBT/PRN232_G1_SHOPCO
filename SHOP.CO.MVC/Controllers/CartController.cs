@@ -1,82 +1,86 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using SHOP.CO.MVC.Models;
-using System.Text.Json;
+using SHOP.CO.MVC.Services;
 
 namespace SHOP.CO.MVC.Controllers
 {
+    /// <summary>
+    /// MVC controller for shopping cart pages.
+    /// Uses ICartApiClient to call SHOP.CO.API endpoints.
+    /// </summary>
     public class CartController : Controller
     {
-        public IActionResult Index()
-        {
-            var cart = GetCart();
+        private readonly ICartApiClient _cartApiClient;
 
-            return View(cart);
+        public CartController(ICartApiClient cartApiClient)
+        {
+            _cartApiClient = cartApiClient;
         }
 
-        public IActionResult AddToCart(
-            int id,
-            string name,
-            decimal price,
-            string image)
+        /// <summary>
+        /// Display user's shopping cart by calling GET /api/cart/{userId}
+        /// </summary>
+        /// <param name="userId">Optional user id; defaults to 1 for demo</param>
+        public async Task<IActionResult> Index(int userId = 1)
         {
-            var cart = GetCart();
-
-            var existingItem = cart.FirstOrDefault(x => x.Id == id);
-
-            if (existingItem != null)
+            try
             {
-                existingItem.Quantity++;
+                var cart = await _cartApiClient.GetCartAsync(userId);
+                return View(cart);
             }
-            else
+            catch (Exception ex)
             {
-                cart.Add(new CartItemVM
+                TempData["Error"] = ex.Message ?? "An error occurred while loading the cart.";
+                return View(new CartViewModel { UserId = userId });
+            }
+        }
+
+        /// <summary>
+        /// Remove a cart item by calling DELETE /api/cart/{cartItemId}?userId={userId}
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Remove(int cartItemId, int userId = 1)
+        {
+            try
+            {
+                var success = await _cartApiClient.RemoveFromCartAsync(cartItemId, userId);
+
+                if (!success)
                 {
-                    Id = id,
-                    Name = name,
-                    Price = price,
-                    Image = image,
-                    Quantity = 1
-                });
+                    TempData["Error"] = "Failed to remove item from cart.";
+                }
             }
-
-            SaveCart(cart);
-
-            return RedirectToAction("Index");
-        }
-
-        public IActionResult Remove(int id)
-        {
-            var cart = GetCart();
-
-            var item = cart.FirstOrDefault(x => x.Id == id);
-
-            if (item != null)
+            catch
             {
-                cart.Remove(item);
+                TempData["Error"] = "An unexpected error occurred while removing the item.";
             }
 
-            SaveCart(cart);
-
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { userId });
         }
 
-        private List<CartItemVM> GetCart()
+        /// <summary>
+        /// Add a product to the cart and redirect to cart index
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> AddToCart(int id, string name, decimal price, string image, int userId = 1)
         {
-            var session = HttpContext.Session.GetString("CART");
-
-            if (session == null)
+            try
             {
-                return new List<CartItemVM>();
+                var success = await _cartApiClient.AddToCartAsync(userId, id, 1);
+                if (!success)
+                {
+                    TempData["Error"] = "Failed to add item to cart.";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message ?? "An error occurred while adding the item.";
             }
 
-            return JsonSerializer.Deserialize<List<CartItemVM>>(session);
-        }
-
-        private void SaveCart(List<CartItemVM> cart)
-        {
-            HttpContext.Session.SetString(
-                "CART",
-                JsonSerializer.Serialize(cart));
+            return RedirectToAction("Index", new { userId });
         }
     }
 }
+
+

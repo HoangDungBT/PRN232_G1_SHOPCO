@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http
 @using SHOP.CO.MVC.Common
 @inject IHttpContextAccessor HttpContextAccessor
 
@@ -80,6 +80,130 @@
     <footer class="border-top footer text-muted mt-5">
         <div class="container text-center py-3">
             &copy; 2026 - SHOP.CO
+        </div>
+        <ul class="nav-links">
+
+            <li>
+                <a href="/">Home</a>
+            </li>
+
+            <li>
+                <a href="/Home/Category">Shop</a>
+            </li>
+
+            <li>
+                <a href="#">On Sale</a>
+            </li>
+
+            <li>
+                <a href="#">New Arrivals</a>
+            </li>
+
+            <li>
+                <a href="#">Brands</a>
+            </li>
+
+        </ul>
+
+        <div class="search-box">
+
+            <input type="text" placeholder="Search for products..." />
+
+        </div>
+
+        <div class="nav-icons">
+
+            <a href="/Cart">🛒</a>
+
+            <span>👤</span>
+
+        </div>
+
+    </nav>
+
+    <!-- BODY -->
+    @RenderBody()
+
+    <!-- NEWSLETTER -->
+
+    <section class="newsletter">
+
+        <div class="newsletter-left">
+
+            <h2>
+                STAY UPTO DATE ABOUT OUR LATEST OFFERS
+            </h2>
+
+        </div>
+
+        <div class="newsletter-right">
+
+            <input type="email" placeholder="Enter your email address" />
+
+            <button>
+                Subscribe to Newsletter
+            </button>
+
+        </div>
+
+    </section>
+
+    <!-- FOOTER -->
+
+    <footer class="footer">
+
+        <div class="footer-top">
+
+            <div class="footer-brand">
+
+                <h2>SHOP.CO</h2>
+
+                <p>
+                    We have clothes that suits your style and which you’re proud to wear.
+                </p>
+
+            </div>
+
+            <div class="footer-links">
+
+                <div>
+
+                    <h4>COMPANY</h4>
+
+                    <a href="#">About</a>
+                    <a href="#">Features</a>
+                    <a href="#">Works</a>
+
+                </div>
+
+                <div>
+
+                    <h4>HELP</h4>
+
+                    <a href="#">Support</a>
+                    <a href="#">Delivery</a>
+                    <a href="#">Terms</a>
+
+                </div>
+
+                <div>
+
+                    <h4>FAQ</h4>
+
+                    <a href="#">Account</a>
+                    <a href="#">Orders</a>
+                    <a href="#">Payments</a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+
+            © 2026 SHOP.CO. All Rights Reserved.
+
         </div>
     </footer>
 

@@ -1,10 +1,10 @@
-﻿global using SHOP.CO.Infrastructure.Persistence;
+global using SHOP.CO.Infrastructure.Persistence;
 global using SHOP.CO.Infrastructure.Repositories;
 global using SHOP.CO.Domain.Entities;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
-global using SHOP.CO.Infrastructure.Data; 
+global using SHOP.CO.Infrastructure.Data;
 namespace SHOP.CO.Infrastructure
 {
     public static class InfrastructureDI
@@ -18,9 +18,10 @@ namespace SHOP.CO.Infrastructure
             {
                 options.UseSqlServer(connectionString, sqlOptions =>
                 {
+                    // Đặt tên Migration Assembly chỉ định về tầng Infrastructure
                     sqlOptions.MigrationsAssembly("SHOP.CO.Infrastructure");
 
-                    // Cấu hình chịu lỗi (Resiliency) nếu db rớt kết nối tạm thời
+                    // Cấu hình chịu lỗi (Resiliency) nếu db mất kết nối tạm thời
                     sqlOptions.EnableRetryOnFailure(
                         maxRetryCount: 3,
                         maxRetryDelay: TimeSpan.FromSeconds(10),
@@ -28,12 +29,12 @@ namespace SHOP.CO.Infrastructure
                 });
             });
 
-
-            //đăng kí Repositories
+            // Đăng ký Repositories với vòng đời Scoped
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
-
+            services.AddScoped<ICartRepository, CartRepository>();
+            services.AddScoped<SHOP.CO.Domain.Repositories.IProductUiRepository, MockProductUiRepository>();
 
             return services;
         }
