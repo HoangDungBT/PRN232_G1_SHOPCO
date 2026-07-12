@@ -489,3 +489,10 @@ appsettings.Local.json
 # Bỏ qua thư mục chứa ảnh/files upload chạy ở local (để không đẩy rác lên Git)
 **/wwwroot/images/uploads/
 **/wwwroot/uploads/
+.vs/
+bin/
+obj/
+
+*.user
+*.suo
+*.cache
