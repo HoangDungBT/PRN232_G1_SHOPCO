@@ -84,8 +84,8 @@
 <input type="hidden" id="jwtToken" value="@ViewBag.Token" />
 
 @section Scripts {
-    <script src="~/js/admin/common.js"></script>
-    <script src="~/js/admin/interactlogs.js"></script>
+    <script src="~/js/admin/common.js" asp-append-version="true"></script>
+    <script src="~/js/admin/interactlogs.js" asp-append-version="true"></script>
     <script>
         $(document).ready(function () {
             const apiUrl = $('#apiBaseUrl').val();
