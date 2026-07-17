@@ -1,4 +1,4 @@
-﻿@model SHOP.CO.MVC.Models.LoginVM
+@model SHOP.CO.MVC.Models.LoginVM
 @{
     ViewData["Title"] = "Đăng Nhập";
 }
@@ -20,18 +20,21 @@
                         <div class="alert alert-danger py-2">@ViewBag.ErrorMessage</div>
                     }
 
-                    <form asp-action="Login" method="post">
+                    <form id="loginForm">
                         <div class="mb-3">
                             <label class="form-label text-muted small">Email</label>
-                            <input asp-for="Email" class="form-control" placeholder="shopco@example.com" />
-                            <span asp-validation-for="Email" class="text-danger small"></span>
-                        </div>
+                            <input id="email" type="email" class="form-control"
+                             placeholder="shopco@example.com" required
+                             oninvalid="this.setCustomValidity('Vui lòng nhập email')"
+                             oninput="this.setCustomValidity('')" />
+                         </div>
                         <div class="mb-4">
                             <label class="form-label text-muted small">Mật khẩu</label>
-                            <input asp-for="Password" type="password" class="form-control" placeholder="••••••••" />
-                            <span asp-validation-for="Password" class="text-danger small"></span>
-                        </div>
-                        <button type="submit" class="btn btn-dark w-100 py-2 mb-3">ĐĂNG NHẬP</button>
+                            <input id="password" type="password" class="form-control" placeholder="••••••••" required
+                             oninvalid="this.setCustomValidity('Vui lòng nhập mật khẩu')"
+                             oninput="this.setCustomValidity('')" />
+                         </div>
+                         <button type="submit" id="btnLogin" class="btn btn-dark w-100 py-2 mb-3">ĐĂNG NHẬP</button>
                     </form>
 
                     <div class="d-flex justify-content-between small">
@@ -43,3 +46,45 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $('#loginForm').submit(function(e) {
+            e.preventDefault();
+            
+            if (!this.checkValidity()) {
+                this.reportValidity();
+                return;
+            }
+
+            let data = {
+                Email: $('#email').val(),
+                Password: $('#password').val()
+            };
+
+            $('#btnLogin').html('<i class="fas fa-spinner fa-spin"></i> Đang xử lý...').prop('disabled', true);
+
+            $.ajax({
+                url: '/Auth/Login', // Post to MVC Controller
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(res) {
+                    $('#btnLogin').html('ĐĂNG NHẬP').prop('disabled', false);
+                    if(res.isSuccess) {
+                        window.location.href = res.redirectUrl;
+                    } else {
+                        // Backend validation format (like Vui lòng nhập Email!<br/>The Password field is required.)
+                        let errorMessage = res.message.replace(/<br\/>/g, '<br>');
+                        Swal.fire('Lỗi đăng nhập', errorMessage, 'error');
+                    }
+                },
+                error: function(xhr) {
+                    $('#btnLogin').html('ĐĂNG NHẬP').prop('disabled', false);
+                    Swal.fire('Lỗi', 'Có lỗi xảy ra, vui lòng thử lại sau!', 'error');
+                }
+            });
+        });
+    </script>
+}

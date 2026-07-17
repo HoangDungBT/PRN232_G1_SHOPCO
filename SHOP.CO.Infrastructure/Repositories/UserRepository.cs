@@ -1,5 +1,11 @@
 ﻿namespace SHOP.CO.Infrastructure.Repositories
 {
+    public interface IUserRepository : IBaseRepository<User>
+    {
+        Task<bool> EmailExistsAsync(string email);
+        Task<User?> GetUserByEmailAsync(string email);
+        Task<User?> GetUserByRefreshTokenAsync(string refreshToken);
+    }
     public class UserRepository : BaseRepository<User>, IUserRepository
     {
         public UserRepository(ShopCoDbContext context) : base(context) { }

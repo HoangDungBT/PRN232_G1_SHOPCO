@@ -80,4 +80,21 @@ namespace SHOP.CO.API.Controllers.OData
         [EnableQuery(PageSize = 100)]
         public IActionResult Get() => Ok(_service.GetUserODataQuery());
     }
+
+    [Authorize(Roles = "Admin,Staff")]
+    public class AdminLogsODataController : ODataController
+    {
+        private readonly IAdminLogService _service;
+
+        public AdminLogsODataController(IAdminLogService service)
+        {
+            _service = service;
+        }
+
+        [EnableQuery(PageSize = 100)]
+        public IActionResult Get()
+        {
+            return Ok(_service.GetLogsODataQuery());
+        }
+    }
 }

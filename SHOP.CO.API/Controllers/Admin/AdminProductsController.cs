@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SHOP.CO.Application.DTOs;
 using SHOP.CO.Application.Services;
@@ -15,15 +15,10 @@ namespace SHOP.CO.API.Controllers
         private readonly IAdminProductService _service;
         private readonly IWebHostEnvironment _env; // 🟢 INJECT WEB HOST ENVIRONMENT
 
-        // tạm
-        private readonly ShopCoDbContext _context;
-        // 🟢 CẬP NHẬT CONSTRUCTOR
-        public AdminProductsController(IAdminProductService service, IWebHostEnvironment env,
-            ShopCoDbContext context)
+        public AdminProductsController(IAdminProductService service, IWebHostEnvironment env)
         {
             _service = service;
             _env = env;
-            _context = context;
         }
 
         [HttpGet("/api/admin/products/{id}")]
@@ -36,7 +31,6 @@ namespace SHOP.CO.API.Controllers
         [HttpPost("/api/admin/products")]
         public async Task<IActionResult> CreateProduct([FromBody] CreateProductRequestDto request)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
             var result = await _service.CreateProductAsync(request);
             return StatusCode(result.Code, result);
         }
@@ -44,7 +38,6 @@ namespace SHOP.CO.API.Controllers
         [HttpPut("/api/admin/products/{id}")]
         public async Task<IActionResult> UpdateProduct(int id, [FromBody] UpdateProductRequestDto request)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
             var result = await _service.UpdateAsync(id, request);
             return StatusCode(result.Code, result);
         }
@@ -52,32 +45,15 @@ namespace SHOP.CO.API.Controllers
         [HttpPut("bulk/status")]
         public async Task<IActionResult> BulkUpdateStatus([FromBody] BulkUpdateStatusDto dto)
         {
-            if (dto.ProductIds == null || !dto.ProductIds.Any()) return BadRequest("Không có sản phẩm nào được chọn.");
-
-            // Tạm thời viết logic trực tiếp ở Controller cho nhanh (Nên chuyển vào Service nếu dự án lớn)
-            var products = _context.Products.Where(p => dto.ProductIds.Contains(p.ProductId)).ToList();
-            foreach (var p in products)
-            {
-                p.IsActive = dto.IsActive;
-                p.UpdatedAt = DateTime.UtcNow;
-            }
-            await _context.SaveChangesAsync();
-            return Ok(new { isSuccess = true, message = $"Đã cập nhật trạng thái {products.Count} sản phẩm!" });
+            var result = await _service.BulkUpdateStatusAsync(dto);
+            return StatusCode(result.Code, result);
         }
 
         [HttpPut("bulk/featured")]
         public async Task<IActionResult> BulkUpdateFeatured([FromBody] BulkUpdateFeaturedDto dto)
         {
-            if (dto.ProductIds == null || !dto.ProductIds.Any()) return BadRequest("Không có sản phẩm nào được chọn.");
-
-            var products = _context.Products.Where(p => dto.ProductIds.Contains(p.ProductId)).ToList();
-            foreach (var p in products)
-            {
-                p.IsFeatured = dto.IsFeatured;
-                p.UpdatedAt = DateTime.UtcNow;
-            }
-            await _context.SaveChangesAsync();
-            return Ok(new { isSuccess = true, message = $"Đã cập nhật nổi bật {products.Count} sản phẩm!" });
+            var result = await _service.BulkUpdateFeaturedAsync(dto);
+            return StatusCode(result.Code, result);
         }
         [HttpDelete("/api/admin/products/{id}")]
         public async Task<IActionResult> DeleteProduct(int id)

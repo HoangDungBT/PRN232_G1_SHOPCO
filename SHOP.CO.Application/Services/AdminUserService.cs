@@ -1,4 +1,5 @@
 ﻿
+
 namespace SHOP.CO.Application.Services
 {
     public interface IAdminUserService

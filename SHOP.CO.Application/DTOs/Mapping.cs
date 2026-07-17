@@ -53,6 +53,14 @@ namespace SHOP.CO.Application.DTOs
                 .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.ColorSnapshot))
                 .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrlSnapshot))
                 .ForMember(dest => dest.SalePrice, opt => opt.MapFrom(src => src.SalePrice ?? src.UnitPrice));
+
+            // ==========================================
+            // 5. LOGS MAPPINGS
+            // ==========================================
+            CreateMap<InteractionLog, InteractionLogDto>()
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.FullName)); 
+
+
         }
     }
 }

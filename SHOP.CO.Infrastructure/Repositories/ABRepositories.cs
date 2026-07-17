@@ -50,34 +50,4 @@ namespace SHOP.CO.Application.Repositories
             await _context.SaveChangesAsync();
         }
     }
-    // 2. CÁC INTERFACE CỤ THỂ KẾ THỪA TỪ IBaseRepository
-    public interface ICategoryRepository : IBaseRepository<Category>
-    {
-        IQueryable<Category> GetCategoriesWithParentAsQueryable();
-        Task<bool> IsSlugExistsAsync(string slug, int? excludeId = null);
-        Task<bool> HasChildrenAsync(int id);
-    }
-
-    public interface IOrderRepository : IBaseRepository<Order>
-    {
-
-        Task<Order?> GetOrderWithDetailsAsync(int orderId);
-    }
-
-    public interface IProductRepository : IBaseRepository<Product>
-    {
-        IQueryable<Product> GetProductsWithDetailsAsQueryable();
-        Task<Product?> GetProductWithVariantsByIdAsync(int productId);
-        Task SoftDeleteProductAsync(Product product);
-        Task<bool> IsSlugExistsAsync(string slug, int? excludeProductId = null);
-        Task<bool> IsSkuExistsAsync(string sku);
-        Task<(List<Product> Items, int TotalCount)> GetPagedProductAsync(string? searchTerm, int pageNumber, int pageSize);
-    }
-
-    public interface IUserRepository : IBaseRepository<User>
-    {
-        Task<bool> EmailExistsAsync(string email);
-        Task<User?> GetUserByEmailAsync(string email);
-        Task<User?> GetUserByRefreshTokenAsync(string refreshToken);
-    }
 }

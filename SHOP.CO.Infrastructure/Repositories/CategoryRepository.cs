@@ -1,5 +1,11 @@
 ﻿namespace SHOP.CO.Infrastructure.Repositories
-{
+{  // 2. CÁC INTERFACE CỤ THỂ KẾ THỪA TỪ IBaseRepository
+    public interface ICategoryRepository : IBaseRepository<Category>
+    {
+        IQueryable<Category> GetCategoriesWithParentAsQueryable();
+        Task<bool> IsSlugExistsAsync(string slug, int? excludeId = null);
+        Task<bool> HasChildrenAsync(int id);
+    }
     public class CategoryRepository : BaseRepository<Category>, ICategoryRepository
     {
         public CategoryRepository(ShopCoDbContext context) : base(context) { }

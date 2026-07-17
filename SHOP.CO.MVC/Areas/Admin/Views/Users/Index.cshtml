@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Quản Lý Người Dùng";
 }
 
@@ -24,7 +24,6 @@
                 <thead class="table-light">
                     <tr>
                         <th>ID</th>
-                        <th>Ảnh</th>
                         <th>Thông Tin Tài Khoản</th>
                         <th>Liên Hệ</th>
                         <th class="text-center">Vai Trò</th>
@@ -56,218 +55,14 @@
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <script src="~/js/admin/common.js"></script>
+    <script src="~/js/admin/users.js"></script>
     <script>
-        const apiUrl = $('#apiBaseUrl').val();
-        const token = $('#jwtToken').val();
-        const currentRole = $('#currentRole').val(); // Lấy Role (Admin / Staff)
-
-        let currentPage = 1;
-        let pageSize = 10;
-
         $(document).ready(function () {
-            loadUsers();
-
-            $('#btnSearch').click(function() { currentPage = 1; loadUsers(); });
-            $('#searchInput').keypress(function(e) { if (e.which == 13) $('#btnSearch').click(); });
-        });
-
-        // ==========================================
-        // 1. TẢI DỮ LIỆU ODATA
-        // ==========================================
-        function loadUsers() {
-            let skip = (currentPage - 1) * pageSize;
-
-            let odataQuery = `odata/AdminUsersOData?$count=true&$top=${pageSize}&$skip=${skip}&$orderby=UserId desc`;
-
-            let keyword = $('#searchInput').val().trim();
-            if (keyword) {
-                // Lọc theo Tên hoặc Email
-                odataQuery += `&$filter=contains(tolower(FullName), '${keyword.toLowerCase()}') or contains(tolower(Email), '${keyword.toLowerCase()}')`;
-            }
-
-            $.ajax({
-                url: apiUrl + odataQuery,
-                type: 'GET',
-                cache: false,
-                headers: { 'Authorization': 'Bearer ' + token },
-                beforeSend: function () {
-                    $('#userTableBody').html(`<tr><td colspan="6" class="text-center py-4 text-muted"><i class="fas fa-spinner fa-spin me-2"></i> Đang tải dữ liệu...</td></tr>`);
-                },
-                success: function (response) {
-                    if (response && response.value) {
-                        renderTable(response.value);
-                        renderPagination(response['@@odata.count']);
-                    }
-                },
-                error: function () {
-                    $('#userTableBody').html(`<tr><td colspan="6" class="text-center text-danger py-4">Lỗi tải dữ liệu.</td></tr>`);
-                }
-            });
-        }
-
-        // ==========================================
-        // 2. VẼ BẢNG DỮ LIỆU
-        // ==========================================
-        function renderTable(users) {
-            let html = '';
-            if (users.length === 0) {
-                html = `<tr><td colspan="6" class="text-center py-4 text-muted">Không tìm thấy người dùng nào!</td></tr>`;
-            } else {
-                users.forEach(u => {
-                    // Badge Trạng thái
-                    let statusHtml = u.Status === 'Active'
-                        ? `<span class="badge bg-success">Hoạt động</span>`
-                        : `<span class="badge bg-danger">Đã khóa</span>`;
-
-                    // Badge Phân quyền
-                    let roleHtml = u.Role === 'Admin'
-                        ? `<span class="badge bg-dark">Quản trị viên</span>`
-                        : (u.Role === 'Staff' ? `<span class="badge bg-info text-dark">Nhân viên</span>` : `<span class="badge bg-secondary">Khách hàng</span>`);
-
-                    // Logic Nút bấm: Nếu là Admin đang login thì mới hiện nút thao tác
-                    let actionButtons = `<span class="text-muted small">Không có quyền</span>`;
-                    if (currentRole === 'Admin' && u.Role !== 'Admin') {
-                        // Nút Đổi Trạng Thái (Khóa/Mở Khóa)
-                        let lockBtn = u.Status === 'Active'
-                            ? `<button class="btn btn-sm btn-outline-danger me-1" title="Khóa tài khoản" onclick="toggleStatus(${u.UserId}, 'Active')"><i class="fas fa-lock"></i></button>`
-                            : `<button class="btn btn-sm btn-outline-success me-1" title="Mở khóa tài khoản" onclick="toggleStatus(${u.UserId}, 'Locked')"><i class="fas fa-unlock"></i></button>`;
-
-                        // Nút Đổi Phân Quyền
-                        let roleBtn = u.Role === 'Customer'
-                            ? `<button class="btn btn-sm btn-outline-info" title="Thăng cấp thành Staff" onclick="toggleRole(${u.UserId}, 'Customer')"><i class="fas fa-arrow-up"></i></button>`
-                            : `<button class="btn btn-sm btn-outline-warning" title="Giáng cấp thành Khách hàng" onclick="toggleRole(${u.UserId}, 'Staff')"><i class="fas fa-arrow-down"></i></button>`;
-
-                        actionButtons = lockBtn + roleBtn;
-                    }
-
-                    // Ngày giờ đăng nhập
-                    let lastLogin = u.LastLoginAt ? new Date(u.LastLoginAt).toLocaleString('vi-VN') : 'Chưa đăng nhập';
-
-                    html += `
-                        <tr>
-                            <td>#${u.UserId}</td>
-                             <td>Chưa xử lí</td>
-                            <td>
-                                <strong>${u.FullName}</strong><br>
-                                <small class="text-muted">Đăng nhập: ${lastLogin}</small>
-                            </td>
-                            <td>
-                                <i class="fas fa-envelope text-muted"></i> ${u.Email}<br>
-                                <i class="fas fa-phone text-muted"></i> ${u.Phone || 'N/A'}
-                            </td>
-                            <td class="text-center">${roleHtml}</td>
-                            <td class="text-center">${statusHtml}</td>
-                            <td class="text-center">${actionButtons}</td>
-                        </tr>
-                    `;
-                });
-            }
-            $('#userTableBody').html(html);
-        }
-
-        // ==========================================
-        // 3. XỬ LÝ KHÓA TÀI KHOẢN
-        // ==========================================
-        function toggleStatus(id, currentStatus) {
-            let newStatus = currentStatus === 'Active' ? 'Locked' : 'Active';
-            let actionName = currentStatus === 'Active' ? 'Khóa' : 'Mở khóa';
-
-            Swal.fire({
-                title: `${actionName} tài khoản?`,
-                text: `Tài khoản bị khóa sẽ không thể đăng nhập vào hệ thống!`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: currentStatus === 'Active' ? '#dc3545' : '#198754',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Đồng ý',
-                cancelButtonText: 'Hủy'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: apiUrl + `api/admin/users/${id}/status`,
-                        type: 'PUT',
-                        contentType: 'application/json',
-                        data: JSON.stringify({ value: newStatus }), // Map với UpdateUserFieldDto
-                        headers: { 'Authorization': 'Bearer ' + token },
-                        success: function (res) {
-                            if (res.isSuccess) {
-                                Swal.fire({ title: 'Thành công!', text: res.message, icon: 'success', timer: 1500, showConfirmButton: false });
-                                loadUsers();
-                            } else {
-                                Swal.fire('Lỗi', res.message, 'error');
-                            }
-                        },
-                        error: function (xhr) {
-                            Swal.fire('Lỗi', xhr.responseJSON?.message || 'Có lỗi xảy ra', 'error');
-                        }
-                    });
-                }
-            });
-        }
-
-        // ==========================================
-        // 4. XỬ LÝ CẤP QUYỀN
-        // ==========================================
-        function toggleRole(id, currentRole) {
-            let newRole = currentRole === 'Customer' ? 'Staff' : 'Customer';
-            let actionName = currentRole === 'Customer' ? 'Thăng cấp thành Nhân Viên' : 'Giáng cấp thành Khách hàng';
-
-            Swal.fire({
-                title: `${actionName}?`,
-                text: `Người dùng sẽ được thêm (hoặc mất) quyền truy cập vào Khu Vực Quản Trị.`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#0dcaf0',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Xác nhận',
-                cancelButtonText: 'Hủy'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: apiUrl + `api/admin/users/${id}/role`,
-                        type: 'PUT',
-                        contentType: 'application/json',
-                        data: JSON.stringify({ value: newRole }),
-                        headers: { 'Authorization': 'Bearer ' + token },
-                        success: function (res) {
-                            if (res.isSuccess) {
-                                Swal.fire({ title: 'Thành công!', text: res.message, icon: 'success', timer: 1500, showConfirmButton: false });
-                                loadUsers();
-                            } else {
-                                Swal.fire('Lỗi', res.message, 'error');
-                            }
-                        },
-                        error: function (xhr) {
-                            Swal.fire('Lỗi', xhr.responseJSON?.message || 'Có lỗi xảy ra', 'error');
-                        }
-                    });
-                }
-            });
-        }
-
-        // Hàm Phân Trang
-        function renderPagination(totalRecords) {
-            let totalPages = Math.ceil(totalRecords / pageSize);
-            let paginationHtml = '';
-            let startRecord = totalRecords === 0 ? 0 : ((currentPage - 1) * pageSize) + 1;
-            let endRecord = (currentPage * pageSize) > totalRecords ? totalRecords : (currentPage * pageSize);
-            $('#paginationInfo').text(`Hiển thị ${startRecord} - ${endRecord} trên tổng ${totalRecords} khách hàng`);
-
-            for (let i = 1; i <= totalPages; i++) {
-                paginationHtml += `
-                    <li class="page-item ${currentPage === i ? 'active' : ''}">
-                        <a class="page-link" href="#" data-page="${i}">${i}</a>
-                    </li>
-                `;
-            }
-            $('#paginationUl').html(paginationHtml);
-        }
-
-        $(document).on('click', '.page-link', function (e) {
-            e.preventDefault();
-            currentPage = parseInt($(this).data('page'));
-            loadUsers();
+            const apiUrl = $('#apiBaseUrl').val();
+            const token = $('#jwtToken').val();
+            const currentRole = $('#currentRole').val();
+            UserManager.init(apiUrl, token, currentRole);
         });
     </script>
 }

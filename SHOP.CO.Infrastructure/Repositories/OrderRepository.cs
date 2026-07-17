@@ -1,5 +1,12 @@
 ﻿namespace SHOP.CO.Infrastructure.Repositories
 {
+    public interface IOrderRepository : IBaseRepository<Order>
+    {
+
+        Task<Order?> GetOrderWithDetailsAsync(int orderId);
+    }
+
+
     public class OrderRepository : BaseRepository<Order>, IOrderRepository
     {
         public OrderRepository(ShopCoDbContext context) : base(context) { }

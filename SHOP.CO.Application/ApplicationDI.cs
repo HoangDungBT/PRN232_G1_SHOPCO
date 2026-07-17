@@ -12,6 +12,8 @@ global using Microsoft.AspNetCore.Hosting;
 global using Microsoft.EntityFrameworkCore;
 global using SHOP.CO.Infrastructure.Persistence;
 global using System.Reflection;
+global using SHOP.CO.Infrastructure.Repositories;
+
 
 namespace SHOP.CO.Application
 {
@@ -44,6 +46,7 @@ namespace SHOP.CO.Application
             services.AddScoped<IAdminCategoryService, AdminCategoryService>();
             services.AddScoped<IAdminUserService, AdminUserService>();
             services.AddScoped<IAdminOrderService, AdminOrderService>();
+            services.AddScoped<IAdminLogService, AdminLogService>();
             #endregion
 
             return services;

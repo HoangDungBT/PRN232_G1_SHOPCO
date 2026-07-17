@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Đăng Ký Tài Khoản";
     Layout = "_Layout"; // Sử dụng layout của User Client
 }
@@ -14,16 +14,25 @@
                         <h3 class="text-center font-weight-light my-4 text-primary fw-bold">TẠO TÀI KHOẢN</h3>
                         <form id="registerForm">
                             <div class="form-floating mb-3">
-                                <input class="form-control" id="fullName" type="text" placeholder="Họ và tên" required />
+                                <input class="form-control" id="fullName" type="text"
+                                 placeholder="Họ và tên" required
+                                 oninvalid="this.setCustomValidity('Vui lòng nhập họ và tên')"
+                                 oninput="this.setCustomValidity('')"  />
                                 <label for="fullName">Họ và Tên</label>
                             </div>
                             <div class="form-floating mb-3">
-                                <input class="form-control" id="email" type="email" placeholder="name@example.com" required />
+                                <input class="form-control" id="email" type="email"
+                                 placeholder="name@example.com" required
+                                 oninvalid="this.setCustomValidity('Vui lòng nhập email')"
+                                 oninput="this.setCustomValidity('')" />
                                 <label for="email">Địa chỉ Email</label>
                             </div>
                             <div class="form-floating mb-3">
-                                <input class="form-control" id="password" type="password" placeholder="Mật khẩu" required minlength="6" />
-                                <label for="password">Mật khẩu (Tối thiểu 6 ký tự)</label>
+                                <input class="form-control" id="password" type="password"
+                                 placeholder="Mật khẩu" required minlength="8"
+                                 oninvalid="this.setCustomValidity('Vui lòng nhập mật khẩu')"
+                                 oninput="this.setCustomValidity('')" />
+                                <label for="password">Mật khẩu (Tối thiểu 8 ký tự)</label>
                             </div>
                             <div class="d-grid mt-4 mb-0">
                                 <button class="btn btn-primary btn-block py-3 fw-bold" type="submit" id="btnRegister">ĐĂNG KÝ NGAY</button>
@@ -70,9 +79,31 @@
         const apiUrl = $('#apiBaseUrl').val();
         let registeredEmail = "";
 
+        function getErrorMessage(xhr) {
+            if (xhr && xhr.responseJSON) {
+                if (xhr.responseJSON.errors) {
+                    let errorList = [];
+                    for (let key in xhr.responseJSON.errors) {
+                        errorList.push(xhr.responseJSON.errors[key].join('<br>'));
+                    }
+                    return errorList.join('<br><br>');
+                }
+                if (xhr.responseJSON.message) {
+                    return xhr.responseJSON.message;
+                }
+            }
+            return 'Có lỗi xảy ra, vui lòng thử lại sau!';
+        }
+
         // 1. XỬ LÝ ĐĂNG KÝ
           $('#registerForm').submit(function(e) {
               e.preventDefault();
+
+              if (!this.checkValidity()) {
+                this.reportValidity();
+                return;
+            }
+
               let data = {
                   fullName: $('#fullName').val(),
                   email: $('#email').val(),
@@ -103,8 +134,8 @@
                   },
                   error: function(xhr) {
                       $('#btnRegister').html('ĐĂNG KÝ NGAY').prop('disabled', false);
-                      let err = xhr.responseJSON ? xhr.responseJSON.message : "Có lỗi xảy ra!";
-                      Swal.fire('Lỗi', err, 'error');
+                      let errorMessage = getErrorMessage(xhr);
+                      Swal.fire('Lỗi', errorMessage, 'error');
                   }
               });
           });
@@ -133,7 +164,7 @@
                 },
                 error: function(xhr) {
                     $('#btnVerify').html('XÁC NHẬN TÀI KHOẢN').prop('disabled', false);
-                    let err = xhr.responseJSON ? xhr.responseJSON.message : "Mã OTP không đúng!";
+                    let err = getErrorMessage(xhr);
                     Swal.fire('Lỗi', err, 'error');
                 }
             });
@@ -151,9 +182,10 @@
                     Swal.fire('Đã gửi', 'Vui lòng kiểm tra lại hộp thư của bạn.', 'success');
                     startCountdown();
                 },
-                error: function() {
+                error: function(xhr) {
                     $('#btnResend').prop('disabled', false).text('Gửi lại mã');
-                    Swal.fire('Lỗi', 'Không thể gửi lại mã lúc này', 'error');
+                    let err = getErrorMessage(xhr);
+                    Swal.fire('Lỗi', err, 'error');
                 }
             });
         }

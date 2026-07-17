@@ -1,0 +1,102 @@
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasProduct" aria-labelledby="offcanvasProductLabel" style="width: 700px;">
+    <div class="offcanvas-header bg-light border-bottom">
+        <h5 class="offcanvas-title fw-bold" id="offcanvasProductLabel">Thêm Sản Phẩm Mới</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+        <form id="productForm">
+            <input type="hidden" id="ProductId" value="0" />
+
+            <h6 class="fw-bold text-primary mb-3"><i class="fas fa-info-circle"></i> Thông Tin Cơ Bản</h6>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Danh Mục (*)</label>
+                <select id="CategoryId" class="form-select" required
+                        oninvalid="this.setCustomValidity('Vui lòng chọn một danh mục hợp lệ')"
+                        oninput="this.setCustomValidity('')">
+                    <option value="">-- Đang tải danh mục... --</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Tên Sản Phẩm (*)</label>
+                <input type="text" id="ProductName" class="form-control" placeholder="VD: Áo thun nam tay ngắn..." required
+                       oninvalid="this.setCustomValidity('Tên sản phẩm không được để trống')"
+                       oninput="this.setCustomValidity('')" />
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Thương Hiệu</label>
+                    <input type="text" id="Brand" class="form-control" list="brandList" placeholder="Chọn hoặc nhập mới..." autocomplete="off" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Chất Liệu</label>
+                    <input type="text" id="Material" class="form-control" list="materialList" placeholder="Chọn hoặc nhập mới..." autocomplete="off" />
+                </div>
+            </div>
+
+            <div class="row border p-3 bg-light rounded mx-0 mb-3">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <label class="form-label fw-bold text-danger">Giá Gốc (*) VNĐ</label>
+                    <input type="number" step="1000" id="BasePrice" class="form-control border-danger" required min="1000" placeholder="VD: 150000"
+                           oninvalid="this.setCustomValidity('Giá gốc phải phải từ 1,000 VNĐ và chẵn hàng nghìn')"
+                           oninput="this.setCustomValidity('')" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label text-success">Giá Khuyến Mãi (VNĐ)</label>
+                    <input type="number" step="1000" id="SalePrice" class="form-control border-success" min="0" placeholder="Để trống nếu không sale"
+                           oninvalid="this.setCustomValidity('Giá khuyến mãi không được là số âm')"
+                           oninput="this.setCustomValidity('')" />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Mô tả chi tiết</label>
+                <textarea id="Description" class="form-control" rows="4" placeholder="Nhập mô tả sản phẩm..."></textarea>
+            </div>
+
+            <div class="mb-4 p-3 bg-light border rounded">
+                <label class="form-label fw-bold text-primary"><i class="fas fa-images"></i> Hình Ảnh Sản Phẩm</label>
+                <input type="file" id="ProductImages" class="form-control" multiple accept="image/*" />
+                <small class="text-muted d-block mt-1">Hỗ trợ chọn nhiều file ảnh cùng lúc. Ảnh đầu tiên sẽ làm ảnh đại diện.</small>
+
+                <div id="imagePreviewContainer" class="d-flex flex-wrap gap-3 mt-3"></div>
+            </div>
+
+            <div class="row mb-4 bg-light p-2 rounded mx-0">
+                <div class="col-6">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="IsActive" checked>
+                        <label class="form-check-label fw-bold">Đang Mở Bán (Active)</label>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="IsFeatured">
+                        <label class="form-check-label text-warning fw-bold">Sản Phẩm Nổi Bật</label>
+                    </div>
+                </div>
+            </div>
+
+            <div id="variantsSection">
+                <div class="d-flex justify-content-between align-items-center mb-2 mt-4 border-top pt-3">
+                    <h6 class="fw-bold text-primary m-0"><i class="fas fa-tags"></i> Phân Loại Hàng (Size/Màu) (*)</h6>
+                    <button type="button" class="btn btn-sm btn-outline-success" onclick="ProductManager.addVariantRow()">
+                        <i class="fas fa-plus"></i> Thêm Phân Loại
+                    </button>
+                </div>
+              
+                <div id="variantContainer" class="mb-3">
+                </div>
+            </div>
+
+        </form>
+    </div>
+    <div class="offcanvas-footer border-top p-3 bg-white d-flex justify-content-end">
+        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="offcanvas">Hủy</button>
+        <button type="button" class="btn btn-primary px-4" id="btnSaveProduct" onclick="ProductManager.saveProduct()">
+            <i class="fas fa-save me-1"></i> LƯU SẢN PHẨM
+        </button>
+    </div>
+</div>

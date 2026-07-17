@@ -1,5 +1,14 @@
 ﻿namespace SHOP.CO.Infrastructure.Repositories
 {
+    public interface IProductRepository : IBaseRepository<Product>
+    {
+        IQueryable<Product> GetProductsWithDetailsAsQueryable();
+        Task<Product?> GetProductWithVariantsByIdAsync(int productId);
+        Task SoftDeleteProductAsync(Product product);
+        Task<bool> IsSlugExistsAsync(string slug, int? excludeProductId = null);
+        Task<bool> IsSkuExistsAsync(string sku);
+        Task<(List<Product> Items, int TotalCount)> GetPagedProductAsync(string? searchTerm, int pageNumber, int pageSize);
+    }
     public class ProductRepository : BaseRepository<Product>, IProductRepository
     {
         public ProductRepository(ShopCoDbContext context) : base(context) { }

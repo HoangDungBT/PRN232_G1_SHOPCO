@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.Edm;
@@ -10,6 +11,8 @@ using SHOP.CO.Domain.Entities;
 using SHOP.CO.Infrastructure;
 using System.Text;
 using System.Text.Json.Serialization;
+using SHOP.CO.API.Middlewares;
+using SHOP.CO.Application.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +29,7 @@ static IEdmModel GetEdmModel()
 
     odataBuilder.EntitySet<OrderDto>("AdminOrdersOData").EntityType.HasKey(u => u.OrderId);
     odataBuilder.EntitySet<ProductVariant>("AdminInventoryOData").EntityType.HasKey(v => v.VariantId);
+    odataBuilder.EntitySet<InteractionLogDto>("AdminLogsOData").EntityType.HasKey(l => l.LogId);
     return odataBuilder.GetEdmModel();
 }
 #endregion
@@ -47,6 +51,29 @@ builder.Services.AddControllers()
         .AddRouteComponents("odata", GetEdmModel()) // Prefix route là /odata
     ); ;
 #endregion
+
+#region 1.1 Model State Validation
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        // Rút trích tất cả thông báo lỗi từ các thuộc tính bị sai
+        var errors = context.ModelState
+            .Where(e => e.Value.Errors.Count > 0)
+            .SelectMany(x => x.Value.Errors)
+            .Select(x => x.ErrorMessage)
+            .ToList();
+
+        // Gộp tất cả các lỗi lại thành 1 chuỗi, cách nhau bởi thẻ <br> để hiển thị trên web
+        string errorMessage = string.Join("<br/>", errors);
+
+        // Trả về theo cấu trúc chuẩn của ResultModel
+        var result = ResultModel<string>.Error(errorMessage, 400);
+
+        return new BadRequestObjectResult(result);
+    };
+});
+#endregion  
 
 #region 2. Application & Infrastructure DI
 builder.Services.AddApplication(builder.Configuration);
@@ -156,8 +183,8 @@ builder.Services.AddSignalR();
 var app = builder.Build();
 
 #region 8. Middleware Pipeline
-// Bỏ comment dòng dưới khi bạn đã tạo class ExceptionMiddleware
-// app.UseMiddleware<ExceptionMiddleware>();
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
@@ -165,6 +192,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 // Kích hoạt CORS (Phải đặt trước Auth)

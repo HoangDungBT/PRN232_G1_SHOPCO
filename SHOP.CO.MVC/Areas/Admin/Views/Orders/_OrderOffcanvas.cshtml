@@ -1,0 +1,77 @@
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasOrder" aria-labelledby="offcanvasOrderLabel" style="width: 900px;">
+    <!-- Giữ nguyên code Offcanvas của bạn ở đây -->
+    <div class="offcanvas-header bg-light border-bottom">
+        <h5 class="offcanvas-title fw-bold" id="offcanvasOrderLabel">Chi Tiết Đơn Hàng #<span id="detailOrderId"></span></h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body bg-light">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white fw-bold text-primary"><i class="fas fa-user me-1"></i> Thông Tin Giao Hàng</div>
+                    <div class="card-body small">
+                        <p class="mb-1"><strong>Mã đơn:</strong> <span id="detailOrderCode" class="text-danger fw-bold"></span></p>
+                        <p class="mb-1"><strong>Người nhận:</strong> <span id="detailReceiverName"></span></p>
+                        <p class="mb-1"><strong>Điện thoại:</strong> <span id="detailReceiverPhone"></span></p>
+                        <p class="mb-1"><strong>Địa chỉ:</strong> <span id="detailAddress"></span></p>
+                        <p class="mb-0 text-muted"><strong>Ghi chú:</strong> <span id="detailCustomerNote">Không có</span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white fw-bold text-warning"><i class="fas fa-tasks me-1"></i> Xử Lý Đơn Hàng</div>
+                    <div class="card-body small">
+                        <div class="mb-3 d-flex align-items-center">
+                            <strong class="me-2">Thanh toán:</strong>
+                            <span id="detailPaymentBadge"></span>
+                            <button id="btnMarkPaid" class="btn btn-sm btn-outline-success ms-2 py-0 d-none" onclick="OrderManager.markAsPaid()">Đánh dấu đã thu tiền</button>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label fw-bold mb-1">Cập nhật Trạng Thái Đơn:</label>
+                            <div class="input-group input-group-sm">
+                                <select id="OrderStatusSelect" class="form-select border-primary">
+                                    <option value="Pending">Chờ Xác Nhận (Pending)</option>
+                                    <option value="Confirmed">Đã Xác Nhận (Confirmed)</option>
+                                    <option value="Shipping">Đang Giao Hàng (Shipping)</option>
+                                    <option value="Completed">Đã Hoàn Thành (Completed)</option>
+                                    <option value="Canceled">Hủy Đơn Hàng (Canceled)</option>
+                                </select>
+                                <button class="btn btn-primary" type="button" onclick="OrderManager.updateOrderStatus()">Cập nhật</button>
+                            </div>
+                        </div>
+                        <div id="cancelReasonDiv" class="mb-0 d-none">
+                            <input type="text" id="CancelReasonInput" class="form-control form-control-sm border-danger" placeholder="Nhập lý do hủy đơn (Bắt buộc)...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card border-0 shadow-sm mt-3">
+            <div class="card-header bg-white fw-bold"><i class="fas fa-box-open me-1"></i> Sản Phẩm Khách Đặt</div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="60">Ảnh</th>
+                                <th>Tên & Phân Loại</th>
+                                <th class="text-center">SL</th>
+                                <th class="text-end">Đơn Giá</th>
+                                <th class="text-end pe-3">Thành Tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detailItemsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer bg-white text-end">
+                <div class="small">Tạm tính: <span id="detailSubtotal">0</span> đ</div>
+                <div class="small text-danger">Giảm giá: <span id="detailDiscount">0</span> đ</div>
+                <div class="small">Phí Ship: <span id="detailShippingFee">0</span> đ</div>
+                <hr class="my-1">
+                <h6 class="fw-bold mb-0">Tổng Cộng: <span id="detailTotal" class="text-danger">0</span> đ</h6>
+            </div>
+        </div>
+    </div>
+</div>
