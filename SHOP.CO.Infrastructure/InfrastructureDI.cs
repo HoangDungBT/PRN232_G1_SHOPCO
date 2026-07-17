@@ -1,4 +1,4 @@
-﻿global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using SHOP.CO.Domain.Entities;
@@ -18,22 +18,28 @@ namespace SHOP.CO.Infrastructure
             {
                 options.UseSqlServer(connectionString, sqlOptions =>
                 {
+                    // Đặt tên Migration Assembly chỉ định về tầng Infrastructure
                     sqlOptions.MigrationsAssembly("SHOP.CO.Infrastructure");
-                    sqlOptions.EnableRetryOnFailure(maxRetryCount: 3, maxRetryDelay: TimeSpan.FromSeconds(10), errorNumbersToAdd: null);
+                    // Cấu hình chịu lỗi (Resiliency) nếu db mất kết nối tạm thời
+                    sqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 3,
+                        maxRetryDelay: TimeSpan.FromSeconds(10),
+                        errorNumbersToAdd: null);
                 });
             });
 
             // Đăng ký Generic Repository
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 
-            // Đăng ký các Repository cụ thể
+            // Đăng ký Repositories với vòng đời Scoped
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<ICartRepository, CartRepository>();
+            services.AddScoped<SHOP.CO.Domain.Repositories.IProductUiRepository, MockProductUiRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
-
-            return services;
-
+            services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<IContactRepository, ContactRepository>();
 
             return services;
         }

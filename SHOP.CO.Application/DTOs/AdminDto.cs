@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -120,20 +120,6 @@ namespace SHOP.CO.Application.DTOs
     }
     #endregion
 
-    #region ProductDto
-    public class ProductDto
-    {
-        public int ProductId { get; set; }
-        public string ProductName { get; set; } = null!;
-        public string Slug { get; set; } = null!;
-        public decimal BasePrice { get; set; }
-        public decimal? SalePrice { get; set; }
-        public string? CategoryName { get; set; }
-        public bool IsActive { get; set; }
-        public string? ThumbnailUrl { get; set; }
-        public bool HasLowStock { get; set; }
-
-    }
     public class BulkUpdateStatusDto
     {
         public List<int> ProductIds { get; set; } = new List<int>();
@@ -249,12 +235,7 @@ namespace SHOP.CO.Application.DTOs
         public List<ProductImageDto> Images { get; set; } = new List<ProductImageDto>();
         public List<CreateVariantDto> Variants { get; set; } = new List<CreateVariantDto>();
     }
-    public class ProductImageDto
-    {
-        public int ImageId { get; set; }
-        public string ImageUrl { get; set; } = string.Empty;
-        public bool IsThumbnail { get; set; }
-    }
+
     //DTO chứa toàn bộ dữ liệu cấu hình cho Form
     public class ProductFormAttributesDto
     {
@@ -273,7 +254,7 @@ namespace SHOP.CO.Application.DTOs
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
     }
-    #endregion
+
 
     #region UserDto
     public class UserDto

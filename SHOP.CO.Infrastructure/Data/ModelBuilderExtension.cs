@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace SHOP.CO.Infrastructure.Data
@@ -74,13 +74,13 @@ namespace SHOP.CO.Infrastructure.Data
             // 6. ProductImages
             // ==========================================
             modelBuilder.Entity<ProductImage>().HasData(
-                new ProductImage { ImageId = 1, ProductId = 1, VariantId = 1, ImageUrl = "https://via.placeholder.com/600x800.png?text=Ao+Thun+Trang", IsThumbnail = true, SortOrder = 1, CreatedAt = fixedDate },
-                new ProductImage { ImageId = 2, ProductId = 1, VariantId = 2, ImageUrl = "https://via.placeholder.com/600x800.png?text=Ao+Thun+Den", IsThumbnail = false, SortOrder = 2, CreatedAt = fixedDate },
-                new ProductImage { ImageId = 3, ProductId = 2, ImageUrl = "https://via.placeholder.com/600x800.png?text=Vay+Hoa", IsThumbnail = true, SortOrder = 1, CreatedAt = fixedDate },
-                new ProductImage { ImageId = 4, ProductId = 3, ImageUrl = "https://via.placeholder.com/600x800.png?text=Hoodie+Xam", IsThumbnail = true, SortOrder = 1, CreatedAt = fixedDate },
-                new ProductImage { ImageId = 5, ProductId = 4, VariantId = 5, ImageUrl = "https://via.placeholder.com/600x800.png?text=Jeans+Denim", IsThumbnail = true, SortOrder = 1, CreatedAt = fixedDate },
-                new ProductImage { ImageId = 6, ProductId = 4, VariantId = 6, ImageUrl = "https://via.placeholder.com/600x800.png?text=Jeans+Dam", IsThumbnail = false, SortOrder = 2, CreatedAt = fixedDate },
-                new ProductImage { ImageId = 7, ProductId = 5, ImageUrl = "https://via.placeholder.com/600x800.png?text=So+Mi+Trang", IsThumbnail = true, SortOrder = 1, CreatedAt = fixedDate }
+                new ProductImage { ImageId = 1, ProductId = 1, VariantId = 1, ImageUrl = "/images/dressstyleimg1.png", IsThumbnail = true, SortOrder = 1, CreatedAt = fixedDate },
+                new ProductImage { ImageId = 2, ProductId = 1, VariantId = 2, ImageUrl = "/images/newarrivalimg1.png", IsThumbnail = false, SortOrder = 2, CreatedAt = fixedDate },
+                new ProductImage { ImageId = 3, ProductId = 2, ImageUrl = "/images/dressstyleimg3.png", IsThumbnail = true, SortOrder = 1, CreatedAt = fixedDate },
+                new ProductImage { ImageId = 4, ProductId = 3, ImageUrl = "/images/heroimg.png", IsThumbnail = true, SortOrder = 1, CreatedAt = fixedDate },
+                new ProductImage { ImageId = 5, ProductId = 4, VariantId = 5, ImageUrl = "/images/newarrivalimg2.png", IsThumbnail = true, SortOrder = 1, CreatedAt = fixedDate },
+                new ProductImage { ImageId = 6, ProductId = 4, VariantId = 6, ImageUrl = "/images/topsellingimg4.png", IsThumbnail = false, SortOrder = 2, CreatedAt = fixedDate },
+                new ProductImage { ImageId = 7, ProductId = 5, ImageUrl = "/images/topsellingimg1.png", IsThumbnail = true, SortOrder = 1, CreatedAt = fixedDate }
             );
 
             // ==========================================
@@ -108,10 +108,10 @@ namespace SHOP.CO.Infrastructure.Data
             // 9. OrderItems
             // ==========================================
             modelBuilder.Entity<OrderItem>().HasData(
-                new OrderItem { OrderItemId = 1, OrderId = 1, ProductId = 1, VariantId = 1, ProductNameSnapshot = "Áo Thun Cổ Tròn Basic", SkuSnapshot = "ATB-TR-M", SizeSnapshot = "M", ColorSnapshot = "Trắng", ImageUrlSnapshot = "https://via.placeholder.com/600x800.png?text=Ao+Thun+Trang", Quantity = 2, UnitPrice = 150000, SalePrice = 120000, LineTotal = 240000, ReviewStatus = "Reviewed", CreatedAt = fixedDate },
-                new OrderItem { OrderItemId = 2, OrderId = 2, ProductId = 4, VariantId = 5, ProductNameSnapshot = "Quần Jeans Nam Slimfit", SkuSnapshot = "QJN-XANH-30", SizeSnapshot = "30", ColorSnapshot = "Xanh Denim", ImageUrlSnapshot = "https://via.placeholder.com/600x800.png?text=Jeans+Denim", Quantity = 1, UnitPrice = 450000, SalePrice = 399000, LineTotal = 399000, ReviewStatus = "NotReviewed", CreatedAt = fixedDate },
-                new OrderItem { OrderItemId = 3, OrderId = 3, ProductId = 2, VariantId = 3, ProductNameSnapshot = "Váy Hoa Mùa Hè", SkuSnapshot = "VHM-DO-S", SizeSnapshot = "S", ColorSnapshot = "Đỏ", ImageUrlSnapshot = "https://via.placeholder.com/600x800.png?text=Vay+Hoa", Quantity = 1, UnitPrice = 350000, SalePrice = 300000, LineTotal = 300000, ReviewStatus = "NotReviewed", CreatedAt = fixedDate },
-                new OrderItem { OrderItemId = 4, OrderId = 4, ProductId = 3, VariantId = 4, ProductNameSnapshot = "Áo Khoác Hoodie Unisex", SkuSnapshot = "AKH-XA-XL", SizeSnapshot = "XL", ColorSnapshot = "Xám", ImageUrlSnapshot = "https://via.placeholder.com/600x800.png?text=Hoodie+Xam", Quantity = 1, UnitPrice = 400000, SalePrice = 400000, LineTotal = 400000, ReviewStatus = "NotReviewed", CreatedAt = fixedDate }
+                new OrderItem { OrderItemId = 1, OrderId = 1, ProductId = 1, VariantId = 1, ProductNameSnapshot = "Áo Thun Cổ Tròn Basic", SkuSnapshot = "ATB-TR-M", SizeSnapshot = "M", ColorSnapshot = "Trắng", ImageUrlSnapshot = "/images/dressstyleimg1.png", Quantity = 2, UnitPrice = 150000, SalePrice = 120000, LineTotal = 240000, ReviewStatus = "Reviewed", CreatedAt = fixedDate },
+                new OrderItem { OrderItemId = 2, OrderId = 2, ProductId = 4, VariantId = 5, ProductNameSnapshot = "Quần Jeans Nam Slimfit", SkuSnapshot = "QJN-XANH-30", SizeSnapshot = "30", ColorSnapshot = "Xanh Denim", ImageUrlSnapshot = "/images/newarrivalimg2.png", Quantity = 1, UnitPrice = 450000, SalePrice = 399000, LineTotal = 399000, ReviewStatus = "NotReviewed", CreatedAt = fixedDate },
+                new OrderItem { OrderItemId = 3, OrderId = 3, ProductId = 2, VariantId = 3, ProductNameSnapshot = "Váy Hoa Mùa Hè", SkuSnapshot = "VHM-DO-S", SizeSnapshot = "S", ColorSnapshot = "Đỏ", ImageUrlSnapshot = "/images/dressstyleimg3.png", Quantity = 1, UnitPrice = 350000, SalePrice = 300000, LineTotal = 300000, ReviewStatus = "NotReviewed", CreatedAt = fixedDate },
+                new OrderItem { OrderItemId = 4, OrderId = 4, ProductId = 3, VariantId = 4, ProductNameSnapshot = "Áo Khoác Hoodie Unisex", SkuSnapshot = "AKH-XA-XL", SizeSnapshot = "XL", ColorSnapshot = "Xám", ImageUrlSnapshot = "/images/heroimg.png", Quantity = 1, UnitPrice = 400000, SalePrice = 400000, LineTotal = 400000, ReviewStatus = "NotReviewed", CreatedAt = fixedDate }
             );
 
             // ==========================================

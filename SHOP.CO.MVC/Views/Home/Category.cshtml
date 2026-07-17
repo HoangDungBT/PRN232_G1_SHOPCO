@@ -1,28 +1,407 @@
-﻿@model List<SHOP.CO.MVC.Models.ProductVM>
+@model List<SHOP.CO.MVC.Models.ProductVM>
 
-<div class="category-page">
-
-    <h1>ALL PRODUCTS</h1>
-
-    <div class="products">
-
-        @foreach (var item in Model)
-        {
-            <div class="card">
-
-                <a href="/Home/Detail/@item.Id">
-
-                    <img src="@item.Image" />
-
-                </a>
-
-                <h3>@item.Name</h3>
-
-                <p class="price">$@item.Price</p>
-
-            </div>
-        }
-
+<div class="category-container">
+    <!-- BREADCRUMB -->
+    <div class="breadcrumb-trail">
+        <a href="/">Home</a> <span>&gt;</span> <span class="current-crumb">Casual</span>
     </div>
 
+    <div class="category-layout">
+        <!-- SIDEBAR FILTER FORM -->
+        <aside class="sidebar-filter">
+            <div class="filter-header">
+                <h2>Filters</h2>
+                <span class="filter-toggle-icon">🎛️</span>
+            </div>
+
+            <form id="filterForm" method="get" action="/Home/Category">
+                <!-- Hidden inputs for state management -->
+                <input type="hidden" name="categoryId" id="hiddenCategoryId" value="@ViewBag.CategoryId" />
+                <input type="hidden" name="color" id="hiddenColor" value="@ViewBag.Color" />
+                <input type="hidden" name="size" id="hiddenSize" value="@ViewBag.Size" />
+                <input type="hidden" name="brand" id="hiddenBrand" value="@ViewBag.Brand" />
+                <input type="hidden" name="sortOrder" id="hiddenSortOrder" value="@ViewBag.SortOrder" />
+                <input type="hidden" name="page" id="hiddenPage" value="@ViewBag.CurrentPage" />
+
+                <!-- Categories Accordion -->
+                <div class="filter-section">
+                    <ul class="category-filter-list">
+                        @if (ViewBag.Categories != null && ((List<SHOP.CO.Application.DTOs.CategoryDto>)ViewBag.Categories).Any())
+                        {
+                            foreach (var cat in (List<SHOP.CO.Application.DTOs.CategoryDto>)ViewBag.Categories)
+                            {
+                                <li>
+                                    <a href="javascript:void(0)" class="category-link @(ViewBag.CategoryId == cat.CategoryId ? "active" : "")" data-id="@cat.CategoryId">@cat.CategoryName <span class="arrow">&gt;</span></a>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li>
+                                <a href="javascript:void(0)" class="category-link @(ViewBag.CategoryId == 4 ? "active" : "")" data-id="4">T-shirts <span class="arrow">&gt;</span></a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" class="category-link @(ViewBag.CategoryId == 5 ? "active" : "")" data-id="5">Jeans <span class="arrow">&gt;</span></a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" class="category-link @(ViewBag.CategoryId == 6 ? "active" : "")" data-id="6">Dresses <span class="arrow">&gt;</span></a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" class="category-link @(ViewBag.CategoryId == 7 ? "active" : "")" data-id="7">Shirts <span class="arrow">&gt;</span></a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" class="category-link @(ViewBag.CategoryId == 3 ? "active" : "")" data-id="3">Unisex <span class="arrow">&gt;</span></a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+
+                <!-- Price Filter -->
+                <div class="filter-section">
+                    <div class="section-title">
+                        <h3>Price</h3>
+                        <span class="toggle-arrow">▲</span>
+                    </div>
+                    <div class="price-slider-container">
+                        <div class="price-inputs">
+                            <div class="price-input-box">
+                                <span class="currency">$</span>
+                                <input type="number" id="minPriceInput" name="minPrice" value="@ViewBag.MinPrice" placeholder="Min" />
+                            </div>
+                            <span class="price-separator">-</span>
+                            <div class="price-input-box">
+                                <span class="currency">$</span>
+                                <input type="number" id="maxPriceInput" name="maxPrice" value="@ViewBag.MaxPrice" placeholder="Max" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Colors Filter -->
+                <div class="filter-section">
+                    <div class="section-title">
+                        <h3>Colors</h3>
+                        <span class="toggle-arrow">▲</span>
+                    </div>
+                    <div class="color-grid">
+                        <!-- Color dots with matching HEX codes -->
+                        <div class="color-option @(ViewBag.Color == "Green" ? "selected" : "")" style="background-color: #00C12B;" data-color="Green" title="Green"></div>
+                        <div class="color-option @(ViewBag.Color == "Red" ? "selected" : "")" style="background-color: #F52525;" data-color="Red" title="Red"></div>
+                        <div class="color-option @(ViewBag.Color == "Yellow" ? "selected" : "")" style="background-color: #F5DD00;" data-color="Yellow" title="Yellow"></div>
+                        <div class="color-option @(ViewBag.Color == "Orange" ? "selected" : "")" style="background-color: #F57E00;" data-color="Orange" title="Orange"></div>
+                        <div class="color-option @(ViewBag.Color == "Blue" ? "selected" : "")" style="background-color: #06CAF5;" data-color="Blue" title="Blue"></div>
+                        <div class="color-option @(ViewBag.Color == "Purple" ? "selected" : "")" style="background-color: #7D06F5;" data-color="Purple" title="Purple"></div>
+                        <div class="color-option @(ViewBag.Color == "Pink" ? "selected" : "")" style="background-color: #F506A4;" data-color="Pink" title="Pink"></div>
+                        <div class="color-option @(ViewBag.Color == "White" ? "selected" : "")" style="background-color: #FFFFFF; border: 1px solid #E0E0E0;" data-color="White" title="White"></div>
+                        <div class="color-option @(ViewBag.Color == "Black" ? "selected" : "")" style="background-color: #000000;" data-color="Black" title="Black"></div>
+                    </div>
+                </div>
+
+                <!-- Sizes Filter -->
+                <div class="filter-section">
+                    <div class="section-title">
+                        <h3>Size</h3>
+                        <span class="toggle-arrow">▲</span>
+                    </div>
+                    <div class="size-pill-grid">
+                        <div class="size-pill @(ViewBag.Size == "S" ? "selected" : "")" data-size="S">S (Small)</div>
+                        <div class="size-pill @(ViewBag.Size == "M" ? "selected" : "")" data-size="M">M (Medium)</div>
+                        <div class="size-pill @(ViewBag.Size == "L" ? "selected" : "")" data-size="L">L (Large)</div>
+                        <div class="size-pill @(ViewBag.Size == "XL" ? "selected" : "")" data-size="XL">XL (Extra Large)</div>
+                        <div class="size-pill @(ViewBag.Size == "XXL" ? "selected" : "")" data-size="XXL">XXL</div>
+                    </div>
+                </div>
+
+                <!-- Dress Style / Brand Filter -->
+                <div class="filter-section">
+                    <div class="section-title">
+                        <h3>Brands</h3>
+                        <span class="toggle-arrow">▲</span>
+                    </div>
+                    <ul class="category-filter-list">
+                        <li>
+                            <a href="javascript:void(0)" class="brand-link @(ViewBag.Brand == "Shop.Co" ? "active" : "")" data-brand="Shop.Co">Shop.Co <span class="arrow">&gt;</span></a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" class="brand-link @(ViewBag.Brand == "DenimX" ? "active" : "")" data-brand="DenimX">DenimX <span class="arrow">&gt;</span></a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" class="brand-link @(ViewBag.Brand == "OfficeWear" ? "active" : "")" data-brand="OfficeWear">OfficeWear <span class="arrow">&gt;</span></a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Apply Button -->
+                <button type="submit" class="apply-filter-btn">Apply Filter</button>
+                <a href="/Home/Category" class="clear-filter-link">Reset Filters</a>
+            </form>
+        </aside>
+
+        <!-- PRODUCT GRID & CONTROLS -->
+        <main class="products-main">
+            <!-- Header Controls -->
+            <div class="products-header">
+                <h2>Casual</h2>
+                <div class="header-right">
+                    <span class="results-count">Showing 1-@Model.Count of @ViewBag.TotalCount Products</span>
+                    <div class="sort-dropdown-container">
+                        <label for="sortSelector">Sort by:</label>
+                        <select id="sortSelector" onchange="updateSortOrder(this.value)">
+                            <option value="" selected="@(string.IsNullOrEmpty(ViewBag.SortOrder) ? "selected" : null)">Default</option>
+                            <option value="price_asc" selected="@(ViewBag.SortOrder == "price_asc" ? "selected" : null)">Price: Low to High</option>
+                            <option value="price_desc" selected="@(ViewBag.SortOrder == "price_desc" ? "selected" : null)">Price: High to Low</option>
+                            <option value="newest" selected="@(ViewBag.SortOrder == "newest" ? "selected" : null)">Newest</option>
+                            <option value="popular" selected="@(ViewBag.SortOrder == "popular" ? "selected" : null)">Most Popular</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="product-grid">
+                @if (Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        // Calculate mock rating for premium aesthetics
+                        var displayRating = 4.0 + (item.Id % 10) * 0.1;
+                        if (displayRating > 5.0) displayRating = 5.0;
+
+                        var hasDiscount = item.SalePrice.HasValue && item.SalePrice < item.BasePrice;
+                        var discountPercent = hasDiscount ? (int)Math.Round((1 - (item.SalePrice!.Value / item.BasePrice)) * 100) : 0;
+
+                        <div class="product-card" style="position: relative;">
+                            <a href="/Home/Detail/@item.Id" class="card-image-link">
+                                <div class="card-image-wrapper" style="position: relative;">
+                                    <img src="@(string.IsNullOrEmpty(item.Image) ? "/images/heroimg.png" : item.Image)" onerror="this.onerror=null; this.src='/images/heroimg.png';" alt="@item.Name" />
+                                </div>
+                            </a>
+                            @{
+                                var wishlistProductIds = ViewBag.WishlistProductIds as HashSet<int> ?? new HashSet<int>();
+                                var isInWishlist = wishlistProductIds.Contains(item.Id);
+                            }
+                            <button type="button" class="btn-wishlist-toggle" onclick="ajaxToggleWishlist(event, @item.Id)" style="position: absolute; top: 12px; right: 12px; border: none; background: #FFFFFF; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer; transition: all 0.2s ease; z-index: 10;" title="Yêu thích">
+                                <span class="wishlist-heart-icon" id="heart-@item.Id" style="font-size: 18px; color: @(isInWishlist ? "#FF3333" : "rgba(0,0,0,0.3)"); transition: color 0.2s ease;">♥</span>
+                            </button>
+                            <div class="card-details">
+                                <a href="/Home/Detail/@item.Id" style="text-decoration: none; color: inherit;">
+                                    <h3 class="product-name">@item.Name</h3>
+                                </a>
+                                <div class="rating-row">
+                                    <div class="star-rating">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            if (i <= Math.Round(displayRating))
+                                            {
+                                                <span class="star-filled">★</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="star-empty">★</span>
+                                            }
+                                        }
+                                    </div>
+                                    <span class="rating-score">@displayRating.ToString("F1")/5</span>
+                                </div>
+                                <div class="price-row">
+                                    <span class="sale-price">$@item.Price.ToString("F0")</span>
+                                    @if (hasDiscount)
+                                    {
+                                        <span class="original-price">$@item.BasePrice.ToString("F0")</span>
+                                        <span class="discount-tag">-@discountPercent%</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div style="grid-column: 1/-1; text-align: center; padding: 100px 0; color: rgba(0,0,0,0.5);">
+                        <p style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">No products found</p>
+                        <p style="font-size: 14px;">Try clearing filters or adjusting your search parameters.</p>
+                    </div>
+                }
+            </div>
+
+            <!-- PAGINATION -->
+            @if (ViewBag.TotalPages > 1)
+            {
+                <div class="pagination-container">
+                    @if (ViewBag.CurrentPage > 1)
+                    {
+                        <a href="javascript:void(0)" onclick="navigateToPage(@(ViewBag.CurrentPage - 1))" class="page-nav-btn">&larr; Previous</a>
+                    }
+                    else
+                    {
+                        <span class="page-nav-btn disabled">&larr; Previous</span>
+                    }
+
+                    <div class="page-numbers">
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <a href="javascript:void(0)" onclick="navigateToPage(@i)" class="page-number-link @(ViewBag.CurrentPage == i ? "active" : "")">@i</a>
+                        }
+                    </div>
+
+                    @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                    {
+                        <a href="javascript:void(0)" onclick="navigateToPage(@(ViewBag.CurrentPage + 1))" class="page-nav-btn">Next &rarr;</a>
+                    }
+                    else
+                    {
+                        <span class="page-nav-btn disabled">Next &rarr;</span>
+                    }
+                </div>
+            }
+        </main>
+    </div>
 </div>
+
+<!-- FILTER LOGIC SCRIPT -->
+<script>
+    // Submits the filter form when pagination or category selections occur
+    function submitFilters() {
+        document.getElementById('filterForm').submit();
+    }
+
+    function navigateToPage(pageNum) {
+        document.getElementById('hiddenPage').value = pageNum;
+        submitFilters();
+    }
+
+    function updateSortOrder(sortOrder) {
+        document.getElementById('hiddenSortOrder').value = sortOrder;
+        submitFilters();
+    }
+
+    // Set Category ID
+    document.querySelectorAll('.category-link').forEach(link => {
+        link.addEventListener('click', function() {
+            const catId = this.getAttribute('data-id');
+            // Toggle active category
+            const currentCatId = document.getElementById('hiddenCategoryId').value;
+            if (currentCatId === catId) {
+                document.getElementById('hiddenCategoryId').value = "";
+            } else {
+                document.getElementById('hiddenCategoryId').value = catId;
+            }
+            submitFilters();
+        });
+    });
+
+    // Set Brand
+    document.querySelectorAll('.brand-link').forEach(link => {
+        link.addEventListener('click', function() {
+            const brandName = this.getAttribute('data-brand');
+            const currentBrand = document.getElementById('hiddenBrand').value;
+            if (currentBrand === brandName) {
+                document.getElementById('hiddenBrand').value = "";
+            } else {
+                document.getElementById('hiddenBrand').value = brandName;
+            }
+            submitFilters();
+        });
+    });
+
+    // Set Color Option
+    document.querySelectorAll('.color-option').forEach(option => {
+        option.addEventListener('click', function() {
+            const selectedColor = this.getAttribute('data-color');
+            const currentColor = document.getElementById('hiddenColor').value;
+
+            document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+
+            if (currentColor === selectedColor) {
+                document.getElementById('hiddenColor').value = "";
+            } else {
+                document.getElementById('hiddenColor').value = selectedColor;
+                this.classList.add('selected');
+            }
+        });
+    });
+
+    // Set Size Option
+    document.querySelectorAll('.size-pill').forEach(pill => {
+        pill.addEventListener('click', function() {
+            const selectedSize = this.getAttribute('data-size');
+            const currentSize = document.getElementById('hiddenSize').value;
+
+            document.querySelectorAll('.size-pill').forEach(p => p.classList.remove('selected'));
+
+            if (currentSize === selectedSize) {
+                document.getElementById('hiddenSize').value = "";
+            } else {
+                document.getElementById('hiddenSize').value = selectedSize;
+                this.classList.add('selected');
+            }
+        });
+    });
+
+    function ajaxToggleWishlist(event, productId) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        fetch('/Home/ToggleWishlist/' + productId, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                var heartSpan = document.getElementById('heart-' + productId);
+                if (heartSpan) {
+                    if (data.isAdded) {
+                        heartSpan.style.color = '#FF3333';
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Đã thêm vào yêu thích',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        heartSpan.style.color = 'rgba(0,0,0,0.3)';
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'info',
+                            title: 'Đã xóa khỏi yêu thích',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+                }
+            } else if (data.message === 'unauthorized') {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Yêu cầu đăng nhập',
+                    text: 'Vui lòng đăng nhập để sử dụng chức năng yêu thích.',
+                    showCancelButton: true,
+                    confirmButtonColor: '#000',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Đăng nhập ngay',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/Auth/Login';
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: data.message,
+                    confirmButtonColor: '#000'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error toggling wishlist:', error);
+            alert('Lỗi kết nối máy chủ.');
+        });
+    }
+</script>

@@ -1,4 +1,4 @@
-﻿global using SHOP.CO.Application.DTOs;
+global using SHOP.CO.Application.DTOs;
 global using SHOP.CO.Application.Services;
 global using SHOP.CO.Application.Utilities;
 global using SHOP.CO.Domain.Entities;
@@ -11,9 +11,9 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.AspNetCore.Hosting;
 global using Microsoft.EntityFrameworkCore;
 global using SHOP.CO.Infrastructure.Persistence;
-global using System.Reflection;
 global using SHOP.CO.Infrastructure.Repositories;
-
+global using System.Reflection;
+using Microsoft.AspNetCore.Identity;
 
 namespace SHOP.CO.Application
 {
@@ -29,6 +29,10 @@ namespace SHOP.CO.Application
             services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
 
             services.AddHttpContextAccessor();
+            // Đăng ký Services
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ICartService, CartService>();
+            services.AddScoped<IProductUiService, ProductUiService>();
 
             // 3. Đăng ký Utilities & Auth
             services.AddScoped<ITokenGenerator, TokenGenerator>();
@@ -36,8 +40,11 @@ namespace SHOP.CO.Application
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IAuthService, AuthService>();
 
-            // 4. Đăng ký Client Services
-            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IContactService, ContactService>();
+            services.AddScoped<IPasswordHasher<SHOP.CO.Domain.Entities.User>, PasswordHasher<SHOP.CO.Domain.Entities.User>>();
 
             // 5. Đăng ký Admin Services
             #region Admin Services
@@ -48,8 +55,8 @@ namespace SHOP.CO.Application
             services.AddScoped<IAdminOrderService, AdminOrderService>();
             services.AddScoped<IAdminLogService, AdminLogService>();
             #endregion
-
             return services;
         }
     }
 }
+

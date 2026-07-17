@@ -1,27 +1,618 @@
-﻿@model SHOP.CO.MVC.Models.ProductVM
+@model SHOP.CO.Application.DTOs.ProductDto
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
 
-<div class="detail-page">
+@{
+    ViewData["Title"] = Model.ProductName + " - Detail";
 
-    <div class="detail-image">
+    // Setup Gallery
+    var galleryImages = Model.Images?.OrderBy(img => img.SortOrder).Select(img => img.ImageUrl).ToList() ?? new List<string>();
+    if (galleryImages.Count == 0 && !string.IsNullOrEmpty(Model.ThumbnailUrl))
+    {
+        galleryImages.Add(Model.ThumbnailUrl);
+    }
+    var thumbnailImages = galleryImages.Take(3).ToList();
+    var mainImage = galleryImages.FirstOrDefault() ?? "/images/heroimg.png";
 
-        <img src="@Model.Image" />
+    // Setup Stars
+    var avgRating = Model.AverageRating;
+    int roundedStars = (int)Math.Round(avgRating);
 
+    // Setup Price & Discount
+    var priceToShow = Model.SalePrice ?? Model.BasePrice;
+    var hasDiscount = Model.SalePrice.HasValue && Model.SalePrice < Model.BasePrice;
+    var discountPercent = hasDiscount ? (int)Math.Round((1 - (Model.SalePrice!.Value / Model.BasePrice)) * 100) : 0;
+
+    // Setup Variants (Colors & Sizes)
+    var colorVariants = Model.Variants?
+        .Where(v => !string.IsNullOrEmpty(v.ColorHex))
+        .GroupBy(v => v.ColorHex)
+        .Select(g => g.First())
+        .ToList() ?? new List<SHOP.CO.Application.DTOs.ProductVariantDto>();
+
+    var sizeVariants = Model.Variants?
+        .Where(v => !string.IsNullOrEmpty(v.Size))
+        .Select(v => v.Size!)
+        .Distinct()
+        .ToList() ?? new List<string>();
+
+    // Setup Related Products
+    var relatedProducts = ViewBag.RelatedProducts as List<SHOP.CO.Application.DTOs.ProductDto> ?? new List<SHOP.CO.Application.DTOs.ProductDto>();
+}
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+    <a href="/">Home</a><span>&gt;</span>
+    <a href="/Home/Category">Shop</a><span>&gt;</span>
+    <a href="/Home/Category?categoryId=@Model.CategoryId">@(Model.CategoryName ?? "Category")</a><span>&gt;</span>
+    <span style="color: black; font-weight: 500;">@Model.ProductName</span>
+</div>
+
+<!-- PRODUCT DETAIL BOX -->
+<div class="product-detail-container">
+
+    <!-- LEFT GALLERY -->
+    <div class="product-gallery">
+        <div class="gallery-thumbnails">
+            @for (int i = 0; i < thumbnailImages.Count; i++)
+            {
+                var activeClass = i == 0 ? "active" : "";
+                <img class="@activeClass" src="@(string.IsNullOrEmpty(thumbnailImages[i]) ? "/images/heroimg.png" : thumbnailImages[i])" onerror="this.onerror=null; this.src='/images/heroimg.png';" onclick="changeMainImage(this)" alt="Preview image @(i + 1)" />
+            }
+        </div>
+        <div class="gallery-main-image">
+            <img id="mainImage" src="@(string.IsNullOrEmpty(mainImage) ? "/images/heroimg.png" : mainImage)" onerror="this.onerror=null; this.src='/images/heroimg.png';" alt="@Model.ProductName" />
+        </div>
     </div>
 
-    <div class="detail-info">
+    <!-- RIGHT INFO -->
+    <div class="product-detail-info">
+        <h1 class="product-title">@Model.ProductName</h1>
 
-        <h1>@Model.Name</h1>
+        <!-- Rating -->
+        <div class="product-rating">
+            <span class="stars">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    if (i <= roundedStars)
+                    {
+                        <text>★</text>
+                    }
+                    else
+                    {
+                        <text>☆</text>
+                    }
+                }
+            </span>
+            <span class="rating-value">@avgRating/5</span>
+            <span class="rating-count">(@Model.ReviewCount reviews)</span>
+        </div>
 
-        <h2>$@Model.Price</h2>
+        <!-- Prices -->
+        <div class="product-price-container">
+            <span class="current-price">$@priceToShow</span>
+            @if (hasDiscount)
+            {
+                <span class="original-price">$@Model.BasePrice</span>
+                <span class="discount-badge">-@discountPercent%</span>
+            }
+        </div>
 
-        <p>
+        <!-- Description -->
+        <p class="product-desc">
             @Model.Description
         </p>
 
-        <button>
-            Add To Cart
-        </button>
+        <!-- Color Options -->
+        @if (colorVariants.Any())
+        {
+            <div class="selector-section">
+                <div class="selector-title">Select Colors</div>
+                <div class="color-options">
+                    @for (int i = 0; i < colorVariants.Count; i++)
+                    {
+                        var activeClass = i == 0 ? "active" : "";
+                        <div class="color-dot @activeClass" style="background-color: @colorVariants[i].ColorHex;" data-color="@colorVariants[i].Color" title="@colorVariants[i].Color"></div>
+                    }
+                </div>
+            </div>
+        }
 
+        <!-- Size Options -->
+        @if (sizeVariants.Any())
+        {
+            <div class="selector-section">
+                <div class="selector-title">Choose Size</div>
+                <div class="size-options">
+                    @for (int i = 0; i < sizeVariants.Count; i++)
+                    {
+                        var activeClass = i == 0 ? "active" : "";
+                        <button class="size-btn @activeClass" data-size="@sizeVariants[i]">@sizeVariants[i]</button>
+                    }
+                </div>
+            </div>
+        }
+
+        <!-- Actions: Quantity & Add to Cart & Wishlist -->
+        <div class="action-section" style="display: flex; gap: 15px; align-items: center;">
+            <div class="quantity-picker">
+                <button class="quantity-btn" id="btnMinus">-</button>
+                <span class="quantity-value" id="qtyValue">1</span>
+                <button class="quantity-btn" id="btnPlus">+</button>
+            </div>
+            <button class="btn-add-to-cart" style="flex-grow: 1;">Add to Cart</button>
+            <button type="button" class="btn-detail-wishlist" onclick="ajaxToggleDetailWishlist(@Model.ProductId)" style="border: 1px solid rgba(0,0,0,0.1); background: #FFFFFF; width: 52px; height: 52px; border-radius: 62px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease;" title="Yêu thích">
+                <span id="detailWishlistHeart" style="font-size: 24px; color: @(ViewBag.IsInWishlist == true ? "#FF3333" : "rgba(0,0,0,0.3)"); transition: color 0.2s ease;">♥</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- PRODUCT TABS & REVIEWS SECTION -->
+<div class="product-tabs-container">
+    <div class="tabs-header">
+        <button class="tab-btn" onclick="openTab(event, 'product-details-tab')">Product Details</button>
+        <button class="tab-btn active" onclick="openTab(event, 'rating-reviews-tab')">Rating & Reviews</button>
+        <button class="tab-btn" onclick="openTab(event, 'faqs-tab')">FAQs</button>
     </div>
 
+    <!-- TAB CONTENTS -->
+    <div id="product-details-tab" class="tab-content" style="display: none;">
+        <div class="tab-inner-content">
+            <h3>Product Specification</h3>
+            <p style="margin-top: 15px;"><strong>Material:</strong> @Model.Material</p>
+            <p style="margin-top: 10px;"><strong>Brand:</strong> @Model.Brand</p>
+            <p style="margin-top: 10px;"><strong>Target:</strong> @(Model.GenderTarget ?? "Unisex")</p>
+            <p style="margin-top: 10px;"><strong>Description:</strong> @Model.Description</p>
+        </div>
+    </div>
+
+    <div id="rating-reviews-tab" class="tab-content">
+        <div class="reviews-section-header">
+            <div class="reviews-count-title">
+                <h2>All Reviews</h2>
+                <span class="total-reviews-span">(@(ViewBag.Reviews != null ? ((List<SHOP.CO.Application.DTOs.ReviewDto>)ViewBag.Reviews).Count : 0))</span>
+            </div>
+            <div class="reviews-header-actions">
+                <button class="filter-action-btn" title="Filter">🎛️</button>
+                <div class="sort-action-container">
+                    <select class="sort-select">
+                        <option>Latest</option>
+                        <option>Oldest</option>
+                    </select>
+                </div>
+                <button class="btn-write-review" onclick="openReviewModal()">Write a Review</button>
+            </div>
+        </div>
+
+        <div class="reviews-grid" id="reviewsGrid">
+            @if (ViewBag.Reviews != null && ((List<SHOP.CO.Application.DTOs.ReviewDto>)ViewBag.Reviews).Any())
+            {
+                var reviewList = (List<SHOP.CO.Application.DTOs.ReviewDto>)ViewBag.Reviews;
+                for (int i = 0; i < reviewList.Count; i++)
+                {
+                    var r = reviewList[i];
+                    var hiddenClass = i >= 6 ? "review-hidden" : "";
+                    <div class="review-card @hiddenClass">
+                        <div class="review-card-header">
+                            <div class="stars review-stars">
+                                @for (int s = 1; s <= 5; s++)
+                                {
+                                    if (s <= r.Rating)
+                                    {
+                                        <text>★</text>
+                                    }
+                                    else
+                                    {
+                                        <text>☆</text>
+                                    }
+                                }
+                            </div>
+                            <button class="review-menu-btn">•••</button>
+                        </div>
+                        <div class="reviewer-info">
+                            <h3 class="reviewer-name">@r.ReviewerName</h3>
+                            <span class="verified-badge" title="Verified Purchase">✔</span>
+                        </div>
+                        <p class="review-text">"@r.Comment"</p>
+                        <span class="review-date">Posted on @r.CreatedAt.ToString("MMMM dd, yyyy")</span>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="no-reviews-msg" style="grid-column: 1/-1; text-align: center; padding: 40px 0; color: rgba(0,0,0,0.5);">
+                    Chưa có đánh giá nào cho sản phẩm này. Hãy là người đầu tiên đánh giá!
+                </div>
+            }
+        </div>
+
+        @if (ViewBag.Reviews != null && ((List<SHOP.CO.Application.DTOs.ReviewDto>)ViewBag.Reviews).Count > 6)
+        {
+            <div class="load-more-container">
+                <button class="btn-load-more" id="btnLoadMore" onclick="loadMoreReviews()">Load More Reviews</button>
+            </div>
+        }
+    </div>
+
+    <div id="faqs-tab" class="tab-content" style="display: none;">
+        <div class="tab-inner-content">
+            <h3>Frequently Asked Questions</h3>
+            <div class="faq-item" style="margin-top: 20px;">
+                <h4 class="faq-question" style="font-weight: 600; margin-bottom: 5px;">Q: Hướng dẫn giặt và bảo quản sản phẩm?</h4>
+                <p class="faq-answer" style="color: rgba(0,0,0,0.6);">A: Nên giặt bằng nước lạnh với xà phòng trung tính, tránh phơi trực tiếp dưới ánh nắng gay gắt.</p>
+            </div>
+            <div class="faq-item" style="margin-top: 20px;">
+                <h4 class="faq-question" style="font-weight: 600; margin-bottom: 5px;">Q: Sản phẩm có hỗ trợ đổi size không?</h4>
+                <p class="faq-answer" style="color: rgba(0,0,0,0.6);">A: Shop hỗ trợ đổi size miễn phí trong vòng 7 ngày kể từ khi nhận hàng đối với sản phẩm còn nguyên tem mác.</p>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- WRITE REVIEW MODAL -->
+<div id="reviewModal" class="review-modal-overlay">
+    <div class="review-modal-content">
+        <div class="modal-header">
+            <h2>Write a Review</h2>
+            <button class="btn-close-modal" onclick="closeReviewModal()">&times;</button>
+        </div>
+        <form id="reviewForm" onsubmit="submitReviewForm(event)">
+            <div class="form-group">
+                <label>Select Rating Stars</label>
+                <div class="star-rating-selector">
+                    <span class="star-select" data-value="1" onmouseover="hoverStars(1)" onmouseout="resetStars()" onclick="selectRating(1)">☆</span>
+                    <span class="star-select" data-value="2" onmouseover="hoverStars(2)" onmouseout="resetStars()" onclick="selectRating(2)">☆</span>
+                    <span class="star-select" data-value="3" onmouseover="hoverStars(3)" onmouseout="resetStars()" onclick="selectRating(3)">☆</span>
+                    <span class="star-select" data-value="4" onmouseover="hoverStars(4)" onmouseout="resetStars()" onclick="selectRating(4)">☆</span>
+                    <span class="star-select" data-value="5" onmouseover="hoverStars(5)" onmouseout="resetStars()" onclick="selectRating(5)">☆</span>
+                </div>
+                <input type="hidden" name="Rating" id="ratingInput" value="0" />
+                <span class="error-msg" id="ratingError"></span>
+            </div>
+            <div class="form-group">
+                <label for="reviewComment">Your Review</label>
+                <textarea id="reviewComment" name="Comment" rows="5" placeholder="Share your experience with this product..."></textarea>
+                <span class="error-msg" id="commentError"></span>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeReviewModal()">Cancel</button>
+                <button type="submit" class="btn-submit">Submit Review</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- RELATED PRODUCTS -->
+@if (relatedProducts.Any())
+{
+    <section class="related-products-section">
+        <h2>You Might Also Like</h2>
+        <div class="products">
+            @foreach (var item in relatedProducts)
+            {
+                var priceToShowItem = item.SalePrice ?? item.BasePrice;
+                var hasDiscountItem = item.SalePrice.HasValue && item.SalePrice < item.BasePrice;
+                var discountPercentItem = hasDiscountItem ? (int)Math.Round((1 - (item.SalePrice!.Value / item.BasePrice)) * 100) : 0;
+                var roundedStarsItem = (int)Math.Round(item.AverageRating);
+                
+                <div class="card">
+                    <a href="/Home/Detail/@item.ProductId" style="text-decoration: none; color: inherit;">
+                        <img src="@(string.IsNullOrEmpty(item.ThumbnailUrl) ? "/images/heroimg.png" : item.ThumbnailUrl)" onerror="this.onerror=null; this.src='/images/heroimg.png';" alt="@item.ProductName" />
+                        <h3>@item.ProductName</h3>
+                        <div class="product-rating" style="margin-top: 5px; gap: 5px; font-size: 14px;">
+                            <span class="stars">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= roundedStarsItem)
+                                    {
+                                        <text>★</text>
+                                    }
+                                    else
+                                    {
+                                        <text>☆</text>
+                                    }
+                                }
+                            </span>
+                            <span class="rating-value" style="font-size: 12px;">@item.AverageRating/5</span>
+                        </div>
+                        <div class="product-price-container" style="margin-top: 10px; gap: 8px;">
+                            <span class="current-price" style="font-size: 20px;">$@priceToShowItem</span>
+                            @if (hasDiscountItem)
+                            {
+                                <span class="original-price" style="font-size: 16px;">$@item.BasePrice</span>
+                                <span class="discount-badge" style="padding: 2px 8px; font-size: 11px;">-@discountPercentItem%</span>
+                            }
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </section>
+}
+
+<!-- INTERACTION SCRIPT -->
+<script>
+    function changeMainImage(el) {
+        document.getElementById('mainImage').src = el.src;
+        document.querySelectorAll('.gallery-thumbnails img').forEach(img => img.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    // Color Selector
+    document.querySelectorAll('.color-dot').forEach(dot => {
+        dot.addEventListener('click', function() {
+            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // Size Selector
+    document.querySelectorAll('.size-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // Quantity Picker
+    const qtyValue = document.getElementById('qtyValue');
+    document.getElementById('btnMinus').addEventListener('click', function() {
+        let currentVal = parseInt(qtyValue.innerText);
+        if (currentVal > 1) {
+            qtyValue.innerText = currentVal - 1;
+        }
+    });
+    document.getElementById('btnPlus').addEventListener('click', function() {
+        let currentVal = parseInt(qtyValue.innerText);
+        qtyValue.innerText = currentVal + 1;
+    });
+
+    // Add To Cart button redirect
+    document.querySelector('.btn-add-to-cart').addEventListener('click', function() {
+        var quantity = qtyValue.innerText;
+        window.location.href = `/Cart/AddToCart?id=@Model.ProductId&name=@Uri.EscapeDataString(Model.ProductName)&price=@priceToShow&image=@Uri.EscapeDataString(mainImage)`;
+    });
+
+    // Tab switcher
+    function openTab(evt, tabId) {
+        document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(tabId).style.display = 'block';
+        evt.currentTarget.classList.add('active');
+    }
+
+    // Review Modal toggle
+    function openReviewModal() {
+        const token = '@HttpContextAccessor.HttpContext?.Session.GetString(SHOP.CO.MVC.Common.MvcConstants.SessionToken)';
+        if (!token) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Yêu cầu đăng nhập',
+                text: 'Vui lòng đăng nhập để viết đánh giá.',
+                showCancelButton: true,
+                confirmButtonColor: '#000',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Đăng nhập ngay',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/Auth/Login';
+                }
+            });
+            return;
+        }
+        document.getElementById('reviewModal').style.display = 'flex';
+        resetRatingSelector();
+    }
+
+    function closeReviewModal() {
+        document.getElementById('reviewModal').style.display = 'none';
+        document.getElementById('reviewForm').reset();
+        document.querySelectorAll('.error-msg').forEach(err => err.innerText = '');
+    }
+
+    // Interactive Star Rating inside Modal
+    let selectedRating = 0;
+    
+    function hoverStars(rating) {
+        const stars = document.querySelectorAll('.star-select');
+        for (let i = 0; i < stars.length; i++) {
+            if (i < rating) {
+                stars[i].innerText = '★';
+                stars[i].classList.add('hovered');
+            } else {
+                stars[i].innerText = '☆';
+                stars[i].classList.remove('hovered');
+            }
+        }
+    }
+
+    function resetStars() {
+        const stars = document.querySelectorAll('.star-select');
+        for (let i = 0; i < stars.length; i++) {
+            if (i < selectedRating) {
+                stars[i].innerText = '★';
+                stars[i].classList.add('selected');
+            } else {
+                stars[i].innerText = '☆';
+                stars[i].classList.remove('selected');
+            }
+            stars[i].classList.remove('hovered');
+        }
+    }
+
+    function selectRating(rating) {
+        selectedRating = rating;
+        document.getElementById('ratingInput').value = rating;
+        resetStars();
+    }
+
+    function resetRatingSelector() {
+        selectedRating = 0;
+        document.getElementById('ratingInput').value = 0;
+        const stars = document.querySelectorAll('.star-select');
+        stars.forEach(s => {
+            s.innerText = '☆';
+            s.classList.remove('selected', 'hovered');
+        });
+    }
+
+    // Submit Review via AJAX (POST)
+    function submitReviewForm(event) {
+        event.preventDefault();
+        
+        const rating = parseInt(document.getElementById('ratingInput').value);
+        const comment = document.getElementById('reviewComment').value.trim();
+        
+        let isValid = true;
+        document.querySelectorAll('.error-msg').forEach(err => err.innerText = '');
+
+        if (rating === 0) {
+            document.getElementById('ratingError').innerText = 'Vui lòng chọn số sao đánh giá.';
+            isValid = false;
+        }
+        if (comment === '') {
+            document.getElementById('commentError').innerText = 'Vui lòng nhập nhận xét của bạn.';
+            isValid = false;
+        }
+
+        if (!isValid) return;
+
+        const payload = {
+            rating: rating,
+            comment: comment
+        };
+
+        const apiBaseUrl = '@Configuration["ApiSettings:BaseUrl"]' || 'http://localhost:5035';
+        const productId = '@Model.ProductId';
+        const token = '@HttpContextAccessor.HttpContext?.Session.GetString(SHOP.CO.MVC.Common.MvcConstants.SessionToken)';
+
+        fetch(`${apiBaseUrl}/api/products/${productId}/reviews`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(async response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                let errMsg = 'Lỗi gửi đánh giá';
+                try {
+                    const err = await response.json();
+                    errMsg = err.message || errMsg;
+                } catch (e) {
+                }
+                throw new Error(errMsg);
+            }
+        })
+        .then(data => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: 'Cảm ơn bạn đã gửi đánh giá!',
+                confirmButtonColor: '#000'
+            }).then(() => {
+                closeReviewModal();
+                window.location.reload();
+            });
+        })
+        .catch(error => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: error.message || 'Có lỗi xảy ra, vui lòng thử lại.',
+                confirmButtonColor: '#000'
+            });
+        });
+    }
+
+    // Load More Reviews logic (Client-side)
+    function loadMoreReviews() {
+        const hiddenReviews = document.querySelectorAll('.review-card.review-hidden');
+        let count = 0;
+        hiddenReviews.forEach(r => {
+            if (count < 6) {
+                r.classList.remove('review-hidden');
+                count++;
+            }
+        });
+
+        if (document.querySelectorAll('.review-card.review-hidden').length === 0) {
+            document.getElementById('btnLoadMore').style.display = 'none';
+        }
+    }
+
+    function ajaxToggleDetailWishlist(productId) {
+        fetch('/Home/ToggleWishlist/' + productId, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                var heartSpan = document.getElementById('detailWishlistHeart');
+                if (heartSpan) {
+                    if (data.isAdded) {
+                        heartSpan.style.color = '#FF3333';
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Đã thêm vào yêu thích',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        heartSpan.style.color = 'rgba(0,0,0,0.3)';
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'info',
+                            title: 'Đã xóa khỏi yêu thích',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+                }
+            } else if (data.message === 'unauthorized') {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Yêu cầu đăng nhập',
+                    text: 'Vui lòng đăng nhập để sử dụng chức năng yêu thích.',
+                    showCancelButton: true,
+                    confirmButtonColor: '#000',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Đăng nhập ngay',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/Auth/Login';
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: data.message,
+                    confirmButtonColor: '#000'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error toggling wishlist:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi kết nối',
+                text: 'Lỗi kết nối máy chủ.',
+                confirmButtonColor: '#000'
+            });
+        });
+    }
+</script>
