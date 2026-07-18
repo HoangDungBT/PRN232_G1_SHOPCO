@@ -1,0 +1,510 @@
+@model SHOP.CO.MVC.Models.CartViewModel
+
+@{
+    ViewData["Title"] = "Shopping Cart";
+    bool hasStockIssue = Model.Items?.Any(i => i.Quantity > i.AvailableStock || i.AvailableStock == 0) ?? false;
+}
+
+<style>
+    /* ── Cart Page ── */
+    .cart-page {
+        padding: 48px 80px 80px;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .cart-title {
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        margin-bottom: 8px;
+    }
+
+    .cart-subtitle {
+        color: #6b7280;
+        font-size: 0.95rem;
+        margin-bottom: 36px;
+    }
+
+    /* Cart Item Card */
+    .cart-item-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 20px;
+        padding: 24px;
+        margin-bottom: 16px;
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+        transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    .cart-item-card:hover {
+        box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+        transform: translateY(-2px);
+    }
+
+    .cart-item-img {
+        width: 110px;
+        height: 110px;
+        object-fit: cover;
+        border-radius: 14px;
+        border: 1px solid #f0f0f0;
+        flex-shrink: 0;
+    }
+
+    .cart-item-body {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .cart-item-name {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #111;
+        margin-bottom: 6px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .cart-item-meta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+    }
+
+    .meta-badge {
+        background: #f3f4f6;
+        color: #374151;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 3px 10px;
+        border-radius: 999px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .cart-item-price-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .unit-price {
+        font-size: 0.88rem;
+        color: #6b7280;
+    }
+
+    .unit-price strong {
+        color: #111;
+        font-weight: 700;
+    }
+
+    .line-subtotal {
+        font-size: 1.05rem;
+        font-weight: 800;
+        color: #111;
+    }
+
+    /* Qty control */
+    .qty-control {
+        display: inline-flex;
+        align-items: center;
+        background: #f3f4f6;
+        border-radius: 999px;
+        padding: 4px;
+        gap: 4px;
+    }
+
+    .qty-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: none;
+        background: #fff;
+        color: #111;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.15s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+
+    .qty-btn:hover { background: #111; color: #fff; }
+    .qty-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    .qty-input {
+        width: 40px;
+        text-align: center;
+        border: none;
+        background: transparent;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #111;
+        -moz-appearance: textfield;
+    }
+
+    .qty-input::-webkit-outer-spin-button,
+    .qty-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+    .btn-update-qty {
+        background: #111;
+        color: #fff;
+        border: none;
+        border-radius: 999px;
+        padding: 6px 16px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+
+    .btn-update-qty:hover { background: #374151; }
+
+    .btn-remove {
+        background: transparent;
+        border: 1px solid #fca5a5;
+        color: #dc2626;
+        border-radius: 999px;
+        padding: 6px 14px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+
+    .btn-remove:hover { background: #dc2626; color: #fff; border-color: #dc2626; }
+
+    /* Summary Card */
+    .summary-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 20px;
+        padding: 28px;
+        position: sticky;
+        top: 24px;
+    }
+
+    .summary-card h3 {
+        font-size: 1.1rem;
+        font-weight: 800;
+        margin-bottom: 20px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        font-size: 0.93rem;
+    }
+
+    .summary-row .lbl { color: #6b7280; }
+    .summary-row .val { font-weight: 700; color: #111; }
+    .summary-row.discount .val { color: #16a34a; }
+    .summary-row.total-row {
+        padding-top: 16px;
+        margin-top: 8px;
+        border-top: 2px solid #111;
+    }
+    .summary-row.total-row .lbl { font-weight: 800; font-size: 1rem; color: #111; }
+    .summary-row.total-row .val { font-size: 1.25rem; font-weight: 900; color: #111; }
+
+    /* Coupon */
+    .coupon-section { margin: 20px 0; }
+    .coupon-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #374151;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .coupon-group {
+        display: flex;
+        gap: 8px;
+    }
+
+    .coupon-input {
+        flex: 1;
+        padding: 10px 16px;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 999px;
+        font-size: 0.88rem;
+        outline: none;
+        transition: border-color 0.15s;
+    }
+
+    .coupon-input:focus { border-color: #111; }
+
+    .btn-coupon {
+        background: #111;
+        color: #fff;
+        border: none;
+        border-radius: 999px;
+        padding: 10px 20px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.15s;
+        white-space: nowrap;
+    }
+
+    .btn-coupon:hover { background: #374151; }
+
+    .btn-checkout {
+        width: 100%;
+        padding: 16px;
+        background: #111;
+        color: #fff;
+        border: none;
+        border-radius: 999px;
+        font-size: 1rem;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.15s;
+        margin-top: 20px;
+    }
+
+    .btn-checkout:hover { background: #374151; transform: translateY(-1px); }
+
+    /* Empty Cart */
+    .empty-cart {
+        text-align: center;
+        padding: 80px 40px;
+        background: #f9fafb;
+        border-radius: 24px;
+        border: 1px dashed #d1d5db;
+    }
+
+    .empty-cart .icon { font-size: 4rem; margin-bottom: 20px; }
+    .empty-cart h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
+    .empty-cart p { color: #6b7280; margin-bottom: 28px; }
+
+    .btn-shop {
+        display: inline-block;
+        background: #111;
+        color: #fff;
+        padding: 14px 36px;
+        border-radius: 999px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+
+    .btn-shop:hover { background: #374151; color: #fff; }
+
+    @@media (max-width: 992px) {
+        .cart-page { padding: 32px 24px 60px; }
+    }
+</style>
+
+<div class="cart-page">
+    <h1 class="cart-title">Your Shopping Cart</h1>
+    <p class="cart-subtitle">Review your items, apply coupons, and proceed to checkout.</p>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+            ⚠️ @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["CouponSuccess"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            ✅ @TempData["CouponSuccess"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <!-- Cart Items -->
+        <div class="col-lg-8 col-12 mb-4">
+            @if (Model.Items != null && Model.Items.Any())
+            {
+                @foreach (var item in Model.Items)
+                {
+                    <div class="cart-item-card">
+                        <img src="@item.ImageUrl" alt="@item.ProductName" class="cart-item-img" />
+                        <div class="cart-item-body">
+                            <div class="cart-item-name">@item.ProductName</div>
+                            <div class="cart-item-meta">
+                                @if (!string.IsNullOrWhiteSpace(item.SelectedSize))
+                                {
+                                    <span class="meta-badge">Size: @item.SelectedSize</span>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(item.SelectedColor))
+                                {
+                                    <span class="meta-badge">Color: @item.SelectedColor</span>
+                                }
+                            </div>
+                            
+                            @if (item.AvailableStock == 0)
+                            {
+                                <div class="alert alert-danger py-1 px-3 mb-2 rounded-pill small fw-bold" style="font-size:0.78rem; display:inline-block;">⚠️ Out of stock! Please remove this item.</div>
+                            }
+                            else if (item.Quantity > item.AvailableStock)
+                            {
+                                <div class="alert alert-warning py-1 px-3 mb-2 rounded-pill small fw-bold text-dark" style="font-size:0.78rem; display:inline-block;">⚠️ Only @item.AvailableStock items left in stock. Please reduce quantity.</div>
+                            }
+
+                            <div class="cart-item-price-row">
+                                <span class="unit-price">Unit: <strong>@item.UnitPrice.ToString("C")</strong></span>
+
+                                <!-- Qty form -->
+                                <form asp-action="UpdateQuantity" method="post" class="d-inline-flex align-items-center gap-2">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="cartItemId" value="@item.CartItemId" />
+                                    <input type="hidden" name="userId" value="@Model.UserId" />
+                                    <div class="qty-control">
+                                        <button type="button" class="qty-btn" onclick="changeQty(this,-1)" @(item.Quantity <= 1 ? "disabled" : "")>−</button>
+                                        <input type="number" name="quantity" value="@item.Quantity" min="1" class="qty-input" id="qty-@item.CartItemId" />
+                                        <button type="button" class="qty-btn" onclick="changeQty(this,1)">+</button>
+                                    </div>
+                                    <button type="submit" class="btn-update-qty">Update</button>
+                                </form>
+
+                                <span class="line-subtotal">@item.Subtotal.ToString("C")</span>
+
+                                <!-- Remove form -->
+                                <form asp-action="Remove" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="cartItemId" value="@item.CartItemId" />
+                                    <input type="hidden" name="userId" value="@Model.UserId" />
+                                    <button type="submit" class="btn-remove" title="Remove item">🗑 Remove</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="empty-cart">
+                    <div class="icon">🛒</div>
+                    <h3>Your cart is empty</h3>
+                    <p>Looks like you haven't added any items yet.</p>
+                    <a href="/" class="btn-shop">Start Shopping →</a>
+                </div>
+            }
+        </div>
+
+        <!-- Order Summary Sidebar -->
+        <div class="col-lg-4 col-12">
+            <div class="summary-card">
+                <h3>Order Summary</h3>
+
+                <div class="summary-row">
+                    <span class="lbl">Subtotal (@(Model.Items?.Count ?? 0) items)</span>
+                    <span class="val">@Model.TotalAmount.ToString("C")</span>
+                </div>
+
+                @if (Model.DiscountAmount > 0)
+                {
+                    <div class="summary-row discount">
+                        <span class="lbl">🎉 Coupon Discount</span>
+                        <span class="val">−@Model.DiscountAmount.ToString("C")</span>
+                    </div>
+                }
+
+                <div class="summary-row">
+                    <span class="lbl">Shipping Fee</span>
+                    <span class="val">
+                        @if (Model.ShippingFee == 0)
+                        {
+                            <span style="color:#16a34a;">FREE</span>
+                        }
+                        else
+                        {
+                            @Model.ShippingFee.ToString("C")
+                        }
+                    </span>
+                </div>
+
+                <div class="summary-row total-row">
+                    <span class="lbl">Total</span>
+                    <span class="val">@Model.FinalAmount.ToString("C")</span>
+                </div>
+
+                <!-- Coupon -->
+                <div class="coupon-section">
+                    <span class="coupon-label">🏷 Promo Code</span>
+                    <form asp-action="ApplyCoupon" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="userId" value="@Model.UserId" />
+                        <div class="coupon-group">
+                            <input type="text" name="couponCode" value="@Model.CouponCode"
+                                   placeholder="Enter promo code" class="coupon-input" required />
+                            <button type="submit" class="btn-coupon">Apply</button>
+                        </div>
+                    </form>
+                </div>
+
+                @if (Model.Items != null && Model.Items.Any())
+                {
+                    @if (hasStockIssue)
+                    {
+                        <button type="button" class="btn-checkout text-decoration-none" style="opacity:0.5; cursor:not-allowed;" onclick="alert('Please resolve stock issues before checking out.');">Go to Checkout →</button>
+                    }
+                    else
+                    {
+                        <a asp-action="Checkout" asp-controller="Cart" asp-route-userId="@Model.UserId" asp-route-couponCode="@Model.CouponCode" class="btn-checkout d-block text-center text-decoration-none">Go to Checkout →</a>
+                    }
+                }
+
+                @if (Model.ShippingFee == 0)
+                {
+                    <p style="text-align:center;font-size:0.8rem;color:#16a34a;margin-top:12px;">
+                        ✅ You qualify for FREE shipping!
+                    </p>
+                }
+                else
+                {
+                    <p style="text-align:center;font-size:0.8rem;color:#6b7280;margin-top:12px;">
+                        Free shipping on orders over 500,000 ₫
+                    </p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function changeQty(btn, delta) {
+        var form = btn.closest('form');
+        var input = form.querySelector('.qty-input');
+        var currentVal = parseInt(input.value) || 1;
+        var newVal = currentVal + delta;
+        if (newVal >= 1) {
+            input.value = newVal;
+            // Update minus button disabled state
+            var minus = form.querySelector('.qty-btn:first-of-type');
+            minus.disabled = newVal <= 1;
+            form.submit();
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll("form").forEach(function(f) {
+            f.addEventListener("submit", function() {
+                var btn = f.querySelector("button[type='submit']");
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,245 @@
+@model SHOP.CO.MVC.Models.OrderViewModel
+
+@{
+    ViewData["Title"] = "Order Details - " + Model.OrderCode;
+}
+
+<div class="cart-page">
+    <div class="mb-4 d-flex gap-2 flex-wrap">
+        <a asp-action="Index" asp-route-userId="@Model.UserId" class="btn btn-sm btn-outline-dark rounded-pill px-3">← Back to My Orders</a>
+        <a asp-action="Tracking" asp-route-orderId="@Model.OrderId" class="btn btn-sm btn-dark rounded-pill px-3">📦 Track Order</a>
+        @if (!string.Equals(Model.OrderStatus, "Canceled", StringComparison.OrdinalIgnoreCase))
+        {
+            <a asp-action="Invoice" asp-route-orderId="@Model.OrderId" class="btn btn-sm btn-outline-dark rounded-pill px-3">📄 Download Invoice</a>
+        }
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <h1 class="fw-bold mb-0">Order: @Model.OrderCode</h1>
+        @{
+            var badgeClass = Model.OrderStatus.ToLower() switch
+            {
+                "pending" => "bg-warning text-dark",
+                "confirmed" => "bg-info text-white",
+                "shipping" => "bg-primary text-white",
+                "completed" => "bg-success text-white",
+                "canceled" => "bg-danger text-white",
+                _ => "bg-secondary text-white"
+            };
+        }
+        <span class="badge @badgeClass fs-5 px-4 py-2 rounded-pill fw-bold">@Model.OrderStatus</span>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row">
+        <!-- Order Items -->
+        <div class="col-lg-8 col-12 mb-4">
+            <div class="card border-0 rounded-4 shadow-sm bg-light p-4 mb-4">
+                <h3 class="h5 fw-bold mb-4 border-bottom pb-2">Order Items</h3>
+                @if (Model.OrderItems != null && Model.OrderItems.Any())
+                {
+                    foreach (var item in Model.OrderItems)
+                    {
+                        <div class="d-flex align-items-start border-bottom pb-4 mb-4 last-no-border" style="gap: 20px;">
+                            <img src="@item.DisplayImageUrl" alt="@item.ProductNameSnapshot" class="img-fluid rounded" style="width: 100px; height: 100px; object-fit: cover; border: 1px solid #ddd;" />
+                            <div class="flex-grow-1">
+                                <h4 class="h6 fw-bold text-dark mb-1">@item.ProductNameSnapshot</h4>
+                                <p class="text-muted mb-2" style="font-size: 13px;">
+                                    SKU: @item.SkuSnapshot |
+                                    Size: <span class="badge bg-secondary text-white">@(item.SizeSnapshot ?? "N/A")</span> | 
+                                    Color: <span class="badge bg-secondary text-white">@(item.ColorSnapshot ?? "N/A")</span>
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-muted">@item.UnitPrice.ToString("C") x @item.Quantity</span>
+                                    <strong class="text-dark">@item.LineTotal.ToString("C")</strong>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+
+            @{
+                var cancellableByUser = new[] { "Pending", "Confirmed", "Processing" };
+                bool canCancel = Array.Exists(
+                    cancellableByUser,
+                    s => string.Equals(s, Model.OrderStatus, StringComparison.OrdinalIgnoreCase));
+            }
+            @* Cancel form: visible only for Pending / Confirmed / Processing *@
+            @if (canCancel)
+            {
+                <div class="card border-0 rounded-4 shadow-sm bg-light p-4 mb-4">
+                    <h3 class="h5 fw-bold text-danger mb-3">Cancel Order</h3>
+                    <p class="text-muted small mb-4">You can cancel this order before it is dispatched.</p>
+                    <button type="button" class="btn btn-danger rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#cancelModal">Cancel Order</button>
+                </div>
+
+                <!-- Cancel Modal -->
+                <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content rounded-4 border-0 shadow-lg">
+                            <div class="modal-header border-0 pb-0">
+                                <h5 class="modal-title fw-bold" id="cancelModalLabel">Cancel Order</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form asp-action="Cancel" method="post" id="cancelOrderForm">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="orderId" value="@Model.OrderId" />
+                                <div class="modal-body py-4">
+                                    <p class="text-muted small mb-3">Please provide the reason why you wish to cancel this order:</p>
+                                    <div class="mb-3">
+                                        <label for="cancelReason" class="form-label fw-bold small text-dark">Reason for Cancellation</label>
+                                        <textarea id="cancelReason" name="cancelReason" rows="3" class="form-control" placeholder="Please specify your reason..." required></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer border-0 pt-0">
+                                    <button type="button" class="btn btn-outline-dark rounded-pill px-4" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-danger rounded-pill px-4" id="confirmCancelBtn">Confirm Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+            else if (string.Equals(Model.OrderStatus, "Canceled", StringComparison.OrdinalIgnoreCase))
+            {
+                <div class="card border-0 rounded-4 shadow-sm bg-light p-4 mb-4 border-start border-danger border-4">
+                    <h3 class="h5 fw-bold text-danger mb-2">Order Canceled</h3>
+                    <p class="mb-1 text-dark"><strong>Reason:</strong> @(string.IsNullOrWhiteSpace(Model.CancelReason) ? "No reason provided." : Model.CancelReason)</p>
+                    @if (Model.CanceledAt.HasValue)
+                    {
+                        <p class="text-muted small mb-0">Canceled on: @Model.CanceledAt.Value.ToLocalTime().ToString("f")</p>
+                    }
+                </div>
+            }
+            else if (string.Equals(Model.OrderStatus, "Delivered", StringComparison.OrdinalIgnoreCase))
+            {
+                @* Return Request form: only for Delivered orders *@
+                bool alreadyRequested = !string.IsNullOrWhiteSpace(Model.CustomerNote)
+                    && Model.CustomerNote.StartsWith("[RETURN REQUEST]");
+
+                if (alreadyRequested)
+                {
+                    <div class="card border-0 rounded-4 shadow-sm bg-light p-4 mb-4 border-start border-warning border-4">
+                        <h3 class="h5 fw-bold text-warning mb-2">⏳ Return Request Submitted</h3>
+                        <p class="mb-1 text-dark">Your return request has been received. We will contact you shortly.</p>
+                        <p class="text-muted small mb-0">@Model.CustomerNote</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="card border-0 rounded-4 shadow-sm bg-light p-4 mb-4">
+                        <h3 class="h5 fw-bold text-warning mb-3">↩ Request Return</h3>
+                        <p class="text-muted small mb-4">Received a defective or wrong item? Submit a return request below.</p>
+                        <form asp-action="ReturnRequest" method="post" id="returnRequestForm">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="orderId" value="@Model.OrderId" />
+                            <div class="mb-3">
+                                <label for="returnReason" class="form-label fw-bold small text-dark">Reason for Return</label>
+                                <select id="returnReason" name="returnReason" class="form-select" required style="border-radius:24px; padding: 10px 20px;">
+                                    <option value="">-- Select Reason --</option>
+                                    <option value="Damaged">Damaged</option>
+                                    <option value="Wrong size">Wrong size</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="returnDescription" class="form-label fw-bold small text-dark">Description</label>
+                                <textarea id="returnDescription" name="returnDescription" rows="3" class="form-control"
+                                          placeholder="Provide more details about the issue (e.g. description of damage, wrong size received)..." required style="border-radius:16px; padding: 12px;"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-warning rounded-pill px-4 fw-bold" id="submitReturnBtn"
+                                    onclick="return confirm('Submit return request for this order?');">
+                                Submit Return Request
+                            </button>
+                        </form>
+                    </div>
+                }
+            }
+        </div>
+
+        <!-- Order Summary & Shipping Info -->
+        <div class="col-lg-4 col-12">
+            <!-- Shipping Info Card -->
+            <div class="card border-0 rounded-4 shadow-sm bg-light p-4 mb-4">
+                <h3 class="h5 fw-bold text-dark mb-4 border-bottom pb-2">Delivery Information</h3>
+                <div class="mb-3">
+                    <span class="text-muted d-block small">Receiver Name</span>
+                    <strong class="text-dark">@Model.ReceiverName</strong>
+                </div>
+                <div class="mb-3">
+                    <span class="text-muted d-block small">Receiver Phone</span>
+                    <strong class="text-dark">@Model.ReceiverPhone</strong>
+                </div>
+                <div class="mb-3">
+                    <span class="text-muted d-block small">Shipping Address</span>
+                    <span class="text-dark" style="font-size: 14px;">@Model.ShippingAddressText</span>
+                </div>
+                <div class="mb-0">
+                    <span class="text-muted d-block small">Order Date</span>
+                    <strong class="text-dark">@Model.CreatedAt.ToLocalTime().ToString("f")</strong>
+                </div>
+            </div>
+
+            <!-- Receipt Card -->
+            <div class="card border-0 rounded-4 shadow-sm bg-light p-4">
+                <h3 class="h5 fw-bold text-dark mb-4 border-bottom pb-2">Price Breakdown</h3>
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="text-muted">Subtotal</span>
+                    <strong class="text-dark">@Model.SubtotalAmount.ToString("C")</strong>
+                </div>
+                @if (Model.DiscountAmount > 0)
+                {
+                    <div class="d-flex justify-content-between mb-3 text-danger">
+                        <span>Discount</span>
+                        <strong>-@Model.DiscountAmount.ToString("C")</strong>
+                    </div>
+                }
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="text-muted">Shipping Fee</span>
+                    <strong class="text-dark">@Model.ShippingFee.ToString("C")</strong>
+                </div>
+                <hr class="my-3" />
+                <div class="d-flex justify-content-between mb-0">
+                    <span class="h6 fw-bold text-dark mb-0">Total</span>
+                    <strong class="h5 fw-bold text-dark mb-0">@Model.TotalAmount.ToString("C")</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var cancelForm = document.getElementById("cancelOrderForm");
+        if (cancelForm) {
+            cancelForm.addEventListener("submit", function() {
+                var btn = document.getElementById("confirmCancelBtn");
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Cancelling...';
+            });
+        }
+        var returnForm = document.getElementById("returnRequestForm");
+        if (returnForm) {
+            returnForm.addEventListener("submit", function() {
+                var btn = document.getElementById("submitReturnBtn");
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Submitting...';
+            });
+        }
+    });
+</script>

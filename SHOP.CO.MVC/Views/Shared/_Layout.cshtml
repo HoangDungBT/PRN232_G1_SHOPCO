@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - SHOP.CO</title>
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+</head>
+
+<body>
+
+    <!-- TOP BAR -->
+
+    <div class="top-bar">
+
+        Sign up and get 20% off to your first order.
+
+    </div>
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            SHOP.CO
+        </div>
+
+        <ul class="nav-links">
+
+            <li>
+                <a href="/">Home</a>
+            </li>
+
+            <li>
+                <a href="/Home/Category">Shop</a>
+            </li>
+
+            <li>
+                <a href="#">On Sale</a>
+            </li>
+
+            <li>
+                <a href="#">New Arrivals</a>
+            </li>
+
+            <li>
+                <a href="#">Brands</a>
+            </li>
+
+        </ul>
+
+        <div class="search-box">
+
+            <input type="text" placeholder="Search for products..." />
+
+        </div>
+
+        <div class="nav-icons">
+
+            <a href="/Cart">🛒</a>
+
+            <a href="/Orders?userId=2" style="text-decoration: none; font-size: 20px;">👤</a>
+
+        </div>
+
+    </nav>
+
+    <!-- BODY -->
+    @RenderBody()
+
+    <!-- NEWSLETTER -->
+
+    <section class="newsletter">
+
+        <div class="newsletter-left">
+
+            <h2>
+                STAY UPTO DATE ABOUT OUR LATEST OFFERS
+            </h2>
+
+        </div>
+
+        <div class="newsletter-right">
+
+            <input type="email" placeholder="Enter your email address" />
+
+            <button>
+                Subscribe to Newsletter
+            </button>
+
+        </div>
+
+    </section>
+
+    <!-- FOOTER -->
+
+    <footer class="footer">
+
+        <div class="footer-top">
+
+            <div class="footer-brand">
+
+                <h2>SHOP.CO</h2>
+
+                <p>
+                    We have clothes that suits your style and which you’re proud to wear.
+                </p>
+
+            </div>
+
+            <div class="footer-links">
+
+                <div>
+
+                    <h4>COMPANY</h4>
+
+                    <a href="#">About</a>
+                    <a href="#">Features</a>
+                    <a href="#">Works</a>
+
+                </div>
+
+                <div>
+
+                    <h4>HELP</h4>
+
+                    <a href="#">Support</a>
+                    <a href="#">Delivery</a>
+                    <a href="#">Terms</a>
+
+                </div>
+
+                <div>
+
+                    <h4>FAQ</h4>
+
+                    <a href="#">Account</a>
+                    <a href="/Orders?userId=2">Orders</a>
+                    <a href="#">Payments</a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+
+            © 2026 SHOP.CO. All Rights Reserved.
+
+        </div>
+
+    </footer>
+
+</body>
+
+</html>

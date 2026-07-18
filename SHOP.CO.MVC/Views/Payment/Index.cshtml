@@ -1,0 +1,249 @@
+@model SHOP.CO.MVC.Models.PaymentIndexViewModel
+
+@{
+    ViewData["Title"] = "Payment - " + Model.OrderCode + " - SHOP.CO";
+}
+
+<style>
+    .payment-page {
+        max-width: 680px;
+        margin: 48px auto;
+        padding: 0 16px;
+    }
+
+    .payment-header {
+        text-align: center;
+        margin-bottom: 36px;
+    }
+
+    .payment-header h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #111;
+        margin-bottom: 8px;
+    }
+
+    .payment-header .order-badge {
+        display: inline-block;
+        background: #f3f3f3;
+        border-radius: 24px;
+        padding: 6px 20px;
+        font-size: 14px;
+        color: #555;
+        font-weight: 500;
+    }
+
+    .payment-header .amount {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #111;
+        margin-top: 12px;
+    }
+
+    .method-cards {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 28px;
+    }
+
+    .method-card {
+        position: relative;
+        border: 2px solid #e0e0e0;
+        border-radius: 16px;
+        padding: 28px 20px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background: #fff;
+        text-align: center;
+    }
+
+    .method-card:hover {
+        border-color: #111;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    .method-card.selected {
+        border-color: #111;
+        background: #111;
+        color: #fff;
+    }
+
+    .method-card .icon {
+        font-size: 2.8rem;
+        margin-bottom: 14px;
+        display: block;
+    }
+
+    .method-card h3 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .method-card p {
+        font-size: 13px;
+        opacity: 0.65;
+        margin: 0;
+        line-height: 1.4;
+    }
+
+    .method-card input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .method-card .check-icon {
+        display: none;
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        width: 24px;
+        height: 24px;
+        background: #fff;
+        border-radius: 50%;
+        align-items: center;
+        justify-content: center;
+        color: #111;
+        font-weight: 900;
+        font-size: 13px;
+    }
+
+    .method-card.selected .check-icon {
+        display: flex;
+    }
+
+    .btn-confirm {
+        width: 100%;
+        padding: 16px;
+        background: #111;
+        color: #fff;
+        border: none;
+        border-radius: 40px;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .btn-confirm:hover {
+        background: #333;
+    }
+
+    .order-summary-card {
+        background: #f8f8f8;
+        border-radius: 16px;
+        padding: 20px 24px;
+        margin-bottom: 28px;
+    }
+
+    .order-summary-card .row-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 0;
+        font-size: 15px;
+    }
+
+    .order-summary-card .row-item .label { color: #888; }
+    .order-summary-card .row-item .value { font-weight: 600; color: #111; }
+    .order-summary-card .row-item.total .label,
+    .order-summary-card .row-item.total .value {
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: #111;
+    }
+</style>
+
+<div class="payment-page">
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="payment-header">
+        <h1>Choose Payment Method</h1>
+        <div class="order-badge">Order: @Model.OrderCode</div>
+        <div class="amount">@Model.TotalAmount.ToString("N0") ₫</div>
+    </div>
+
+    <div class="order-summary-card">
+        <div class="row-item">
+            <span class="label">Order Code</span>
+            <span class="value">@Model.OrderCode</span>
+        </div>
+        <div class="row-item">
+            <span class="label">Order ID</span>
+            <span class="value">#@Model.OrderId</span>
+        </div>
+        <div class="row-item">
+            <span class="label">Order Status</span>
+            <span class="value">@Model.OrderStatus</span>
+        </div>
+        <div class="row-item">
+            <span class="label">Payment Status</span>
+            <span class="value">@Model.PaymentStatus</span>
+        </div>
+        <hr class="my-2" style="border-color:#e8e8e8;" />
+        <div class="row-item total">
+            <span class="label">Total Amount</span>
+            <span class="value">@Model.TotalAmount.ToString("N0") ₫</span>
+        </div>
+    </div>
+
+    <form asp-action="ProcessPayment" method="post" id="paymentForm">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="orderId" value="@Model.OrderId" />
+        <input type="hidden" name="orderCode" value="@Model.OrderCode" />
+        <input type="hidden" name="totalAmount" value="@Model.TotalAmount" />
+        <input type="hidden" name="paymentMethod" id="selectedMethod" value="COD" />
+
+        <div class="method-cards">
+            <!-- COD Card -->
+            <label class="method-card selected" id="card-cod" onclick="selectMethod('COD')">
+                <span class="check-icon">✓</span>
+                <span class="icon">💵</span>
+                <h3>Cash on Delivery</h3>
+                <p>Pay when your order arrives at your door</p>
+            </label>
+
+            <!-- VNPay Card -->
+            <label class="method-card" id="card-vnpay" onclick="selectMethod('VNPay')">
+                <span class="check-icon">✓</span>
+                <span class="icon">💳</span>
+                <h3>VNPay Online</h3>
+                <p>Pay securely via VNPay gateway</p>
+            </label>
+        </div>
+
+        <button type="submit" class="btn-confirm" id="confirmBtn">
+            Confirm Payment →
+        </button>
+    </form>
+</div>
+
+<script>
+    function selectMethod(method) {
+        document.getElementById('selectedMethod').value = method;
+
+        document.getElementById('card-cod').classList.remove('selected');
+        document.getElementById('card-vnpay').classList.remove('selected');
+
+        if (method === 'COD') {
+            document.getElementById('card-cod').classList.add('selected');
+            document.getElementById('confirmBtn').textContent = 'Confirm COD Order →';
+        } else {
+            document.getElementById('card-vnpay').classList.add('selected');
+            document.getElementById('confirmBtn').textContent = 'Pay with VNPay →';
+        }
+    }
+
+    // Init
+    selectMethod('COD');
+</script>

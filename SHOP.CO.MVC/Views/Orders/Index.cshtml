@@ -1,0 +1,268 @@
+@model List<SHOP.CO.MVC.Models.OrderViewModel>
+
+@{
+    ViewData["Title"] = "My Orders";
+    int userId = ViewBag.UserId is int uid ? uid : 2;
+}
+
+<style>
+    /* ── Order History Page ── */
+    .orders-page {
+        padding: 48px 80px 80px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .orders-page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 32px;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .orders-page-header h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
+
+    .orders-page-header p {
+        color: #6b7280;
+        font-size: 0.9rem;
+        margin-top: 4px;
+    }
+
+    /* Order Card */
+    .order-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 20px;
+        padding: 24px 28px;
+        margin-bottom: 16px;
+        transition: box-shadow 0.2s ease, transform 0.15s ease;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 16px;
+        align-items: center;
+    }
+
+    .order-card:hover {
+        box-shadow: 0 8px 32px rgba(0,0,0,0.09);
+        transform: translateY(-2px);
+    }
+
+    .order-code {
+        font-size: 1rem;
+        font-weight: 800;
+        color: #111;
+        margin-bottom: 4px;
+    }
+
+    .order-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+        margin-top: 8px;
+    }
+
+    .order-meta-item {
+        font-size: 0.85rem;
+        color: #6b7280;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .order-product-preview {
+        font-size: 0.9rem;
+        color: #374151;
+        margin-top: 6px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 480px;
+    }
+
+    .order-total {
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: #111;
+        text-align: right;
+        margin-bottom: 12px;
+    }
+
+    .order-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+
+    /* Status Badges */
+    .status-pill {
+        display: inline-block;
+        padding: 4px 14px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+    }
+
+    .status-pending    { background: #fef3c7; color: #92400e; }
+    .status-confirmed  { background: #dbeafe; color: #1e40af; }
+    .status-processing { background: #ede9fe; color: #5b21b6; }
+    .status-shipping   { background: #cffafe; color: #0e7490; }
+    .status-delivered  { background: #d1fae5; color: #065f46; }
+    .status-completed  { background: #d1fae5; color: #065f46; }
+    .status-canceled   { background: #fee2e2; color: #991b1b; }
+
+    /* Action buttons */
+    .btn-view {
+        display: inline-block;
+        background: #111;
+        color: #fff;
+        padding: 8px 20px;
+        border-radius: 999px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: background 0.15s;
+    }
+
+    .btn-view:hover { background: #374151; color: #fff; }
+
+    .btn-track {
+        display: inline-block;
+        background: #fff;
+        color: #111;
+        padding: 8px 20px;
+        border-radius: 999px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        text-decoration: none;
+        border: 1.5px solid #e5e7eb;
+        transition: all 0.15s;
+    }
+
+    .btn-track:hover {
+        border-color: #111;
+        background: #f9fafb;
+        color: #111;
+    }
+
+    /* Empty */
+    .empty-orders {
+        text-align: center;
+        padding: 80px 40px;
+        background: #f9fafb;
+        border-radius: 24px;
+        border: 1px dashed #d1d5db;
+    }
+
+    .empty-orders .icon { font-size: 4rem; margin-bottom: 20px; }
+    .empty-orders h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
+    .empty-orders p { color: #6b7280; margin-bottom: 28px; }
+
+    @@media (max-width: 768px) {
+        .orders-page { padding: 32px 20px 60px; }
+        .order-card { grid-template-columns: 1fr; }
+        .order-total, .order-actions { text-align: left; justify-content: flex-start; }
+    }
+</style>
+
+<div class="orders-page">
+    <div class="orders-page-header">
+        <div>
+            <h1>My Orders</h1>
+            <p>Track, view details, or manage your orders below.</p>
+        </div>
+        <a href="/" class="btn-view">Continue Shopping</a>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+            ⚠️ @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            ✅ @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model != null && Model.Any())
+    {
+        @foreach (var order in Model)
+        {
+            string statusKey = order.OrderStatus?.ToLower() ?? "pending";
+            string statusCss = statusKey switch
+            {
+                "pending"    => "status-pending",
+                "confirmed"  => "status-confirmed",
+                "processing" => "status-processing",
+                "shipping"   => "status-shipping",
+                "delivered"  => "status-delivered",
+                "completed"  => "status-completed",
+                "canceled"   => "status-canceled",
+                _            => "status-pending"
+            };
+
+            <div class="order-card">
+                <!-- Left: order info -->
+                <div>
+                    <div class="d-flex align-items-center gap-3 flex-wrap">
+                        <span class="order-code">@order.OrderCode</span>
+                        <span class="status-pill @statusCss">@order.OrderStatus</span>
+                    </div>
+
+                    @if (order.OrderItems != null && order.OrderItems.Any())
+                    {
+                        var first = order.OrderItems.First();
+                        var rest  = order.OrderItems.Count - 1;
+                        <div class="order-product-preview">
+                            📦 @first.ProductNameSnapshot
+                            @if (rest > 0)
+                            {
+                                <span class="text-muted"> +@rest more item@(rest > 1 ? "s" : "")</span>
+                            }
+                        </div>
+                    }
+
+                    <div class="order-meta">
+                        <span class="order-meta-item">📅 @order.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</span>
+                        <span class="order-meta-item">💳 @order.PaymentStatus</span>
+                        @if (order.OrderItems != null)
+                        {
+                            <span class="order-meta-item">🛍 @order.OrderItems.Count item@(order.OrderItems.Count != 1 ? "s" : "")</span>
+                        }
+                    </div>
+                </div>
+
+                <!-- Right: total + actions -->
+                <div>
+                    <div class="order-total">@order.TotalAmount.ToString("N0") ₫</div>
+                    <div class="order-actions">
+                        <a asp-action="Tracking" asp-route-orderId="@order.OrderId" class="btn-track">📦 Track</a>
+                        <a asp-action="Details" asp-route-orderId="@order.OrderId" class="btn-view">View Details →</a>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="empty-orders">
+            <div class="icon">📋</div>
+            <h3>No orders yet</h3>
+            <p>You haven't placed any orders. Start shopping to see your orders here.</p>
+            <a href="/" class="btn-view">Start Shopping →</a>
+        </div>
+    }
+</div>

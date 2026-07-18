@@ -1,0 +1,170 @@
+@{
+    ViewData["Title"] = "Payment Successful - SHOP.CO";
+    var orderCode = ViewBag.OrderCode as string ?? "N/A";
+    var paymentStatus = ViewBag.PaymentStatus as string ?? "Unpaid";
+    var paymentMethod = ViewBag.PaymentMethod as string ?? "COD";
+
+    bool isPaid = string.Equals(paymentStatus, "Paid", StringComparison.OrdinalIgnoreCase);
+    bool isFailed = string.Equals(paymentStatus, "Failed", StringComparison.OrdinalIgnoreCase);
+
+    string statusBg = isPaid ? "#16a34a" : (isFailed ? "#dc2626" : "#f59e0b");
+    string statusLabel = isPaid ? "Paid" : (isFailed ? "Failed" : "Unpaid (COD)");
+    string iconChar = isPaid ? "✓" : (isFailed ? "✕" : "📦");
+    string headline = isPaid ? "Payment Successful!" : (isFailed ? "Payment Failed" : "Order Confirmed!");
+    string subheading = isPaid
+        ? "Your payment has been processed. Your order is on its way."
+        : (isFailed ? "Payment could not be completed. Please try again or contact support." : "Your order is confirmed. Pay when your package arrives.");
+}
+
+<style>
+    .success-page {
+        max-width: 580px;
+        margin: 60px auto;
+        padding: 0 16px;
+        text-align: center;
+    }
+
+    .icon-circle {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: @statusBg;
+        color: #fff;
+        font-size: 3rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @@keyframes popIn {
+        from { transform: scale(0.5); opacity: 0; }
+        to   { transform: scale(1);   opacity: 1; }
+    }
+
+    .success-page h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #111;
+        margin-bottom: 10px;
+    }
+
+    .success-page .sub {
+        font-size: 15px;
+        color: #888;
+        margin-bottom: 36px;
+        line-height: 1.6;
+    }
+
+    .receipt-card {
+        background: #f8f8f8;
+        border-radius: 20px;
+        padding: 28px 32px;
+        text-align: left;
+        margin-bottom: 32px;
+    }
+
+    .receipt-card h3 {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 18px;
+    }
+
+    .receipt-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+        font-size: 15px;
+    }
+
+    .receipt-row:last-child { border-bottom: none; }
+    .receipt-row .lbl { color: #888; }
+    .receipt-row .val { font-weight: 700; color: #111; }
+
+    .status-badge {
+        display: inline-block;
+        background: @statusBg;
+        color: #fff;
+        border-radius: 20px;
+        padding: 4px 16px;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .btn-primary-dark {
+        padding: 14px 32px;
+        background: #111;
+        color: #fff;
+        border: none;
+        border-radius: 40px;
+        font-size: 15px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+
+    .btn-primary-dark:hover { background: #333; color: #fff; }
+
+    .btn-outline-dark-rnd {
+        padding: 14px 32px;
+        background: #fff;
+        color: #111;
+        border: 2px solid #111;
+        border-radius: 40px;
+        font-size: 15px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .btn-outline-dark-rnd:hover { background: #111; color: #fff; }
+</style>
+
+<div class="success-page">
+    <div class="icon-circle">@iconChar</div>
+
+    <h1>@headline</h1>
+    <p class="sub">@subheading</p>
+
+    @if (TempData["Warning"] != null)
+    {
+        <div class="alert alert-warning alert-dismissible fade show mb-4" role="alert" style="text-align:left;">
+            @TempData["Warning"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="receipt-card">
+        <h3>Receipt</h3>
+        <div class="receipt-row">
+            <span class="lbl">Order Code</span>
+            <span class="val">@orderCode</span>
+        </div>
+        <div class="receipt-row">
+            <span class="lbl">Payment Method</span>
+            <span class="val">@paymentMethod</span>
+        </div>
+        <div class="receipt-row">
+            <span class="lbl">Payment Status</span>
+            <span class="status-badge">@statusLabel</span>
+        </div>
+    </div>
+
+    <div class="actions">
+        <a href="/Orders?userId=2" class="btn-primary-dark">View My Orders</a>
+        <a href="/" class="btn-outline-dark-rnd">Continue Shopping</a>
+    </div>
+</div>

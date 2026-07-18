@@ -1,0 +1,206 @@
+@model SHOP.CO.MVC.Models.CheckoutResultViewModel
+
+@{
+    ViewData["Title"] = "Order Placed Successfully — SHOP.CO";
+}
+
+<style>
+    /* ── Order Success Page ── */
+    .success-page {
+        max-width: 620px;
+        margin: 64px auto 100px;
+        padding: 0 20px;
+        text-align: center;
+    }
+
+    /* Animated checkmark circle */
+    .success-icon-wrap {
+        margin-bottom: 28px;
+        animation: popIn 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+
+    @@keyframes popIn {
+        from { transform: scale(0.4); opacity: 0; }
+        to   { transform: scale(1);   opacity: 1; }
+    }
+
+    .success-circle {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: #111;
+        color: #fff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.8rem;
+        box-shadow: 0 16px 48px rgba(17,24,39,0.25);
+    }
+
+    .success-page h1 {
+        font-size: 2rem;
+        font-weight: 900;
+        letter-spacing: -0.5px;
+        color: #111;
+        margin-bottom: 10px;
+    }
+
+    .success-page .sub {
+        font-size: 0.97rem;
+        color: #6b7280;
+        margin-bottom: 40px;
+        line-height: 1.6;
+    }
+
+    /* Receipt card */
+    .receipt-card {
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 20px;
+        padding: 28px 32px;
+        text-align: left;
+        margin-bottom: 32px;
+    }
+
+    .receipt-card-title {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #9ca3af;
+        margin-bottom: 18px;
+    }
+
+    .receipt-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 11px 0;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 0.93rem;
+    }
+
+    .receipt-row:last-child { border-bottom: none; }
+    .receipt-row .rl { color: #6b7280; }
+    .receipt-row .rv { font-weight: 700; color: #111; }
+
+    .receipt-total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 0 0;
+        margin-top: 4px;
+        border-top: 2px solid #111;
+    }
+
+    .receipt-total-row .rl { font-weight: 800; font-size: 1rem; }
+    .receipt-total-row .rv { font-size: 1.4rem; font-weight: 900; }
+
+    /* Status badge */
+    .status-inline {
+        display: inline-block;
+        padding: 3px 12px;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    /* Action buttons */
+    .success-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 32px;
+    }
+
+    .btn-dark-rnd {
+        display: inline-block;
+        background: #111;
+        color: #fff;
+        padding: 14px 36px;
+        border-radius: 999px;
+        font-weight: 800;
+        font-size: 0.95rem;
+        text-decoration: none;
+        transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-dark-rnd:hover { background: #374151; color: #fff; transform: translateY(-1px); }
+
+    .btn-outline-rnd {
+        display: inline-block;
+        background: transparent;
+        color: #111;
+        padding: 14px 36px;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        text-decoration: none;
+        border: 2px solid #e5e7eb;
+        transition: border-color 0.2s, background 0.2s;
+    }
+
+    .btn-outline-rnd:hover { border-color: #111; background: #f9fafb; color: #111; }
+
+    @@media (max-width: 600px) {
+        .success-page { margin: 40px auto 60px; }
+        .success-page h1 { font-size: 1.5rem; }
+        .receipt-card { padding: 20px; }
+    }
+</style>
+
+<div class="success-page">
+    <!-- Icon -->
+    <div class="success-icon-wrap">
+        <div class="success-circle">✓</div>
+    </div>
+
+    <h1>Order Placed Successfully!</h1>
+    <p class="sub">
+        Thank you for shopping with SHOP.CO. Your order has been received
+        and is being prepared. We'll notify you once it ships.
+    </p>
+
+    <!-- Receipt -->
+    <div class="receipt-card">
+        <div class="receipt-card-title">Order Receipt</div>
+
+        <div class="receipt-row">
+            <span class="rl">Order ID</span>
+            <span class="rv">#@Model.OrderId</span>
+        </div>
+        <div class="receipt-row">
+            <span class="rl">Order Code</span>
+            <span class="rv">@Model.OrderCode</span>
+        </div>
+        <div class="receipt-row">
+            <span class="rl">Order Status</span>
+            <span class="rv"><span class="status-inline">@Model.OrderStatus</span></span>
+        </div>
+        <div class="receipt-row">
+            <span class="rl">Payment</span>
+            <span class="rv">Pending (COD)</span>
+        </div>
+        <div class="receipt-row">
+            <span class="rl">Order Date</span>
+            <span class="rv">@Model.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</span>
+        </div>
+
+        <div class="receipt-total-row">
+            <span class="rl">Total Amount</span>
+            <span class="rv">@Model.TotalAmount.ToString("N0") ₫</span>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="success-actions">
+        <a href="/Orders?userId=2" class="btn-dark-rnd">View My Orders</a>
+        <a href="/Payment/Index?orderId=@Model.OrderId&orderCode=@Model.OrderCode&totalAmount=@Model.TotalAmount" class="btn-dark-rnd" style="background:#16a34a;">
+            💳 Pay Now
+        </a>
+        <a href="/" class="btn-outline-rnd">Continue Shopping</a>
+    </div>
+</div>
