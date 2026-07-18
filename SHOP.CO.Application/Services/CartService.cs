@@ -1,13 +1,5 @@
 namespace SHOP.CO.Application.Services
 {
-    public interface ICartService
-    {
-        Task<CartItemDto> AddToCartAsync(int userId, AddToCartRequestDto requestDto);
-        Task<CartDto> GetCartByUserIdAsync(int userId);
-        Task RemoveFromCartAsync(int cartItemId, int userId);
-        Task ClearCartAsync(int userId);
-    }
-
     /// <summary>
     /// CartService - implements ICartService for shopping cart business logic
     /// Handles add, remove, and retrieval of cart items with business rules
@@ -147,15 +139,57 @@ namespace SHOP.CO.Application.Services
             // Fetch all cart items for user
             var cartItems = await _cartRepository.GetCartByUserIdAsync(userId);
 
+            var validCartItems = new List<CartItem>();
+            bool dbChanged = false;
+
+            foreach (var item in cartItems)
+            {
+                // Validate quantity
+                if (item.Quantity <= 0)
+                {
+                    await _cartRepository.RemoveCartItemAsync(item.CartItemId);
+                    dbChanged = true;
+                    continue;
+                }
+
+                // Check product and variant existence/active status
+                var variant = await _cartRepository.GetProductVariantByIdAsync(item.VariantId);
+                if (variant == null || !variant.IsActive || variant.Product == null || !variant.Product.IsActive)
+                {
+                    await _cartRepository.RemoveCartItemAsync(item.CartItemId);
+                    dbChanged = true;
+                    continue;
+                }
+
+                // Reload the unit price (Product price + extra variant price)
+                decimal currentPrice = (variant.OriginalPrice ?? (variant.Product.SalePrice ?? variant.Product.BasePrice)) + variant.ExtraPrice;
+                if (item.UnitPrice != currentPrice)
+                {
+                    item.UnitPrice = currentPrice;
+                    item.UpdatedAt = DateTime.UtcNow;
+                    await _cartRepository.UpdateCartItemAsync(item);
+                    dbChanged = true;
+                }
+
+                // Update loaded navigation property references for mapping
+                item.ProductVariant = variant;
+                validCartItems.Add(item);
+            }
+
+            if (dbChanged)
+            {
+                await _cartRepository.SaveChangesAsync();
+            }
+
             // Map cart items to DTOs
-            var cartItemDtos = cartItems.Select(MapCartItemToDto).ToList();
+            var cartItemDtos = validCartItems.Select(MapCartItemToDto).ToList();
 
             // Create and return CartDto
             var cartDto = new CartDto
             {
                 UserId = userId,
                 Items = cartItemDtos,
-                LastUpdated = cartItems.Any() ? cartItems.Max(c => c.UpdatedAt ?? c.CreatedAt) : DateTime.UtcNow
+                LastUpdated = validCartItems.Any() ? validCartItems.Max(c => c.UpdatedAt ?? c.CreatedAt) : DateTime.UtcNow
             };
 
             return cartDto;
@@ -211,6 +245,71 @@ namespace SHOP.CO.Application.Services
             {
                 await _cartRepository.RemoveCartItemAsync(item.CartItemId);
             }
+        }
+
+        public async Task<CartItemDto> UpdateCartQuantityAsync(int cartItemId, int userId, UpdateCartQuantityRequest requestDto)
+        {
+            if (cartItemId <= 0)
+            {
+                throw new ArgumentException("Invalid cartItemId.");
+            }
+
+            if (userId <= 0)
+            {
+                throw new ArgumentException("Invalid userId.");
+            }
+
+            if (requestDto == null)
+            {
+                throw new ArgumentException("Request body is required.");
+            }
+
+            if (requestDto.Quantity <= 0)
+            {
+                throw new ArgumentException("Quantity must be greater than zero.");
+            }
+
+            // Retrieve cart item with navigation properties loaded
+            var cartItem = await _cartRepository.GetCartItemByIdAsync(cartItemId);
+            if (cartItem == null)
+            {
+                throw new InvalidOperationException("Cart item not found.");
+            }
+
+            // Verify ownership
+            if (cartItem.UserId != userId)
+            {
+                throw new UnauthorizedAccessException("You are not authorized to update this cart item.");
+            }
+
+            // Retrieve product variant to check active status and stock
+            var variant = await _cartRepository.GetProductVariantByIdAsync(cartItem.VariantId);
+            if (variant == null)
+            {
+                throw new InvalidOperationException("Product variant does not exist.");
+            }
+
+            if (!variant.IsActive || !variant.Product.IsActive)
+            {
+                throw new InvalidOperationException("Product variant is inactive.");
+            }
+
+            // Check stock availability
+            if (requestDto.Quantity > variant.StockQuantity)
+            {
+                throw new InvalidOperationException($"Cannot set quantity to {requestDto.Quantity}. Only {variant.StockQuantity} units available.");
+            }
+
+            // Calculate current price
+            decimal unitPrice = (variant.OriginalPrice ?? (variant.Product.SalePrice ?? variant.Product.BasePrice)) + variant.ExtraPrice;
+
+            cartItem.Quantity = requestDto.Quantity;
+            cartItem.UnitPrice = unitPrice;
+            cartItem.UpdatedAt = DateTime.UtcNow;
+
+            await _cartRepository.UpdateCartItemAsync(cartItem);
+
+            return MapCartItemToDto(cartItem);
         }
 
         /// <summary>

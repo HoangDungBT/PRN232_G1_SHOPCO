@@ -16,13 +16,13 @@ namespace SHOP.CO.Application.Services
 
     public class AdminProductService : IAdminProductService
     {
-        private readonly IProductRepository _repo;
+        private readonly SHOP.CO.Application.Repositories.IProductRepository _repo;
         private readonly ICategoryRepository _cateRepo;
         private readonly ShopCoDbContext _context;
         private readonly IWebHostEnvironment _env;
         private readonly IMapper _mapper; // 🟢 Inject AutoMapper
 
-        public AdminProductService(IProductRepository repository, ICategoryRepository cateRepo, ShopCoDbContext context, IWebHostEnvironment env, IMapper mapper)
+        public AdminProductService(SHOP.CO.Application.Repositories.IProductRepository repository, ICategoryRepository cateRepo, ShopCoDbContext context, IWebHostEnvironment env, IMapper mapper)
         {
             _repo = repository;
             _cateRepo = cateRepo;

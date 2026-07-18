@@ -71,7 +71,7 @@ namespace SHOP.CO.Application.DTOs
 
     #region OrderDto
     // DTO Dùng cho OData (Hiển thị bảng)
-    public class OrderDto
+    public class AdminOrderDto
     {
         public int OrderId { get; set; }
         public string OrderCode { get; set; } = string.Empty;

@@ -31,12 +31,12 @@ namespace SHOP.CO.Infrastructure
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 
             // Đăng ký Repositories với vòng đời Scoped
-            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<SHOP.CO.Application.Repositories.IProductRepository, ProductRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICartRepository, CartRepository>();
             services.AddScoped<SHOP.CO.Domain.Repositories.IProductUiRepository, MockProductUiRepository>();
-            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<SHOP.CO.Application.Repositories.IOrderRepository, OrderRepository>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
             services.AddScoped<IContactRepository, ContactRepository>();
 

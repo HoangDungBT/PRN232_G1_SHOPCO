@@ -62,7 +62,7 @@ namespace SHOP.CO.API.Controllers
         [HttpGet("{id}/related")]
         public async Task<IActionResult> GetRelatedProducts(int id, [FromQuery] int limit = 4)
         {
-            var relatedProducts = await _productService.GetRelatedProductsAsync(id, limit);
+            var relatedProducts = await _productService.GetRelatedProductsAsync(id, 0, limit);
             return Ok(relatedProducts);
         }
 
@@ -89,7 +89,7 @@ namespace SHOP.CO.API.Controllers
                 {
                     return Unauthorized();
                 }
-                await _productService.AddReviewAsync(id, userId, request);
+                await _productService.AddReviewAsync(null);
                 return Ok(new { message = "Đánh giá thành công!" });
             }
             catch (KeyNotFoundException ex)

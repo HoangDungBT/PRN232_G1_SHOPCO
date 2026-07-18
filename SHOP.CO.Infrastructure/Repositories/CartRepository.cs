@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SHOP.CO.Infrastructure.Repositories
 {
-    public interface ICartRepository
+    /* public interface ICartRepository
     {
         Task AddToCartAsync(CartItem cartItem);
         Task<List<CartItem>> GetCartByUserIdAsync(int userId);
@@ -17,7 +17,7 @@ namespace SHOP.CO.Infrastructure.Repositories
     /// <summary>
     /// CartRepository - implements ICartRepository for cart data access
     /// </summary>
-    public class CartRepository : ICartRepository
+    */ public class CartRepository : ICartRepository
     {
         private readonly ShopCoDbContext _context;
 
@@ -132,6 +132,7 @@ namespace SHOP.CO.Infrastructure.Repositories
         {
             await _context.SaveChangesAsync();
         }
+public Task UpdateCartItemAsync(CartItem item) => throw new NotImplementedException();
     }
 }
 

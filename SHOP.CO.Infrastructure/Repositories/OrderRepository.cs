@@ -10,7 +10,7 @@ namespace SHOP.CO.Infrastructure.Repositories
 {
 
 
-    public class OrderRepository : BaseRepository<Order>, IOrderRepository
+    public class OrderRepository : BaseRepository<Order>, SHOP.CO.Application.Repositories.IOrderRepository
     {
         public OrderRepository(ShopCoDbContext context) : base(context) { }
 
@@ -35,12 +35,19 @@ namespace SHOP.CO.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Order> GetOrderByIdAsync(int orderId)
+        public async Task<Order?> GetOrderByIdAsync(int orderId)
         {
             return await _context.Orders
                 .Include(o => o.OrderItems)
                 .Include(o => o.UserAddress)
                 .FirstOrDefaultAsync(o => o.OrderId == orderId) ?? throw new Exception("Order not found");
         }
+
+    public Task AddOrderAsync(Order order) => throw new NotImplementedException();
+    public Task<User> GetUserByIdAsync(int id) => throw new NotImplementedException();
+    public Task ExecuteInTransactionAsync(Func<Task> action) => throw new NotImplementedException();
+    public Task SaveChangesAsync() => throw new NotImplementedException();
+    public Task<Order> GetOrderWithItemsAndVariantsByIdAsync(int id) => throw new NotImplementedException();
+    public Task<Order> GetOrderByCodeAsync(string code) => throw new NotImplementedException();
     }
 }

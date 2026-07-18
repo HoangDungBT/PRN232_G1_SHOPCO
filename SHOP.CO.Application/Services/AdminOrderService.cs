@@ -10,11 +10,11 @@
 
     public class AdminOrderService : IAdminOrderService
     {
-        private readonly IOrderRepository _orderRepo;
+        private readonly SHOP.CO.Application.Repositories.IOrderRepository _orderRepo;
         private readonly ShopCoDbContext _context;
         private readonly IMapper _mapper; // 🟢 Inject AutoMapper
 
-        public AdminOrderService(IOrderRepository orderRepo, ShopCoDbContext context, IMapper mapper)
+        public AdminOrderService(SHOP.CO.Application.Repositories.IOrderRepository orderRepo, ShopCoDbContext context, IMapper mapper)
         {
             _orderRepo = orderRepo;
             _context = context;

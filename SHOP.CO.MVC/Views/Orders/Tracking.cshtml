@@ -1,0 +1,418 @@
+@model SHOP.CO.MVC.Models.OrderTrackingViewModel
+
+@{
+    ViewData["Title"] = "Track Order - " + Model.OrderCode;
+}
+
+<style>
+    /* ── Order Tracking Page ── */
+    .tracking-page {
+        max-width: 860px;
+        margin: 48px auto 80px;
+        padding: 0 20px;
+    }
+
+    .tracking-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .tracking-header h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        margin-bottom: 6px;
+    }
+
+    .tracking-header p {
+        color: #6b7280;
+        font-size: 0.95rem;
+    }
+
+    /* Info Card */
+    .info-card {
+        background: #f9f9f9;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 28px 32px;
+        margin-bottom: 32px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 20px;
+    }
+
+    .info-item label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: #9ca3af;
+        margin-bottom: 4px;
+    }
+
+    .info-item span {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #111827;
+    }
+
+    .info-item .badge-status {
+        display: inline-block;
+        padding: 3px 12px;
+        border-radius: 999px;
+        font-size: 0.82rem;
+        font-weight: 700;
+    }
+
+    .badge-pending   { background: #fef3c7; color: #92400e; }
+    .badge-confirmed { background: #dbeafe; color: #1e40af; }
+    .badge-processing{ background: #ede9fe; color: #5b21b6; }
+    .badge-shipping  { background: #d1fae5; color: #065f46; }
+    .badge-delivered { background: #d1fae5; color: #065f46; }
+    .badge-canceled  { background: #fee2e2; color: #991b1b; }
+    .badge-paid      { background: #d1fae5; color: #065f46; }
+    .badge-unpaid    { background: #fef3c7; color: #92400e; }
+
+    /* Timeline */
+    .timeline-card {
+        background: #f9f9f9;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 32px 40px;
+        margin-bottom: 32px;
+    }
+
+    .timeline-card h2 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #374151;
+        margin-bottom: 32px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .timeline {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        position: relative;
+    }
+
+    /* Vertical line */
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 15px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #e5e7eb;
+    }
+
+    .timeline-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 24px;
+        padding-bottom: 32px;
+        position: relative;
+    }
+
+    .timeline-item:last-child {
+        padding-bottom: 0;
+    }
+
+    /* Circle dot */
+    .timeline-dot {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        position: relative;
+        z-index: 1;
+        font-size: 14px;
+        font-weight: 700;
+        border: 2px solid #e5e7eb;
+        background: #fff;
+        color: #9ca3af;
+        transition: all 0.3s ease;
+    }
+
+    .timeline-dot.completed {
+        background: #111827;
+        border-color: #111827;
+        color: #fff;
+    }
+
+    .timeline-dot.current {
+        background: #fff;
+        border-color: #111827;
+        border-width: 3px;
+        color: #111827;
+        box-shadow: 0 0 0 4px rgba(17, 24, 39, 0.1);
+    }
+
+    .timeline-dot.canceled-dot {
+        background: #ef4444;
+        border-color: #ef4444;
+        color: #fff;
+    }
+
+    .timeline-content {
+        flex: 1;
+        padding-top: 4px;
+    }
+
+    .timeline-content .step-name {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 2px;
+    }
+
+    .timeline-content .step-name.future {
+        color: #9ca3af;
+        font-weight: 500;
+    }
+
+    .timeline-content .step-desc {
+        font-size: 0.85rem;
+        color: #6b7280;
+        margin-bottom: 4px;
+    }
+
+    .timeline-content .step-time {
+        font-size: 0.78rem;
+        color: #9ca3af;
+        font-style: italic;
+    }
+
+    /* Action buttons */
+    .tracking-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .btn-track-back {
+        display: inline-block;
+        padding: 12px 28px;
+        border: 2px solid #111827;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: #111827;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        background: transparent;
+    }
+
+    .btn-track-back:hover {
+        background: #111827;
+        color: #fff;
+    }
+
+    .btn-track-shop {
+        display: inline-block;
+        padding: 12px 28px;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: #fff;
+        background: #111827;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .btn-track-shop:hover {
+        background: #374151;
+        color: #fff;
+    }
+
+    /* Alerts */
+    .alert-track {
+        padding: 14px 20px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .alert-track.error   { background: #fee2e2; color: #991b1b; }
+    .alert-track.success { background: #d1fae5; color: #065f46; }
+</style>
+
+<div class="tracking-page">
+
+    <!-- Header -->
+    <div class="tracking-header">
+        <h1>📦 Track Your Order</h1>
+        <p>Stay updated on your delivery progress in real time.</p>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert-track error">⚠ @TempData["Error"]</div>
+    }
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert-track success">✓ @TempData["Success"]</div>
+    }
+
+    <!-- Order Info -->
+    <div class="info-card">
+        <div class="info-item">
+            <label>Order Code</label>
+            <span>@Model.OrderCode</span>
+        </div>
+        <div class="info-item">
+            <label>Order Status</label>
+            @{
+                var statusClass = Model.OrderStatus.ToLower() switch
+                {
+                    "pending"    => "badge-pending",
+                    "confirmed"  => "badge-confirmed",
+                    "processing" => "badge-processing",
+                    "shipping"   => "badge-shipping",
+                    "delivered"  => "badge-delivered",
+                    "canceled"   => "badge-canceled",
+                    _            => "badge-pending"
+                };
+            }
+            <span class="badge-status @statusClass">@Model.OrderStatus</span>
+        </div>
+        <div class="info-item">
+            <label>Payment Status</label>
+            @{
+                var payClass = Model.PaymentStatus?.ToLower() == "paid" ? "badge-paid" : "badge-unpaid";
+            }
+            <span class="badge-status @payClass">@Model.PaymentStatus</span>
+        </div>
+        <div class="info-item">
+            <label>Total Amount</label>
+            <span>@Model.TotalAmount.ToString("N0") ₫</span>
+        </div>
+        <div class="info-item">
+            <label>Order Date</label>
+            <span>@Model.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</span>
+        </div>
+    </div>
+
+    <!-- Estimated Delivery and Shipping Message -->
+    <div class="card border-0 rounded-4 shadow-sm bg-light p-4 mb-4">
+        <div class="row align-items-center">
+            <div class="col-md-6 mb-3 mb-md-0 border-end">
+                <span class="text-muted d-block small fw-bold text-uppercase" style="font-size:0.72rem; letter-spacing:0.8px; margin-bottom: 4px;">Estimated Delivery</span>
+                <strong class="text-dark fs-5">
+                    @if (Model.OrderStatus.Equals("Delivered", StringComparison.OrdinalIgnoreCase))
+                    {
+                        <span>Delivered on @(Model.CompletedAt.HasValue ? Model.CompletedAt.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm") : Model.CreatedAt.AddDays(3).ToLocalTime().ToString("dd/MM/yyyy"))</span>
+                    }
+                    else if (Model.OrderStatus.Equals("Canceled", StringComparison.OrdinalIgnoreCase))
+                    {
+                        <span class="text-danger">Order Canceled</span>
+                    }
+                    else
+                    {
+                        <span>By @Model.CreatedAt.AddDays(3).ToLocalTime().ToString("dd/MM/yyyy") (Standard Shipping)</span>
+                    }
+                </strong>
+            </div>
+            <div class="col-md-6 ps-md-4">
+                <span class="text-muted d-block small fw-bold text-uppercase" style="font-size:0.72rem; letter-spacing:0.8px; margin-bottom: 4px;">Status Message</span>
+                <span class="text-dark fw-bold" style="font-size: 0.95rem;">
+                    @if (Model.OrderStatus.Equals("Delivered", StringComparison.OrdinalIgnoreCase))
+                    {
+                        <span>🎉 Your order has been delivered successfully. Thank you for shopping with us!</span>
+                    }
+                    else if (Model.OrderStatus.Equals("Canceled", StringComparison.OrdinalIgnoreCase))
+                    {
+                        <span>❌ This order was canceled.</span>
+                    }
+                    else if (Model.OrderStatus.Equals("Shipping", StringComparison.OrdinalIgnoreCase))
+                    {
+                        <span>🚚 Your order is on the way! Please keep your phone nearby to receive the call from the courier.</span>
+                    }
+                    else if (Model.OrderStatus.Equals("Processing", StringComparison.OrdinalIgnoreCase))
+                    {
+                        <span>📦 Your order is being packed and prepared for shipment.</span>
+                    }
+                    else if (Model.OrderStatus.Equals("Confirmed", StringComparison.OrdinalIgnoreCase))
+                    {
+                        <span>✓ The seller has confirmed your order. Packaging will start soon.</span>
+                    }
+                    else
+                    {
+                        <span>⏳ Your order is placed and waiting for seller confirmation.</span>
+                    }
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="timeline-card">
+        <h2>🚚 Delivery Timeline</h2>
+
+        @if (Model.Steps != null && Model.Steps.Any())
+        {
+            <ul class="timeline" id="order-timeline">
+                @{
+                    // Determine the index of the current (last completed) step
+                    int currentStepIndex = -1;
+                    for (int s = 0; s < Model.Steps.Count; s++)
+                    {
+                        if (Model.Steps[s].Completed) currentStepIndex = s;
+                    }
+                }
+                @for (int i = 0; i < Model.Steps.Count; i++)
+                {
+                    var step = Model.Steps[i];
+                    bool isCurrent = step.Completed && (i == currentStepIndex);
+                    bool isCanceled = step.Status.Equals("Canceled", StringComparison.OrdinalIgnoreCase);
+
+                    string dotClass = !step.Completed ? "" :
+                                      isCanceled ? "canceled-dot" :
+                                      isCurrent  ? "current" :
+                                      "completed";
+
+                    string nameClass = step.Completed ? "" : "future";
+
+                    string dotIcon = !step.Completed ? "○" :
+                                     isCanceled       ? "✕" :
+                                     isCurrent        ? "●" :
+                                     "✓";
+
+                    <li class="timeline-item">
+                        <div class="timeline-dot @dotClass" title="@step.Status">@dotIcon</div>
+                        <div class="timeline-content">
+                            <div class="step-name @nameClass">@step.Status</div>
+                            <div class="step-desc">@step.Description</div>
+                            @if (step.Time.HasValue)
+                            {
+                                <div class="step-time">@step.Time.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</div>
+                            }
+                            else if (!step.Completed)
+                            {
+                                <div class="step-time">Pending…</div>
+                            }
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p style="color:#6b7280; font-style:italic;">No tracking information available.</p>
+        }
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="tracking-actions">
+        <a asp-action="Index" asp-controller="Orders" class="btn-track-back">← Back to My Orders</a>
+        <a href="/" class="btn-track-shop">Continue Shopping</a>
+    </div>
+</div>

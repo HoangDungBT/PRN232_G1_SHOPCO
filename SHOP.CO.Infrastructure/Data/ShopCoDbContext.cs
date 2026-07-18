@@ -1,4 +1,6 @@
+using SHOP.CO.Domain.Entities;
 ﻿
+﻿using Microsoft.EntityFrameworkCore;
 namespace SHOP.CO.Infrastructure.Persistence
 {
     public class ShopCoDbContext : DbContext
@@ -35,6 +37,7 @@ namespace SHOP.CO.Infrastructure.Persistence
                 entity.ToTable("Users", t => {
                     t.HasCheckConstraint("CK_Users_Role", "[Role] IN (N'Customer', N'Staff', N'Admin')");
                     t.HasCheckConstraint("CK_Users_Status", "[Status] IN (N'Unverified', N'Active', N'Locked', N'Deleted')");
+                    t.HasCheckConstraint("CK_Users_Status", "[Status] IN (N'Active', N'Locked', N'Deleted')");
                 });
                 entity.HasKey(e => e.UserId);
                 entity.HasIndex(e => e.Email).IsUnique().HasDatabaseName("UQ_Users_Email");
