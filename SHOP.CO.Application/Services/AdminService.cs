@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SHOP.CO.Application.Common;
 using SHOP.CO.Infrastructure.Persistence;
@@ -16,7 +16,7 @@ namespace SHOP.CO.Application.Services
         Task<ResultModel<List<RevenueByDayDto>>> GetRevenueChartAsync(int days);
         Task<ResultModel<bool>> AdjustStockAsync(int variantId, int quantityChange, string reason, string logType);
         IQueryable<ProductVariant> GetInventoryODataQuery();
-
+      
 
 
     }
@@ -26,16 +26,18 @@ namespace SHOP.CO.Application.Services
         private readonly ShopCoDbContext _context;
         private readonly IEmailSender _emailSender;
         private readonly EmailSettings _emailSettings;
-
+        private readonly IMapper _mapper;
         // 🟢 1. CẬP NHẬT CONSTRUCTOR ĐỂ GỌI ĐƯỢC EMAIL SENDER
         public AdminDashboardService(
             ShopCoDbContext context,
             IEmailSender emailSender,
-            IOptions<EmailSettings> emailSettings)
+            IOptions<EmailSettings> emailSettings,
+            IMapper mapper)
         {
             _context = context;
             _emailSender = emailSender;
             _emailSettings = emailSettings.Value;
+            _mapper = mapper;
         }
 
         public async Task<ResultModel<DashboardSummaryDto>> GetDashBoardSummaryAsync()
@@ -128,8 +130,14 @@ namespace SHOP.CO.Application.Services
                 int threshold = variant.LowStockThreshold;
 
                 // Cập nhật tồn kho hiện tại
-                variant.StockQuantity += quantityChange;
-                int newStock = variant.StockQuantity;
+                int newStock = variant.StockQuantity + quantityChange;
+                
+                if (newStock < 0)
+                {
+                    return ResultModel<bool>.Error($"Số lượng tồn kho không đủ để xuất! Tồn kho hiện tại: {variant.StockQuantity}", 400);
+                }
+
+                variant.StockQuantity = newStock;
 
                 // Ghi Log Chuyển động kho (StockMovement)
                 var log = new InteractionLog
@@ -193,6 +201,6 @@ namespace SHOP.CO.Application.Services
                 return ResultModel<bool>.Error(innerEx, 500);
             }
         }
-
+     
     }
 }

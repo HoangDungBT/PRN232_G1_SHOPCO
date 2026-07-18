@@ -273,4 +273,23 @@ namespace SHOP.CO.Application.DTOs
         public string Value { get; set; } = string.Empty;
     }
     #endregion
+
+    #region InterativeLog
+    public class InteractionLogDto
+    {
+        public int LogId { get; set; }
+    public string? UserName { get; set; } // Lấy từ bảng User
+    public string LogType { get; set; } = string.Empty;
+    public string? Title { get; set; }
+    public string? Message { get; set; }
+    public string? SenderType { get; set; }
+    public string? Status { get; set; }
+    public DateTime? CreatedAt { get; set; }
+
+    // Chứa JSON để xem chi tiết
+    public string? OldValueJson { get; set; }
+    public string? NewValueJson { get; set; }
+    public string? PayloadJson { get; set; }
+}
+    #endregion
 }

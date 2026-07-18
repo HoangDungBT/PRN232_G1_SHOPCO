@@ -15,8 +15,14 @@ namespace SHOP.CO.MVC.Models
     public class RegisterVM
     {
         [Required] public string FullName { get; set; } = string.Empty;
-        [Required] public string Email { get; set; } = string.Empty;
-        [Required] public string Password { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Vui lòng nhập Email!")]
+        [EmailAddress(ErrorMessage = "Email không hợp lệ!")]
+        public string Email { get; set; } = string.Empty;
+
+        [Required]
+        [MinLength(8, ErrorMessage = "Mật khẩu cần ít nhất 8 kí tự")] 
+        public string Password { get; set; } = string.Empty;
     }
 
     // Class bọc kết quả giống hệt ResultModel bên Application

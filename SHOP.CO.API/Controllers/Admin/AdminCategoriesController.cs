@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SHOP.CO.Application.DTOs;
 using SHOP.CO.Application.Services;
@@ -28,7 +28,6 @@ namespace SHOP.CO.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] SaveCategoryRequestDto request)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
             var result = await _service.CreateAsync(request);
             return StatusCode(result.Code, result);
         }
@@ -36,7 +35,6 @@ namespace SHOP.CO.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] SaveCategoryRequestDto request)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
             var result = await _service.UpdateAsync(id, request);
             return StatusCode(result.Code, result);
         }

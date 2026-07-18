@@ -53,6 +53,7 @@ namespace SHOP.CO.Application
             services.AddScoped<IAdminCategoryService, AdminCategoryService>();
             services.AddScoped<IAdminUserService, AdminUserService>();
             services.AddScoped<IAdminOrderService, AdminOrderService>();
+            services.AddScoped<IAdminLogService, AdminLogService>();
             #endregion
             return services;
         }

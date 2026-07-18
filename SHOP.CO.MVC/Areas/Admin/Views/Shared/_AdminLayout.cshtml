@@ -28,6 +28,7 @@
             <a href="/Admin/Orders"><i class="fas fa-shopping-cart me-2"></i> Quản Lý Đơn Hàng</a>
             <a href="/Admin/Users"><i class="fas fa-users me-2"></i> Quản Lý Người Dùng</a>
             <a href="/Admin/Inventory"><i class="fas fa-home me-2"></i> Quản Lý Kho</a>
+            <a href="/Admin/InteractLogs"><i class="fas fa-history me-2"></i> Nhật Ký Hoạt Động</a>
             <a href="/" class="text-warning"><i class="fas fa-arrow-left me-2"></i> Về Trang Cửa Hàng</a>
             <a href="/Auth/Logout" class="text-danger"><i class="fas fa-sign-out-alt me-2"></i> Đăng Xuất</a>
         </div>
@@ -51,6 +52,38 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+   
+    <script>
+        // Cài đặt mặc định cho TẤT CẢ các request AJAX trong trang
+        $.ajaxSetup({
+            error: function (xhr, textStatus, errorThrown) {
+                // Tắt tất cả các spinner đang quay (nếu có)
+                $('.fa-spinner').parent().prop('disabled', false).html(function(i, oldHtml) {
+                     return oldHtml.replace('<i class="fas fa-spinner fa-spin"></i> ', '').replace(' Đang xử lý...', '');
+                });
+
+                let errorMessage = "Không thể kết nối đến máy chủ!";
+
+                // Nếu có phản hồi từ máy chủ (đã được bọc trong ResultModel)
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                } else if (xhr.responseText) {
+                    // Cứu cánh cuối cùng nếu không parse được JSON
+                    try {
+                        let parsed = JSON.parse(xhr.responseText);
+                        errorMessage = parsed.message || errorMessage;
+                    } catch (e) { }
+                }
+
+                // Hiển thị lỗi dùng SweetAlert2
+                Swal.fire({
+                    title: 'Thông báo',
+                    html: errorMessage, // Dùng 'html' để nhận các thẻ <br> từ backend
+                    icon: 'error'
+                });
+            }
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

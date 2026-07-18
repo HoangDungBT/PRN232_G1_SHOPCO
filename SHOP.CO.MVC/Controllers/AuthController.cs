@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using SHOP.CO.MVC.Common;
 using SHOP.CO.MVC.Models;
@@ -23,7 +23,7 @@ namespace SHOP.CO.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginVM model)
+        public async Task<IActionResult> Login([FromBody] LoginVM model)
         {
             var result = await PostApiAsync<TokenResponse>("api/auth/login", model);
 
@@ -42,15 +42,16 @@ namespace SHOP.CO.MVC.Controllers
 
                 
                 // Check Role
+                string redirectUrl = "/Home/Index";
                 if (role == "Admin" || role == "Staff")
                 {
-                    return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+                    redirectUrl = "/Admin/Dashboard/Index";
                 }
 
-                return RedirectToAction("Index", "Home");
+                return Json(new { isSuccess = true, redirectUrl = redirectUrl });
             }
-            ViewBag.ErrorMessage = result?.Message ?? "Đăng nhập thất bại.";
-            return View(model);
+            
+            return Json(new { isSuccess = false, message = result?.Message ?? "Đăng nhập thất bại." });
         }
 
         // --- ĐĂNG KÝ ---
@@ -63,24 +64,7 @@ namespace SHOP.CO.MVC.Controllers
             return View(new RegisterVM());
         }
 
-        // bỏ vì dùn ajax
-        //[HttpPost]
-        //public async Task<IActionResult> Register(RegisterVM model)
-        //{
-        //    if (!ModelState.IsValid) return View(model);
-
-        //    // POST đến API (Kiểu trả về là chuỗi string Message)
-        //    var result = await PostApiAsync<string>("api/auth/register", model);
-
-        //    if (result != null && result.IsSuccess)
-        //    {
-        //        TempData["SuccessMessage"] = "Đăng ký thành công! Vui lòng đăng nhập.";
-        //        return RedirectToAction("Login");
-        //    }
-
-        //    ViewBag.ErrorMessage = result?.Message ?? "Đăng ký thất bại.";
-        //    return View(model);
-        //}
+      
 
         [HttpGet]
         public IActionResult ForgotPassword()

@@ -8,6 +8,8 @@ using SHOP.CO.Infrastructure.Data;
 
 namespace SHOP.CO.Infrastructure.Repositories
 {
+
+
     public class OrderRepository : BaseRepository<Order>, IOrderRepository
     {
         public OrderRepository(ShopCoDbContext context) : base(context) { }

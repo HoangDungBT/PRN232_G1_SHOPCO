@@ -79,7 +79,8 @@
             {
                 var order = await _orderRepo.GetOrderWithDetailsAsync(orderId);
                 if (order == null) return ResultModel<bool>.Error("Không tìm thấy đơn hàng", 404);
-
+                if (order.OrderStatus == "Completed" || order.OrderStatus == "Canceled")
+                    return ResultModel<bool>.Error("Đơn hàng đã đóng, không thể thay đổi trạng thái!", 400);
                 order.PaymentStatus = "Paid";
                 order.UpdatedAt = DateTime.UtcNow;
                 await _orderRepo.UpdateAsync(order); // BaseRepo

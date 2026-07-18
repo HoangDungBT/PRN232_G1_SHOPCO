@@ -1,5 +1,3 @@
-﻿<!-- ... (Giữ nguyên phần đầu cho đến <div class="card-body">) ... -->
-<!-- Code bên dưới thay thế từ <div class="card-body"> trở đi -->
 @{
     ViewData["Title"] = "Quản Lý Đơn Hàng";
 }
@@ -16,7 +14,7 @@
                 <input type="text" id="searchInput" class="form-control" placeholder="Mã Đơn hoặc Tên người nhận...">
             </div>
             <div class="col-md-3">
-                <select id="filterStatus" class="form-select" onchange="resetPageAndLoad()">
+                <select id="filterStatus" class="form-select" onchange="OrderManager.resetPageAndLoad()">
                     <option value="processing" selected>Đang xử lý (Mặc định)</option>
                     <option value="closed">Đã đóng (Hoàn thành / Hủy)</option>
                     <option value="all">Tất cả đơn hàng</option>
@@ -33,12 +31,12 @@
                 <thead class="table-light">
                     <!-- 🟢 THÊM CLICK SẮP XẾP VÀO HEADER -->
                     <tr>
-                        <th style="cursor: pointer;" onclick="changeSort('OrderId')">ID <i class="fas fa-sort text-muted ms-1 sort-icon" id="sort-OrderId"></i></th>
-                        <th style="cursor: pointer;" onclick="changeSort('CreatedAt')">Ngày Tạo <i class="fas fa-sort-down text-primary ms-1 sort-icon" id="sort-CreatedAt"></i></th>
+                        <th style="cursor: pointer;" onclick="OrderManager.changeSort('OrderId')">ID <i class="fas fa-sort text-muted ms-1 sort-icon" id="sort-OrderId"></i></th>
+                        <th style="cursor: pointer;" onclick="OrderManager.changeSort('CreatedAt')">Ngày Tạo <i class="fas fa-sort-down text-primary ms-1 sort-icon" id="sort-CreatedAt"></i></th>
                         <th>Người Nhận</th>
-                        <th class="text-end" style="cursor: pointer;" onclick="changeSort('TotalAmount')">Tổng Tiền <i class="fas fa-sort text-muted ms-1 sort-icon" id="sort-TotalAmount"></i></th>
-                        <th class="text-center" style="cursor: pointer;" onclick="changeSort('PaymentStatus')">Thanh Toán <i class="fas fa-sort text-muted ms-1 sort-icon" id="sort-PaymentStatus"></i></th>
-                        <th class="text-center" style="cursor: pointer;" onclick="changeSort('OrderStatus')">Trạng Thái Đơn <i class="fas fa-sort text-muted ms-1 sort-icon" id="sort-OrderStatus"></i></th>
+                        <th class="text-end" style="cursor: pointer;" onclick="OrderManager.changeSort('TotalAmount')">Tổng Tiền <i class="fas fa-sort text-muted ms-1 sort-icon" id="sort-TotalAmount"></i></th>
+                        <th class="text-center" style="cursor: pointer;" onclick="OrderManager.changeSort('PaymentStatus')">Thanh Toán <i class="fas fa-sort text-muted ms-1 sort-icon" id="sort-PaymentStatus"></i></th>
+                        <th class="text-center" style="cursor: pointer;" onclick="OrderManager.changeSort('OrderStatus')">Trạng Thái Đơn <i class="fas fa-sort text-muted ms-1 sort-icon" id="sort-OrderStatus"></i></th>
                         <th class="text-center">Thao Tác</th>
                     </tr>
                 </thead>
@@ -59,404 +57,20 @@
     </div>
 </div>
 
-<!-- ========================================== -->
-<!-- OFFCANVAS FORM VÀ JAVASCRIPT               -->
-<!-- ========================================== -->
-<!-- (GIỮ NGUYÊN HTML OFFCANVAS BÊN DƯỚI - TÔI RÚT GỌN ĐỂ TẬP TRUNG JS) -->
-<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasOrder" aria-labelledby="offcanvasOrderLabel" style="width: 900px;">
-    <!-- Giữ nguyên code Offcanvas của bạn ở đây -->
-    <div class="offcanvas-header bg-light border-bottom">
-        <h5 class="offcanvas-title fw-bold" id="offcanvasOrderLabel">Chi Tiết Đơn Hàng #<span id="detailOrderId"></span></h5>
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
-    </div>
-    <div class="offcanvas-body bg-light">
-        <div class="row g-3">
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-white fw-bold text-primary"><i class="fas fa-user me-1"></i> Thông Tin Giao Hàng</div>
-                    <div class="card-body small">
-                        <p class="mb-1"><strong>Mã đơn:</strong> <span id="detailOrderCode" class="text-danger fw-bold"></span></p>
-                        <p class="mb-1"><strong>Người nhận:</strong> <span id="detailReceiverName"></span></p>
-                        <p class="mb-1"><strong>Điện thoại:</strong> <span id="detailReceiverPhone"></span></p>
-                        <p class="mb-1"><strong>Địa chỉ:</strong> <span id="detailAddress"></span></p>
-                        <p class="mb-0 text-muted"><strong>Ghi chú:</strong> <span id="detailCustomerNote">Không có</span></p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-white fw-bold text-warning"><i class="fas fa-tasks me-1"></i> Xử Lý Đơn Hàng</div>
-                    <div class="card-body small">
-                        <div class="mb-3 d-flex align-items-center">
-                            <strong class="me-2">Thanh toán:</strong>
-                            <span id="detailPaymentBadge"></span>
-                            <button id="btnMarkPaid" class="btn btn-sm btn-outline-success ms-2 py-0 d-none" onclick="markAsPaid()">Đánh dấu đã thu tiền</button>
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label fw-bold mb-1">Cập nhật Trạng Thái Đơn:</label>
-                            <div class="input-group input-group-sm">
-                                <select id="OrderStatusSelect" class="form-select border-primary">
-                                    <option value="Pending">Chờ Xác Nhận (Pending)</option>
-                                    <option value="Confirmed">Đã Xác Nhận (Confirmed)</option>
-                                    <option value="Shipping">Đang Giao Hàng (Shipping)</option>
-                                    <option value="Completed">Đã Hoàn Thành (Completed)</option>
-                                    <option value="Canceled">Hủy Đơn Hàng (Canceled)</option>
-                                </select>
-                                <button class="btn btn-primary" type="button" onclick="updateOrderStatus()">Cập nhật</button>
-                            </div>
-                        </div>
-                        <div id="cancelReasonDiv" class="mb-0 d-none">
-                            <input type="text" id="CancelReasonInput" class="form-control form-control-sm border-danger" placeholder="Nhập lý do hủy đơn (Bắt buộc)...">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card border-0 shadow-sm mt-3">
-            <div class="card-header bg-white fw-bold"><i class="fas fa-box-open me-1"></i> Sản Phẩm Khách Đặt</div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-sm table-hover mb-0 align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th width="60">Ảnh</th>
-                                <th>Tên & Phân Loại</th>
-                                <th class="text-center">SL</th>
-                                <th class="text-end">Đơn Giá</th>
-                                <th class="text-end pe-3">Thành Tiền</th>
-                            </tr>
-                        </thead>
-                        <tbody id="detailItemsBody"></tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="card-footer bg-white text-end">
-                <div class="small">Tạm tính: <span id="detailSubtotal">0</span> đ</div>
-                <div class="small text-danger">Giảm giá: <span id="detailDiscount">0</span> đ</div>
-                <div class="small">Phí Ship: <span id="detailShippingFee">0</span> đ</div>
-                <hr class="my-1">
-                <h6 class="fw-bold mb-0">Tổng Cộng: <span id="detailTotal" class="text-danger">0</span> đ</h6>
-            </div>
-        </div>
-    </div>
-</div>
+<partial name="_OrderOffcanvas" />
 
 <input type="hidden" id="apiBaseUrl" value="@ViewBag.ApiBaseUrl" />
 <input type="hidden" id="jwtToken" value="@ViewBag.Token" />
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <script src="~/js/admin/common.js" asp-append-version="true"></script>
+    <script src="~/js/admin/orders.js" asp-append-version="true"></script>
     <script>
-        const apiUrl = $('#apiBaseUrl').val();
-        const token = $('#jwtToken').val();
-        let currentPage = 1;
-        let pageSize = 10;
-        let currentEditingOrderId = 0;
-
-        // 🟢 MẶC ĐỊNH SẮP XẾP THEO NGÀY TẠO MỚI NHẤT
-        let sortColumn = 'CreatedAt';
-        let sortDirection = 'desc';
-
-        const orderOffcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasOrder'));
-
         $(document).ready(function () {
-            loadOrders();
-
-            $('#btnSearch').click(function() { resetPageAndLoad(); });
-            $('#searchInput').keypress(function(e) { if (e.which == 13) resetPageAndLoad(); });
-
-            $('#OrderStatusSelect').change(function() {
-                if ($(this).val() === 'Canceled') {
-                    $('#cancelReasonDiv').removeClass('d-none');
-                } else {
-                    $('#cancelReasonDiv').addClass('d-none');
-                    $('#CancelReasonInput').val('');
-                }
-            });
+            const apiUrl = $('#apiBaseUrl').val();
+            const token = $('#jwtToken').val();
+            OrderManager.init(apiUrl, token);
         });
-
-        function resetPageAndLoad() {
-            currentPage = 1;
-            loadOrders();
-        }
-
-        // 🟢 HÀM ĐỔI CỘT SẮP XẾP ĐƠN HÀNG
-        function changeSort(column) {
-            if (sortColumn === column) {
-                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
-            } else {
-                sortColumn = column;
-                sortDirection = 'desc'; // Đơn hàng mặc định nên sort giảm dần
-            }
-
-            $('.sort-icon').removeClass('fa-sort-up fa-sort-down text-primary').addClass('fa-sort text-muted');
-            $(`#sort-${column}`).removeClass('fa-sort text-muted')
-                                .addClass(sortDirection === 'asc' ? 'fa-sort-up text-primary' : 'fa-sort-down text-primary');
-
-            loadOrders();
-        }
-
-        // 🟢 CẬP NHẬT LẠI HÀM LOAD ĐỂ KÈM ĐIỀU KIỆN LỌC ĐƠN ĐÃ ĐÓNG
-        function loadOrders() {
-            let skip = (currentPage - 1) * pageSize;
-
-            let odataQuery = `odata/AdminOrdersOData?$count=true&$top=${pageSize}&$skip=${skip}&$orderby=${sortColumn} ${sortDirection}`;
-
-            let filters = [];
-
-            // Lọc từ khóa
-            let keyword = $('#searchInput').val().trim();
-            if (keyword) {
-                filters.push(`(contains(tolower(OrderCode), '${keyword.toLowerCase()}') or contains(tolower(ReceiverName), '${keyword.toLowerCase()}'))`);
-            }
-
-            // Lọc trạng thái (Chỉ hiện đơn chưa đóng mặc định)
-            let status = $('#filterStatus').val();
-            if (status === 'processing') {
-                filters.push(`OrderStatus ne 'Completed' and OrderStatus ne 'Canceled'`);
-            } else if (status === 'closed') {
-                filters.push(`(OrderStatus eq 'Completed' or OrderStatus eq 'Canceled')`);
-            }
-
-            if (filters.length > 0) {
-                odataQuery += `&$filter=${filters.join(' and ')}`;
-            }
-
-            $.ajax({
-                url: apiUrl + odataQuery,
-                type: 'GET',
-                cache: false,
-                headers: { 'Authorization': 'Bearer ' + token },
-                beforeSend: function () {
-                    $('#orderTableBody').html(`<tr><td colspan="7" class="text-center py-4 text-muted"><i class="fas fa-spinner fa-spin me-2"></i> Đang tải dữ liệu...</td></tr>`);
-                },
-                success: function (res) {
-                    if (res && res.value) {
-                        renderTable(res.value);
-                        renderPagination(res['@@odata.count']);
-                    }
-                },
-                error: function () {
-                    $('#orderTableBody').html(`<tr><td colspan="7" class="text-center text-danger py-4">Lỗi tải dữ liệu.</td></tr>`);
-                }
-            });
-        }
-
-        function renderTable(orders) {
-            let html = '';
-            if (orders.length === 0) {
-                html = `<tr><td colspan="7" class="text-center py-4 text-muted">Không tìm thấy đơn hàng nào!</td></tr>`;
-            } else {
-                orders.forEach(o => {
-                    let totalStr = o.TotalAmount.toLocaleString('vi-VN') + ' đ';
-                    let dateStr = new Date(o.CreatedAt).toLocaleString('vi-VN');
-
-                    let paymentBadge = o.PaymentStatus === 'Paid' ? `<span class="badge bg-success">Đã Thanh Toán</span>` : `<span class="badge bg-secondary">Chưa Thanh Toán</span>`;
-                    let orderBadge = getOrderStatusBadge(o.OrderStatus);
-
-                    // 🟢 Nếu đơn đã đóng thì làm mờ chữ đi cho dễ phân biệt
-                    let opacityClass = (o.OrderStatus === 'Completed' || o.OrderStatus === 'Canceled') ? 'opacity-75' : '';
-
-                    html += `
-                        <tr class="${opacityClass}">
-                            <td>#${o.OrderId}</td>
-                            <td>
-                                <strong>${o.OrderCode}</strong><br>
-                                <small class="text-muted">${dateStr}</small>
-                            </td>
-                            <td>${o.ReceiverName}</td>
-                            <td class="text-end fw-bold text-danger">${totalStr}</td>
-                            <td class="text-center">${paymentBadge}</td>
-                            <td class="text-center">${orderBadge}</td>
-                            <td class="text-center">
-                                <button class="btn btn-sm btn-primary" onclick="openOrderDetails(${o.OrderId})">
-                                    <i class="fas fa-eye me-1"></i> Xem Xử Lý
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                });
-            }
-            $('#orderTableBody').html(html);
-        }
-
-        function openOrderDetails(orderId) {
-             currentEditingOrderId = orderId;
-
-             $.ajax({
-                 url: apiUrl + `api/admin/orders/${orderId}`,
-                 type: 'GET',
-                 cache: false,
-                 headers: { 'Authorization': 'Bearer ' + token },
-                 success: function (res) {
-                     if(res.isSuccess) {
-                         let o = res.data;
-
-                         // Đổ dữ liệu text
-                         $('#detailOrderId').text(o.orderId);
-                         $('#detailOrderCode').text(o.orderCode);
-                         $('#detailReceiverName').text(o.receiverName);
-                         $('#detailReceiverPhone').text(o.receiverPhone);
-                         $('#detailAddress').text(o.shippingAddressText);
-                         $('#detailCustomerNote').text(o.customerNote || "Không có");
-
-                         // Tiền bạc
-                         $('#detailSubtotal').text(o.subtotalAmount.toLocaleString('vi-VN'));
-                         $('#detailDiscount').text(o.discountAmount.toLocaleString('vi-VN'));
-                         $('#detailShippingFee').text(o.shippingFee.toLocaleString('vi-VN'));
-                         $('#detailTotal').text(o.totalAmount.toLocaleString('vi-VN'));
-
-                         // Dropdown trạng thái
-                         $('#OrderStatusSelect').val(o.orderStatus).change(); // Trigger để hiện/ẩn ô CancelReason
-
-                         // Trạng thái thanh toán (Hiện nút nếu chưa thanh toán)
-                         if (o.paymentStatus === 'Paid') {
-                             $('#detailPaymentBadge').html('<span class="badge bg-success">Đã Thanh Toán</span>');
-                             $('#btnMarkPaid').addClass('d-none');
-                         } else {
-                             $('#detailPaymentBadge').html('<span class="badge bg-secondary">Chưa Thanh Toán</span>');
-                             $('#btnMarkPaid').removeClass('d-none');
-                         }
-
-                         // Danh sách Item
-                         let itemsHtml = '';
-                         o.items.forEach(item => {
-                             let imgUrl = item.imageUrl ? apiUrl + item.imageUrl : '/images/no-image.png';
-                             let variantTxt = `${item.sku}`;
-                             if(item.size || item.color) variantTxt += ` (${item.color || ''} - ${item.size || ''})`;
-
-                             itemsHtml += `
-                                 <tr>
-                                     <td><img src="${imgUrl}" style="width: 40px; height: 40px; object-fit: cover;" class="rounded border"></td>
-                                     <td>
-                                         <div class="fw-bold">${item.productName}</div>
-                                         <div class="small text-muted">${variantTxt}</div>
-                                     </td>
-                                     <td class="text-center">x${item.quantity}</td>
-                                     <td class="text-end">${item.salePrice.toLocaleString('vi-VN')}</td>
-                                     <td class="text-end fw-bold pe-3">${item.lineTotal.toLocaleString('vi-VN')}</td>
-                                 </tr>
-                             `;
-                         });
-                         $('#detailItemsBody').html(itemsHtml);
-
-                         orderOffcanvas.show();
-                     } else {
-                         Swal.fire('Lỗi', res.message, 'error');
-                     }
-                 }
-             });
-         }
-
-         // ==========================================
-         // 3. CẬP NHẬT TRẠNG THÁI VÀ THANH TOÁN
-         // ==========================================
-         function updateOrderStatus() {
-             let newStatus = $('#OrderStatusSelect').val();
-             let cancelReason = $('#CancelReasonInput').val().trim();
-
-             if (newStatus === 'Canceled' && !cancelReason) {
-                 Swal.fire('Lỗi', 'Vui lòng nhập lý do hủy đơn hàng!', 'warning');
-                 return;
-             }
-
-             Swal.fire({
-                 title: 'Cập nhật trạng thái?',
-                 text: "Xác nhận cập nhật trạng thái đơn hàng?.",
-                 icon: 'question',
-                 showCancelButton: true,
-                 confirmButtonColor: '#0d6efd',
-                 cancelButtonColor: '#6c757d',
-                 confirmButtonText: 'Đồng ý',
-             }).then((result) => {
-                 if (result.isConfirmed) {
-                     $.ajax({
-                         url: apiUrl + `api/admin/orders/${currentEditingOrderId}/status`,
-                         type: 'PUT',
-                         contentType: 'application/json',
-                         data: JSON.stringify({ status: newStatus, cancelReason: cancelReason }),
-                         headers: { 'Authorization': 'Bearer ' + token },
-                         success: function (res) {
-                             if (res.isSuccess) {
-                                 Swal.fire({ title: 'Thành công!', text: res.message, icon: 'success', timer: 1500, showConfirmButton: false });
-                                 orderOffcanvas.hide();
-                                 loadOrders(); // Tải lại bảng
-                             } else {
-                                 Swal.fire('Lỗi', res.message, 'error');
-                             }
-                         },
-                         error: function (xhr) {
-                             Swal.fire('Lỗi', xhr.responseJSON?.message || 'Có lỗi xảy ra', 'error');
-                         }
-                     });
-                 }
-             });
-         }
-
-         function markAsPaid() {
-             Swal.fire({
-                 title: 'Xác nhận Đã Thu Tiền?',
-                 text: "Bạn xác nhận đã nhận được tiền từ đơn hàng này?",
-                 icon: 'warning',
-                 showCancelButton: true,
-                 confirmButtonColor: '#198754',
-                 cancelButtonColor: '#6c757d',
-                 confirmButtonText: 'Xác nhận',
-             }).then((result) => {
-                 if (result.isConfirmed) {
-                     $.ajax({
-                         url: apiUrl + `api/admin/orders/${currentEditingOrderId}/pay`,
-                         type: 'PUT',
-                         headers: { 'Authorization': 'Bearer ' + token },
-                         success: function (res) {
-                             if (res.isSuccess) {
-                                 $('#detailPaymentBadge').html('<span class="badge bg-success">Đã Thanh Toán</span>');
-                                 $('#btnMarkPaid').addClass('d-none');
-                                 loadOrders(); // Update bảng bên ngoài
-                                 Swal.fire({ title: 'Thành công!', text: 'Cập nhật thanh toán thành công', icon: 'success', timer: 1500, showConfirmButton: false });
-                             }
-                         }
-                     });
-                 }
-             });
-         }
-
-         // ==========================================
-         // UTILS
-         // ==========================================
-         function getOrderStatusBadge(status) {
-             switch (status) {
-                 case 'Pending': return '<span class="badge bg-warning text-dark">Chờ Xác Nhận</span>';
-                 case 'Confirmed': return '<span class="badge bg-info text-dark">Đã Xác Nhận</span>';
-                 case 'Shipping': return '<span class="badge bg-primary">Đang Giao Hàng</span>';
-                 case 'Completed': return '<span class="badge bg-success">Hoàn Thành</span>';
-                 case 'Canceled': return '<span class="badge bg-danger">Đã Hủy</span>';
-                 default: return `<span class="badge bg-secondary">${status}</span>`;
-             }
-         }
-
-         function renderPagination(totalRecords) {
-             let totalPages = Math.ceil(totalRecords / pageSize);
-             let paginationHtml = '';
-             let startRecord = totalRecords === 0 ? 0 : ((currentPage - 1) * pageSize) + 1;
-             let endRecord = (currentPage * pageSize) > totalRecords ? totalRecords : (currentPage * pageSize);
-             $('#paginationInfo').text(`Hiển thị ${startRecord} - ${endRecord} trên tổng ${totalRecords} đơn hàng`);
-
-             for (let i = 1; i <= totalPages; i++) {
-                 paginationHtml += `
-                     <li class="page-item ${currentPage === i ? 'active' : ''}">
-                         <a class="page-link" href="#" data-page="${i}">${i}</a>
-                     </li>
-                 `;
-             }
-             $('#paginationUl').html(paginationHtml);
-         }
-
-         $(document).on('click', '.page-link', function (e) {
-             e.preventDefault();
-             currentPage = parseInt($(this).data('page'));
-             loadOrders();
-         });
     </script>
 }

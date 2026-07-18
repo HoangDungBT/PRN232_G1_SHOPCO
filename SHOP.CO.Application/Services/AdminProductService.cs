@@ -1,4 +1,4 @@
-﻿
+
 namespace SHOP.CO.Application.Services
 {
     public interface IAdminProductService
@@ -10,6 +10,8 @@ namespace SHOP.CO.Application.Services
         Task<ResultModel<bool>> DeleteProductAsync(int id);
         Task<ResultModel<bool>> DeleteProductImageAsync(int imageId);
         Task<ResultModel<ProductFormAttributesDto>> GetFormAttributesAsync();
+        Task<ResultModel<string>> BulkUpdateStatusAsync(BulkUpdateStatusDto dto);
+        Task<ResultModel<string>> BulkUpdateFeaturedAsync(BulkUpdateFeaturedDto dto);
     }
 
     public class AdminProductService : IAdminProductService
@@ -127,6 +129,8 @@ namespace SHOP.CO.Application.Services
 
                 foreach (var vDto in dto.Variants)
                 {
+                    if (vDto.StockQuantity < 0) return ResultModel<int>.Error("Số lượng tồn kho không thể nhỏ hơn 0!", 400);
+
                     newProduct.ProductVariants.Add(new ProductVariant
                     {
                         Sku = vDto.Sku,
@@ -198,6 +202,8 @@ namespace SHOP.CO.Application.Services
                         var existingVariant = product.ProductVariants.FirstOrDefault(v => v.Sku == vDto.Sku);
                         if (existingVariant != null)
                         {
+                            if (vDto.StockQuantity < 0) return ResultModel<bool>.Error("Số lượng tồn kho không thể nhỏ hơn 0!", 400);
+
                             existingVariant.Size = vDto.Size;
                             existingVariant.Color = vDto.Color;
                             existingVariant.ExtraPrice = vDto.ExtraPrice;
@@ -209,6 +215,8 @@ namespace SHOP.CO.Application.Services
                         {
                             if (await _repo.IsSkuExistsAsync(vDto.Sku))
                                 return ResultModel<bool>.Error($"Mã SKU '{vDto.Sku}' đã tồn tại!", 400);
+
+                            if (vDto.StockQuantity < 0) return ResultModel<bool>.Error("Số lượng tồn kho không thể nhỏ hơn 0!", 400);
 
                             product.ProductVariants.Add(new ProductVariant
                             {
@@ -274,6 +282,43 @@ namespace SHOP.CO.Application.Services
                 return ResultModel<bool>.Success(true, "Xóa ảnh thành công!");
             }
             catch (Exception ex) { return ResultModel<bool>.Exception(ex); }
+        }
+        public async Task<ResultModel<string>> BulkUpdateStatusAsync(BulkUpdateStatusDto dto)
+        {
+            try
+            {
+                if (dto.ProductIds == null || !dto.ProductIds.Any()) 
+                    return ResultModel<string>.Error("Không có sản phẩm nào được chọn.");
+
+                var products = await _context.Products.Where(p => dto.ProductIds.Contains(p.ProductId)).ToListAsync();
+                foreach (var p in products)
+                {
+                    p.IsActive = dto.IsActive;
+                    p.UpdatedAt = DateTime.UtcNow;
+                }
+                await _context.SaveChangesAsync();
+                return ResultModel<string>.Success($"Đã cập nhật trạng thái {products.Count} sản phẩm!");
+            }
+            catch (Exception ex) { return ResultModel<string>.Exception(ex); }
+        }
+
+        public async Task<ResultModel<string>> BulkUpdateFeaturedAsync(BulkUpdateFeaturedDto dto)
+        {
+            try
+            {
+                if (dto.ProductIds == null || !dto.ProductIds.Any()) 
+                    return ResultModel<string>.Error("Không có sản phẩm nào được chọn.");
+
+                var products = await _context.Products.Where(p => dto.ProductIds.Contains(p.ProductId)).ToListAsync();
+                foreach (var p in products)
+                {
+                    p.IsFeatured = dto.IsFeatured;
+                    p.UpdatedAt = DateTime.UtcNow;
+                }
+                await _context.SaveChangesAsync();
+                return ResultModel<string>.Success($"Đã cập nhật nổi bật {products.Count} sản phẩm!");
+            }
+            catch (Exception ex) { return ResultModel<string>.Exception(ex); }
         }
     }
 }

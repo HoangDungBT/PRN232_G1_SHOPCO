@@ -9,6 +9,7 @@ using SHOP.CO.Infrastructure.Data;
 
 namespace SHOP.CO.Infrastructure.Repositories
 {
+  
     public class ProductRepository : BaseRepository<Product>, IProductRepository
     {
         public ProductRepository(ShopCoDbContext context) : base(context) { }

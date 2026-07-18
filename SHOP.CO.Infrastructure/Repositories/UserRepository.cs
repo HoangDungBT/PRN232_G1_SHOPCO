@@ -8,6 +8,7 @@ using SHOP.CO.Infrastructure.Data;
 
 namespace SHOP.CO.Infrastructure.Repositories
 {
+  
     public class UserRepository : BaseRepository<User>, IUserRepository
     {
         public UserRepository(ShopCoDbContext context) : base(context) { }
