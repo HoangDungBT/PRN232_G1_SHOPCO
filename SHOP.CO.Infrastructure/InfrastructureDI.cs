@@ -18,7 +18,6 @@ namespace SHOP.CO.Infrastructure
             {
                 options.UseSqlServer(connectionString, sqlOptions =>
                 {
-                    // Đặt tên Migration Assembly chỉ định về tầng Infrastructure
                     sqlOptions.MigrationsAssembly("SHOP.CO.Infrastructure");
                     // Cấu hình chịu lỗi (Resiliency) nếu db mất kết nối tạm thời
                     sqlOptions.EnableRetryOnFailure(
