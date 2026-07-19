@@ -1,16 +1,76 @@
-﻿@{
+@{
     ViewData["Title"] = "Quản Lý Đơn Hàng";
 }
 
 <div class="card shadow-sm border-0 mt-3">
-    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+    <div class="card-header bg-white py-3">
         <h5 class="mb-0 fw-bold"><i class="fas fa-shopping-cart text-success me-2"></i> Danh Sách Đơn Hàng</h5>
-        <div>
-            <span class="badge bg-warning text-dark">5 Đơn chờ duyệt</span>
+    </div>
+    <div class="card-body">
+
+        <!-- 🟢 BỘ LỌC ĐƠN HÀNG & TÌM KIẾM -->
+        <div class="row mb-3 g-2">
+            <div class="col-md-4">
+                <input type="text" id="searchInput" class="form-control" placeholder="Mã Đơn hoặc Tên người nhận...">
+            </div>
+            <div class="col-md-3">
+                <select id="filterStatus" class="form-select" onchange="OrderManager.resetPageAndLoad()">
+                    <option value="processing" selected>Đang xử lý (Mặc định)</option>
+                    <option value="closed">Đã đóng (Hoàn thành / Hủy)</option>
+                    <option value="all">Tất cả đơn hàng</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button id="btnSearch" class="btn btn-outline-secondary w-100"><i class="fas fa-search"></i> Tìm</button>
+            </div>
+        </div>
+
+        <!-- BẢNG DỮ LIỆU ĐƠN HÀNG -->
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered align-middle">
+                <thead class="table-light">
+                    <!-- 🟢 THÊM CLICK SẮP XẾP VÀO HEADER -->
+                    <tr>
+                        <th style="cursor: pointer;" onclick="OrderManager.changeSort('OrderId')">ID <i class="fas fa-sort text-muted ms-1 sort-icon" id="sort-OrderId"></i></th>
+                        <th style="cursor: pointer;" onclick="OrderManager.changeSort('CreatedAt')">Ngày Tạo <i class="fas fa-sort-down text-primary ms-1 sort-icon" id="sort-CreatedAt"></i></th>
+                        <th>Người Nhận</th>
+                        <th class="text-end" style="cursor: pointer;" onclick="OrderManager.changeSort('TotalAmount')">Tổng Tiền <i class="fas fa-sort text-muted ms-1 sort-icon" id="sort-TotalAmount"></i></th>
+                        <th class="text-center" style="cursor: pointer;" onclick="OrderManager.changeSort('PaymentStatus')">Thanh Toán <i class="fas fa-sort text-muted ms-1 sort-icon" id="sort-PaymentStatus"></i></th>
+                        <th class="text-center" style="cursor: pointer;" onclick="OrderManager.changeSort('OrderStatus')">Trạng Thái Đơn <i class="fas fa-sort text-muted ms-1 sort-icon" id="sort-OrderStatus"></i></th>
+                        <th class="text-center">Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody id="orderTableBody">
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">
+                            <i class="fas fa-spinner fa-spin me-2"></i> Đang tải dữ liệu...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <div class="text-muted" id="paginationInfo"></div>
+            <nav><ul class="pagination mb-0" id="paginationUl"></ul></nav>
         </div>
     </div>
-    <div class="card-body text-center text-muted py-5">
-        <i class="fas fa-tools fa-3x mb-3 text-secondary"></i>
-        <p>Bảng danh sách đơn hàng sẽ được gọi từ API và hiển thị ở đây.</p>
-    </div>
 </div>
+
+<partial name="_OrderOffcanvas" />
+
+<input type="hidden" id="apiBaseUrl" value="@ViewBag.ApiBaseUrl" />
+<input type="hidden" id="jwtToken" value="@ViewBag.Token" />
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/admin/common.js" asp-append-version="true"></script>
+    <script src="~/js/admin/orders.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function () {
+            const apiUrl = $('#apiBaseUrl').val();
+            const token = $('#jwtToken').val();
+            OrderManager.init(apiUrl, token);
+        });
+    </script>
+}

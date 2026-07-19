@@ -1,0 +1,39 @@
+﻿@model SHOP.CO.MVC.Models.ProfileViewModel
+
+<div class="page-wrapper">
+    <h1 class="page-title">Hồ sơ cá nhân</h1>
+    <div class="custom-card" style="max-width: 700px; margin: 0 auto;">
+        <form asp-action="UpdateProfile" method="post">
+            <div class="form-group">
+                <label class="form-label">Họ và tên</label>
+                <input asp-for="FullName" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input asp-for="Email" class="form-control" disabled />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Số điện thoại</label>
+                <input asp-for="Phone" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Size yêu thích</label>
+                <input asp-for="PreferredSize" placeholder="Ví dụ: M, L, XL" class="form-control" />
+            </div>
+            <button type="submit" class="btn-primary" style="width: 100%;">Cập nhật hồ sơ</button>
+        </form>
+
+        <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;" />
+
+        <div style="display: flex; justify-content: space-between; gap: 15px; flex-wrap: wrap;">
+            <a asp-action="ChangePassword" class="btn-secondary">Đổi mật khẩu</a>
+            <a asp-action="AddressBook" class="btn-secondary">Quản lý địa chỉ</a>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <form asp-action="DeleteAccount" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa vĩnh viễn tài khoản không? Hành động này không thể hoàn tác!');">
+                <button type="submit" class="btn-danger">Xóa tài khoản</button>
+            </form>
+        </div>
+    </div>
+</div>

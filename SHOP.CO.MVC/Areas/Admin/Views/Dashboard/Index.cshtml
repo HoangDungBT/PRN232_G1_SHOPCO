@@ -1,4 +1,4 @@
-﻿@model SHOP.CO.MVC.Areas.Admin.Models.DashboardVM
+@model SHOP.CO.MVC.Areas.Admin.Models.DashboardVM
 @{
     ViewData["Title"] = "Thống Kê Tổng Quan";
 }
@@ -11,9 +11,9 @@
 <div class="row g-4">
     <!-- Card Tổng Doanh Thu -->
     <div class="col-md-3">
-        <div class="card shadow-sm border-0 border-start border-success border-4">
+        <div class="card shadow-sm border-0 border-start border-success border-4 h-100">
             <div class="card-body">
-                <div class="text-muted small fw-bold">TỔNG DOANH THU</div>
+                <div class="text-muted small fw-bold"><i class="fas fa-wallet me-1"></i> TỔNG DOANH THU</div>
                 <div class="fs-3 fw-bold text-success mt-2">
                     @Model.TotalRevenue.ToString("N0") VNĐ
                 </div>
@@ -23,11 +23,11 @@
 
     <!-- Card Đơn Hàng -->
     <div class="col-md-3">
-        <div class="card shadow-sm border-0 border-start border-primary border-4">
+        <div class="card shadow-sm border-0 border-start border-primary border-4 h-100">
             <div class="card-body">
-                <div class="text-muted small fw-bold">TỔNG ĐƠN HÀNG</div>
+                <div class="text-muted small fw-bold"><i class="fas fa-shopping-cart me-1"></i> TỔNG ĐƠN HÀNG</div>
                 <div class="fs-3 fw-bold text-primary mt-2">
-                    @Model.TotalOrders
+                    @Model.TotalOrders <span class="fs-6 text-muted fw-normal">Đơn</span>
                 </div>
             </div>
         </div>
@@ -35,11 +35,11 @@
 
     <!-- Card Người Dùng -->
     <div class="col-md-3">
-        <div class="card shadow-sm border-0 border-start border-info border-4">
+        <div class="card shadow-sm border-0 border-start border-info border-4 h-100">
             <div class="card-body">
-                <div class="text-muted small fw-bold">KHÁCH HÀNG</div>
+                <div class="text-muted small fw-bold"><i class="fas fa-users me-1"></i> KHÁCH HÀNG</div>
                 <div class="fs-3 fw-bold text-info mt-2">
-                    @Model.TotalUsers
+                    @Model.TotalUsers <span class="fs-6 text-muted fw-normal">User</span>
                 </div>
             </div>
         </div>
@@ -47,26 +47,52 @@
 
     <!-- Card Cảnh báo Tồn kho -->
     <div class="col-md-3">
-        <div class="card shadow-sm border-0 border-start border-danger border-4">
+        <div class="card shadow-sm border-0 border-start border-danger border-4 h-100">
             <div class="card-body">
-                <div class="text-muted small fw-bold">CẢNH BÁO SẮP HẾT HÀNG</div>
+                <div class="text-muted small fw-bold"><i class="fas fa-exclamation-triangle me-1"></i> SẮP HẾT HÀNG</div>
                 <div class="fs-3 fw-bold text-danger mt-2">
-                    @Model.LowStockProducts Sản phẩm
+                    @Model.LowStockProducts <span class="fs-6 text-muted fw-normal">Sản phẩm</span>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row mt-5">
+<div class="row mt-4">
     <div class="col-12">
         <div class="card shadow-sm border-0">
-            <div class="card-header bg-white fw-bold">
-                Hoạt Động Gần Đây (Mở rộng sau)
+            <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                <h6 class="fw-bold m-0"><i class="fas fa-chart-line text-primary me-2"></i> Biểu Đồ Doanh Thu</h6>
+                <!-- Dropdown lọc theo ngày -->
+                <select id="chartFilter" class="form-select form-select-sm w-auto shadow-none" onchange="DashboardManager.loadChartData(this.value)">
+                    <option value="7" selected>7 Ngày Qua</option>
+                    <option value="30">30 Ngày Qua</option>
+                </select>
             </div>
-            <div class="card-body text-center text-muted py-5">
-                <p>Khu vực này dùng để gắn biểu đồ Chart.js thống kê doanh thu theo từng tháng.</p>
+            <div class="card-body p-4">
+                <div style="height: 350px; width: 100%;">
+                    <canvas id="revenueChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Input ẩn chứa cấu hình API -->
+<input type="hidden" id="apiBaseUrl" value="@ViewBag.ApiBaseUrl" />
+<input type="hidden" id="jwtToken" value="@ViewBag.Token" />
+
+@section Scripts {
+    <!-- Thư viện Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="~/js/admin/common.js" asp-append-version="true"></script>
+    <script src="~/js/admin/dashboard.js" asp-append-version="true"></script>
+
+    <script>
+        $(document).ready(function () {
+            const apiUrl = $('#apiBaseUrl').val();
+            const token = $('#jwtToken').val();
+            DashboardManager.init(apiUrl, token);
+        });
+    </script>
+}

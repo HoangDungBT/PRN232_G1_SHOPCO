@@ -1,0 +1,60 @@
+<!-- ========================================== -->
+<!-- OFFCANVAS FORM (THÊM / SỬA)             -->
+<!-- ========================================== -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCategory" aria-labelledby="offcanvasCategoryLabel" style="width: 500px;">
+    <div class="offcanvas-header bg-light border-bottom">
+        <h5 class="offcanvas-title fw-bold" id="offcanvasCategoryLabel">Thêm Danh Mục Mới</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+        <form id="categoryForm">
+            <input type="hidden" id="CategoryId" value="0" />
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Tên Danh Mục (*)</label>
+                <input type="text" id="CategoryName" class="form-control" placeholder="VD: Thời trang Nam" required
+                       oninvalid="this.setCustomValidity('Vui lòng nhập tên danh mục')"
+                       oninput="this.setCustomValidity('')" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Danh Mục Cha (Tùy chọn)</label>
+                <select id="ParentCategoryId" class="form-select">
+                    <option value="">-- Đây là danh mục gốc --</option>
+                </select>
+                <small class="text-muted">Để trống nếu đây là danh mục cấp 1.</small>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Đường dẫn ảnh (Tùy chọn)</label>
+                <input type="text" id="ImageUrl" class="form-control" placeholder="https://..." />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Mô tả</label>
+                <textarea id="Description" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Thứ tự hiển thị</label>
+                    <input type="number" id="SortOrder" class="form-control" value="0" min="0" required oninvalid="this.setCustomValidity('Thứ tự hiển thị không được là số âm')"
+                           oninput="this.setCustomValidity('')" />
+                </div>
+                <div class="col-md-6 mb-3 d-flex align-items-end pb-2">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="IsActive" checked>
+                        <label class="form-check-label fw-bold">Đang hoạt động</label>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+    <div class="offcanvas-footer border-top p-3 bg-white d-flex justify-content-end">
+        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="offcanvas">Hủy</button>
+        <button type="button" class="btn btn-primary px-4" id="btnSaveCategory" onclick="CategoryManager.saveCategory()">
+            <i class="fas fa-save me-1"></i> LƯU DỮ LIỆU
+        </button>
+    </div>
+</div>

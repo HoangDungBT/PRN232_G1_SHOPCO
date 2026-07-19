@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using SHOP.CO.MVC.Common;
 using SHOP.CO.MVC.Models;
 using System.IdentityModel.Tokens.Jwt;
@@ -8,8 +9,11 @@ namespace SHOP.CO.MVC.Controllers
 {
     public class AuthController : ABaseController
     {
-        public AuthController(IHttpClientFactory factory) : base(factory)
+        private readonly IConfiguration _configuration;
+
+        public AuthController(IHttpClientFactory factory, IConfiguration configuration) : base(factory)
         {
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -19,7 +23,7 @@ namespace SHOP.CO.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginVM model)
+        public async Task<IActionResult> Login([FromBody] LoginVM model)
         {
             var result = await PostApiAsync<TokenResponse>("api/auth/login", model);
 
@@ -38,39 +42,36 @@ namespace SHOP.CO.MVC.Controllers
 
                 
                 // Check Role
+                string redirectUrl = "/Home/Index";
                 if (role == "Admin" || role == "Staff")
                 {
-                    return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+                    redirectUrl = "/Admin/Dashboard/Index";
                 }
 
-                return RedirectToAction("Index", "Home");
+                return Json(new { isSuccess = true, redirectUrl = redirectUrl });
             }
-            ViewBag.ErrorMessage = result?.Message ?? "Đăng nhập thất bại.";
-            return View(model);
+            
+            return Json(new { isSuccess = false, message = result?.Message ?? "Đăng nhập thất bại." });
         }
 
         // --- ĐĂNG KÝ ---
         [HttpGet]
-        public IActionResult Register() => View(new RegisterVM());
-
-        [HttpPost]
-        public async Task<IActionResult> Register(RegisterVM model)
+        public IActionResult Register()
         {
-            if (!ModelState.IsValid) return View(model);
+            // 🟢 THÊM DÒNG NÀY ĐỂ TRUYỀN URL API XUỐNG VIEW
+            ViewBag.ApiBaseUrl = _configuration.GetSection("ApiSettings:BaseUrl").Value;
 
-            // POST đến API (Kiểu trả về là chuỗi string Message)
-            var result = await PostApiAsync<string>("api/auth/register", model);
-
-            if (result != null && result.IsSuccess)
-            {
-                TempData["SuccessMessage"] = "Đăng ký thành công! Vui lòng đăng nhập.";
-                return RedirectToAction("Login");
-            }
-
-            ViewBag.ErrorMessage = result?.Message ?? "Đăng ký thất bại.";
-            return View(model);
+            return View(new RegisterVM());
         }
 
+      
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            ViewBag.ApiBaseUrl = _configuration.GetSection("ApiSettings:BaseUrl").Value;
+            return View();
+        }
         // --- ĐĂNG XUẤT ---
         [HttpGet]
         public async Task<IActionResult> Logout()

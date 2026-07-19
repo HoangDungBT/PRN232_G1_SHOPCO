@@ -8,7 +8,7 @@ namespace SHOP.CO.Domain.Entities
         public int ProductId { get; set; }
         public int CategoryId { get; set; } 
         public string ProductName { get; set; } = null!; 
-        public string Slug { get; set; } = null!; 
+        public string Slug { get; set; } = null!;   
         public string? Brand { get; set; }
         public string? Description { get; set; }
         public string? Material { get; set; }

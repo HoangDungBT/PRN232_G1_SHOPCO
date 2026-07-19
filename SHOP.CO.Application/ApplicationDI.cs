@@ -1,10 +1,20 @@
-﻿global using SHOP.CO.Application.DTOs;
+global using AutoMapper;
+global using AutoMapper.QueryableExtensions;
+global using Microsoft.AspNetCore.Hosting;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using SHOP.CO.Application.Common;
+global using SHOP.CO.Application.DTOs;
+global using SHOP.CO.Application.Repositories;
 global using SHOP.CO.Application.Services;
-global using SHOP.CO.Infrastructure.Repositories;
-global using SHOP.CO.Domain.Entities;
 global using SHOP.CO.Application.Utilities;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+global using SHOP.CO.Domain.Entities;
+global using SHOP.CO.Infrastructure.Persistence;
+global using SHOP.CO.Infrastructure.Repositories;
+global using System.Reflection;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace SHOP.CO.Application
 {
@@ -12,38 +22,43 @@ namespace SHOP.CO.Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
         {
-            // Cấu hình Settings
+            // 🟢 1. ĐĂNG KÝ AUTOMAPPER (Tự động quét file MappingProfile)
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+            // 2. Cấu hình Settings
             services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
             services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
-            //khởi tạo IHttpContextAccessor
+
             services.AddHttpContextAccessor();
             // Đăng ký Services
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ICartService, CartService>();
+            services.AddScoped<IProductUiService, ProductUiService>();
 
-            services.AddScoped<IAuthService, AuthService>();
-
-
+            // 3. Đăng ký Utilities & Auth
             services.AddScoped<ITokenGenerator, TokenGenerator>();
             services.AddScoped<IEmailSender, EmailSender>();
             services.AddScoped<IPasswordHasher, PasswordHasher>();
+            services.AddScoped<IAuthService, AuthService>();
 
-            #region Admin
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IContactService, ContactService>();
+            services.AddScoped<IAdminVoucherService, AdminVoucherService>();
+            services.AddScoped<IPasswordHasher<SHOP.CO.Domain.Entities.User>, PasswordHasher<SHOP.CO.Domain.Entities.User>>();
 
-            services.AddScoped<IAdminService, AdminService>();
-            services.AddScoped<IProductAdminService, ProductAdminService>();
-            services.AddScoped<ICategoryAdminService, CategoryAdminService>();
-
-
+            // 5. Đăng ký Admin Services        
+            #region Admin Services
+            services.AddScoped<IAdminDashboardService, AdminDashboardService>();
+            services.AddScoped<IAdminProductService, AdminProductService>();
+            services.AddScoped<IAdminCategoryService, AdminCategoryService>();
+            services.AddScoped<IAdminUserService, AdminUserService>();
+            services.AddScoped<IAdminOrderService, AdminOrderService>();
+            services.AddScoped<IAdminLogService, AdminLogService>();
             #endregion
-            //services.AddValidatorsFromAssemblyContaining<CreateProductValidator>();
-
-
-            //đọc cấu hình Cloudinary từ appsettings.json
-            //services.Configure<CloudinarySettings>(options =>
-            //    {
-            //        configuration.GetSection("Cloudinary").Bind(options);
-            //    });
             return services;
         }
     }
 }
+
