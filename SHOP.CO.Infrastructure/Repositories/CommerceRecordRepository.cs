@@ -1,28 +1,31 @@
-using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-using SHOP.CO.Domain.Entities;
-using SHOP.CO.Infrastructure.Persistence;
 
 namespace SHOP.CO.Infrastructure.Repositories
 {
-    public class CommerceRecordRepository : ICommerceRecordRepository
+    public class CommerceRecordRepository : BaseRepository<CommerceRecord>, ICommerceRecordRepository
     {
-        private readonly ShopCoDbContext _context;
+        public CommerceRecordRepository(ShopCoDbContext context) : base(context) { }
 
-        public CommerceRecordRepository(ShopCoDbContext context)
+        public IQueryable<CommerceRecord> GetVouchersAsQueryable()
         {
-            _context = context;
+            // Chỉ lấy những dòng đóng vai trò là Voucher hệ thống
+            return _dbSet.Where(c => c.RecordType == "Voucher").AsQueryable();
         }
 
-        public async Task<CommerceRecord?> GetCouponByCodeAsync(string code)
+        public async Task<bool> IsVoucherCodeExistsAsync(string code, int? excludeId = null)
         {
-            return await _context.CommerceRecords
-                .FirstOrDefaultAsync(c => c.RecordType == "Voucher" && c.Code == code);
-        }
+            var query = _dbSet.Where(c => c.RecordType == "Voucher" && c.Code == code);
 
-        public async Task SaveChangesAsync()
-        {
-            await _context.SaveChangesAsync();
+            if (excludeId.HasValue)
+            {
+                query = query.Where(c => c.RecordId != excludeId.Value);
+            }
+
+            return await query.AnyAsync();
         }
     }
 }

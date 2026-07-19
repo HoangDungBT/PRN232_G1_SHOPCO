@@ -15,8 +15,9 @@ namespace SHOP.CO.MVC.Areas.Admin.Controllers
         }
 
         [HttpGet("/Admin")]
-        [HttpGet("")]      
-        [HttpGet("Index")] 
+        [HttpGet("/Admin/Home")]
+        [HttpGet("/Admin/Dashboard")]
+        [HttpGet("/Admin/Dashboard/Index")]
         public async Task<IActionResult> Index()
         {
             // Nếu lỗi (mất mạng, DB sập...), truyền model rỗng kèm thông báo lỗi

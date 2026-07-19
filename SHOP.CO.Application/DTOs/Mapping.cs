@@ -6,6 +6,9 @@ namespace SHOP.CO.Application.DTOs
     {
         public MappingProfile()
         {
+            // voucher mapping
+            CreateMap<CommerceRecord, VoucherDto>();
+
             // ==========================================
             // 1. CATEGORY MAPPINGS
             // ==========================================

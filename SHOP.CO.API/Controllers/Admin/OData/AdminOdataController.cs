@@ -97,4 +97,19 @@ namespace SHOP.CO.API.Controllers.OData
             return Ok(_service.GetLogsODataQuery());
         }
     }
+
+    [ApiExplorerSettings(IgnoreApi = true)]
+    [Authorize(Roles = "Admin,Staff")]
+    public class AdminVouchersODataController : ODataController
+    {
+        private readonly IAdminVoucherService _service;
+
+        public AdminVouchersODataController(IAdminVoucherService service)
+        {
+            _service = service;
+        }
+
+        [EnableQuery(PageSize = 100)]
+        public IActionResult Get() => Ok(_service.GetVouchersODataQuery());
+    }
 }

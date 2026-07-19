@@ -98,4 +98,10 @@ namespace SHOP.CO.Application.Repositories
         void DeleteUser(User user);
         Task SaveChangesAsync();
     }
+
+    public interface ICommerceRecordRepository : IBaseRepository<CommerceRecord>
+    {
+        IQueryable<CommerceRecord> GetVouchersAsQueryable();
+        Task<bool> IsVoucherCodeExistsAsync(string code, int? excludeId = null);
+    }
 }
