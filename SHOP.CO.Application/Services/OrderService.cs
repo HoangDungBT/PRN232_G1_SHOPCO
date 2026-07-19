@@ -142,8 +142,16 @@ namespace SHOP.CO.Application.Services
                 }
             }
 
-            // 7. Shipping fee calculation (Free on orders >= 500k)
-            decimal shippingFee = subtotal >= 500000m ? 0m : 30000m;
+            // 7. Shipping fee calculation
+            decimal shippingFee = 0m;
+            if (subtotal < 500000m)
+            {
+                if (selectedAddress.Province.Contains("Hồ Chí Minh") || selectedAddress.Province.Contains("Hà Nội"))
+                    shippingFee = 30000m;
+                else
+                    shippingFee = 50000m;
+            }
+
             if (shippingFee < 0m)
             {
                 throw new InvalidOperationException("Shipping fee cannot be negative.");
@@ -260,9 +268,9 @@ namespace SHOP.CO.Application.Services
             };
         }
 
-        public async Task<List<OrderDto>> GetOrdersByUserIdAsync(int userId)
+        public async Task<List<OrderDto>> GetOrdersByUserIdAsync(int userId, string? status = null, string? search = null)
         {
-            var orders = await _orderRepository.GetOrdersByUserIdAsync(userId);
+            var orders = await _orderRepository.GetOrdersByUserIdAsync(userId, status, search);
             var result = new List<OrderDto>();
             foreach (var o in orders)
             {

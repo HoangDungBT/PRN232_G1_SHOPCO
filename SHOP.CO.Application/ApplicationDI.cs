@@ -45,6 +45,9 @@ namespace SHOP.CO.Application
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IContactService, ContactService>();
             services.AddScoped<IPasswordHasher<SHOP.CO.Domain.Entities.User>, PasswordHasher<SHOP.CO.Domain.Entities.User>>();
+            services.AddScoped<ICouponService, CouponService>();
+            services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<IInvoiceService, InvoiceService>();
 
             // 5. Đăng ký Admin Services
             #region Admin Services

@@ -61,7 +61,7 @@ namespace SHOP.CO.Application.Repositories
     public interface IOrderRepository : IBaseRepository<Order>
     {
         Task<Order?> GetOrderWithDetailsAsync(int orderId);
-        Task<List<Order>> GetOrdersByUserIdAsync(int userId);
+        Task<List<Order>> GetOrdersByUserIdAsync(int userId, string? status = null, string? search = null);
         Task<Order> GetOrderByIdAsync(int orderId);
     }
 

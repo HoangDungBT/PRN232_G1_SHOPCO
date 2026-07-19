@@ -12,15 +12,15 @@ using SHOP.CO.Infrastructure.Persistence;
 namespace SHOP.CO.Infrastructure.Migrations
 {
     [DbContext(typeof(ShopCoDbContext))]
-    [Migration("20260606121207_Feature25_ShoppingCart")]
-    partial class Feature25_ShoppingCart
+    [Migration("20260718134622_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.27")
+                .HasAnnotation("ProductVersion", "8.0.29")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -1050,7 +1050,7 @@ namespace SHOP.CO.Infrastructure.Migrations
                             ColorSnapshot = "Trắng",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             DiscountAmount = 0m,
-                            ImageUrlSnapshot = "https://via.placeholder.com/600x800.png?text=Ao+Thun+Trang",
+                            ImageUrlSnapshot = "/images/dressstyleimg1.png",
                             LineTotal = 240000m,
                             OrderId = 1,
                             ProductId = 1,
@@ -1069,7 +1069,7 @@ namespace SHOP.CO.Infrastructure.Migrations
                             ColorSnapshot = "Xanh Denim",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             DiscountAmount = 0m,
-                            ImageUrlSnapshot = "https://via.placeholder.com/600x800.png?text=Jeans+Denim",
+                            ImageUrlSnapshot = "/images/newarrivalimg2.png",
                             LineTotal = 399000m,
                             OrderId = 2,
                             ProductId = 4,
@@ -1088,7 +1088,7 @@ namespace SHOP.CO.Infrastructure.Migrations
                             ColorSnapshot = "Đỏ",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             DiscountAmount = 0m,
-                            ImageUrlSnapshot = "https://via.placeholder.com/600x800.png?text=Vay+Hoa",
+                            ImageUrlSnapshot = "/images/dressstyleimg3.png",
                             LineTotal = 300000m,
                             OrderId = 3,
                             ProductId = 2,
@@ -1107,7 +1107,7 @@ namespace SHOP.CO.Infrastructure.Migrations
                             ColorSnapshot = "Xám",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             DiscountAmount = 0m,
-                            ImageUrlSnapshot = "https://via.placeholder.com/600x800.png?text=Hoodie+Xam",
+                            ImageUrlSnapshot = "/images/heroimg.png",
                             LineTotal = 400000m,
                             OrderId = 4,
                             ProductId = 3,
@@ -1401,7 +1401,7 @@ namespace SHOP.CO.Infrastructure.Migrations
                         {
                             ImageId = 1,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            ImageUrl = "https://via.placeholder.com/600x800.png?text=Ao+Thun+Trang",
+                            ImageUrl = "/images/dressstyleimg1.png",
                             IsThumbnail = true,
                             ProductId = 1,
                             SortOrder = 1,
@@ -1411,7 +1411,7 @@ namespace SHOP.CO.Infrastructure.Migrations
                         {
                             ImageId = 2,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            ImageUrl = "https://via.placeholder.com/600x800.png?text=Ao+Thun+Den",
+                            ImageUrl = "/images/newarrivalimg1.png",
                             IsThumbnail = false,
                             ProductId = 1,
                             SortOrder = 2,
@@ -1421,7 +1421,7 @@ namespace SHOP.CO.Infrastructure.Migrations
                         {
                             ImageId = 3,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            ImageUrl = "https://via.placeholder.com/600x800.png?text=Vay+Hoa",
+                            ImageUrl = "/images/dressstyleimg3.png",
                             IsThumbnail = true,
                             ProductId = 2,
                             SortOrder = 1
@@ -1430,7 +1430,7 @@ namespace SHOP.CO.Infrastructure.Migrations
                         {
                             ImageId = 4,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            ImageUrl = "https://via.placeholder.com/600x800.png?text=Hoodie+Xam",
+                            ImageUrl = "/images/heroimg.png",
                             IsThumbnail = true,
                             ProductId = 3,
                             SortOrder = 1
@@ -1439,7 +1439,7 @@ namespace SHOP.CO.Infrastructure.Migrations
                         {
                             ImageId = 5,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            ImageUrl = "https://via.placeholder.com/600x800.png?text=Jeans+Denim",
+                            ImageUrl = "/images/newarrivalimg2.png",
                             IsThumbnail = true,
                             ProductId = 4,
                             SortOrder = 1,
@@ -1449,7 +1449,7 @@ namespace SHOP.CO.Infrastructure.Migrations
                         {
                             ImageId = 6,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            ImageUrl = "https://via.placeholder.com/600x800.png?text=Jeans+Dam",
+                            ImageUrl = "/images/topsellingimg4.png",
                             IsThumbnail = false,
                             ProductId = 4,
                             SortOrder = 2,
@@ -1458,6 +1458,73 @@ namespace SHOP.CO.Infrastructure.Migrations
                         new
                         {
                             ImageId = 7,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ImageUrl = "/images/topsellingimg1.png",
+                            IsThumbnail = true,
+                            ProductId = 5,
+                            SortOrder = 1
+                        },
+                        new
+                        {
+                            ImageId = 8,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ImageUrl = "https://via.placeholder.com/600x800.png?text=Ao+Thun+Trang",
+                            IsThumbnail = true,
+                            ProductId = 1,
+                            SortOrder = 1,
+                            VariantId = 1
+                        },
+                        new
+                        {
+                            ImageId = 9,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ImageUrl = "https://via.placeholder.com/600x800.png?text=Ao+Thun+Den",
+                            IsThumbnail = false,
+                            ProductId = 1,
+                            SortOrder = 2,
+                            VariantId = 2
+                        },
+                        new
+                        {
+                            ImageId = 10,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ImageUrl = "https://via.placeholder.com/600x800.png?text=Vay+Hoa",
+                            IsThumbnail = true,
+                            ProductId = 2,
+                            SortOrder = 1
+                        },
+                        new
+                        {
+                            ImageId = 11,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ImageUrl = "https://via.placeholder.com/600x800.png?text=Hoodie+Xam",
+                            IsThumbnail = true,
+                            ProductId = 3,
+                            SortOrder = 1
+                        },
+                        new
+                        {
+                            ImageId = 12,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ImageUrl = "https://via.placeholder.com/600x800.png?text=Jeans+Denim",
+                            IsThumbnail = true,
+                            ProductId = 4,
+                            SortOrder = 1,
+                            VariantId = 5
+                        },
+                        new
+                        {
+                            ImageId = 13,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ImageUrl = "https://via.placeholder.com/600x800.png?text=Jeans+Dam",
+                            IsThumbnail = false,
+                            ProductId = 4,
+                            SortOrder = 2,
+                            VariantId = 6
+                        },
+                        new
+                        {
+                            ImageId = 14,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             ImageUrl = "https://via.placeholder.com/600x800.png?text=So+Mi+Trang",
                             IsThumbnail = true,
@@ -1683,6 +1750,9 @@ namespace SHOP.CO.Infrastructure.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<bool>("IsNewsletterSubscribed")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("LastLoginAt")
                         .HasColumnType("datetime2");
 
@@ -1733,6 +1803,13 @@ namespace SHOP.CO.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("VerificationExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("VerificationToken")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.HasKey("UserId");
 
                     b.HasIndex("Email")
@@ -1753,6 +1830,7 @@ namespace SHOP.CO.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Email = "admin@shop.co",
                             FullName = "Admin System",
+                            IsNewsletterSubscribed = false,
                             PasswordHash = "hashed123",
                             Role = "Admin",
                             Status = "Active"
@@ -1764,6 +1842,7 @@ namespace SHOP.CO.Infrastructure.Migrations
                             Email = "nguyenvana@gmail.com",
                             FullName = "Nguyễn Văn A",
                             Gender = "Nam",
+                            IsNewsletterSubscribed = false,
                             PasswordHash = "hashed123",
                             Role = "Customer",
                             Status = "Active"
@@ -1775,6 +1854,7 @@ namespace SHOP.CO.Infrastructure.Migrations
                             Email = "tranthib@gmail.com",
                             FullName = "Trần Thị B",
                             Gender = "Nữ",
+                            IsNewsletterSubscribed = false,
                             PasswordHash = "hashed123",
                             Role = "Customer",
                             Status = "Active"

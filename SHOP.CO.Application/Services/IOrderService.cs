@@ -12,7 +12,7 @@ namespace SHOP.CO.Application.Services
     public interface IOrderService
     {
         Task<CheckoutResponseDto> CheckoutAsync(CheckoutRequestDto requestDto);
-        Task<List<OrderDto>> GetOrdersByUserIdAsync(int userId);
+        Task<List<OrderDto>> GetOrdersByUserIdAsync(int userId, string? status = null, string? search = null);
         Task<OrderDto?> GetOrderByIdAsync(int orderId);
         Task<bool> CancelOrderAsync(int orderId, int userId, string cancelReason);
         Task<OrderTrackingDto?> GetOrderTrackingAsync(int orderId);

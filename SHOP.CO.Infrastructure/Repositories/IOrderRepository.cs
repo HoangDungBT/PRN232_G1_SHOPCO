@@ -12,7 +12,7 @@ namespace SHOP.CO.Infrastructure.Repositories
         Task<User?> GetUserByIdAsync(int userId);
         Task ExecuteInTransactionAsync(Func<Task> action);
         Task SaveChangesAsync();
-        Task<List<Order>> GetOrdersByUserIdAsync(int userId);
+        Task<List<Order>> GetOrdersByUserIdAsync(int userId, string? status = null, string? search = null);
         Task<Order?> GetOrderByIdAsync(int orderId);
         Task<Order?> GetOrderWithItemsAndVariantsByIdAsync(int orderId);
         Task<Order?> GetOrderByCodeAsync(string orderCode);

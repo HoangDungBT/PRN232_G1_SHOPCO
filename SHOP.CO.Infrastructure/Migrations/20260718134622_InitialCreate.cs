@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SHOP.CO.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -65,13 +65,14 @@ namespace SHOP.CO.Infrastructure.Migrations
                     RefreshTokenExpiresAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LastLoginAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "SYSDATETIME()"),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsNewsletterSubscribed = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.UserId);
                     table.CheckConstraint("CK_Users_Role", "[Role] IN (N'Customer', N'Staff', N'Admin')");
-                    table.CheckConstraint("CK_Users_Status", "[Status] IN (N'Unverified', N'Active', N'Locked', N'Deleted')");
+                    table.CheckConstraint("CK_Users_Status", "[Status] IN (N'Active', N'Locked', N'Deleted')");
                 });
 
             migrationBuilder.CreateTable(
@@ -551,12 +552,12 @@ namespace SHOP.CO.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "UserId", "AvatarUrl", "CreatedAt", "DateOfBirth", "Email", "FullName", "Gender", "LastLoginAt", "PasswordHash", "Phone", "PreferredSize", "PreferredStyle", "RefreshToken", "RefreshTokenExpiresAt", "ResetPasswordExpiresAt", "ResetPasswordToken", "Role", "Status", "UpdatedAt", "VerificationExpiresAt", "VerificationToken" },
+                columns: new[] { "UserId", "AvatarUrl", "CreatedAt", "DateOfBirth", "Email", "FullName", "Gender", "IsNewsletterSubscribed", "LastLoginAt", "PasswordHash", "Phone", "PreferredSize", "PreferredStyle", "RefreshToken", "RefreshTokenExpiresAt", "ResetPasswordExpiresAt", "ResetPasswordToken", "Role", "Status", "UpdatedAt", "VerificationExpiresAt", "VerificationToken" },
                 values: new object[,]
                 {
-                    { 1, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "admin@shop.co", "Admin System", null, null, "hashed123", null, null, null, null, null, null, null, "Admin", "Active", null, null, null },
-                    { 2, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "nguyenvana@gmail.com", "Nguyễn Văn A", "Nam", null, "hashed123", null, null, null, null, null, null, null, "Customer", "Active", null, null, null },
-                    { 3, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "tranthib@gmail.com", "Trần Thị B", "Nữ", null, "hashed123", null, null, null, null, null, null, null, "Customer", "Active", null, null, null }
+                    { 1, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "admin@shop.co", "Admin System", null, false, null, "hashed123", null, null, null, null, null, null, null, "Admin", "Active", null, null, null },
+                    { 2, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "nguyenvana@gmail.com", "Nguyễn Văn A", "Nam", false, null, "hashed123", null, null, null, null, null, null, null, "Customer", "Active", null, null, null },
+                    { 3, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "tranthib@gmail.com", "Trần Thị B", "Nữ", false, null, "hashed123", null, null, null, null, null, null, null, "Customer", "Active", null, null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -635,7 +636,11 @@ namespace SHOP.CO.Infrastructure.Migrations
             migrationBuilder.InsertData(
                 table: "ProductImages",
                 columns: new[] { "ImageId", "AltText", "ColorAnalysisJson", "ContentType", "CreatedAt", "DominantColorHex", "FileName", "FileSize", "ImageUrl", "IsThumbnail", "ProductId", "SortOrder", "VariantId" },
-                values: new object[] { 4, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "https://via.placeholder.com/600x800.png?text=Hoodie+Xam", true, 3, 1, null });
+                values: new object[,]
+                {
+                    { 4, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "/images/heroimg.png", true, 3, 1, null },
+                    { 11, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "https://via.placeholder.com/600x800.png?text=Hoodie+Xam", true, 3, 1, null }
+                });
 
             migrationBuilder.InsertData(
                 table: "ProductVariants",
@@ -689,15 +694,17 @@ namespace SHOP.CO.Infrastructure.Migrations
             migrationBuilder.InsertData(
                 table: "OrderItems",
                 columns: new[] { "OrderItemId", "ColorSnapshot", "CreatedAt", "ImageUrlSnapshot", "LineTotal", "OrderId", "ProductId", "ProductNameSnapshot", "Quantity", "ReviewStatus", "SalePrice", "SizeSnapshot", "SkuSnapshot", "UnitPrice", "UpdatedAt", "VariantId" },
-                values: new object[] { 4, "Xám", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "https://via.placeholder.com/600x800.png?text=Hoodie+Xam", 400000m, 4, 3, "Áo Khoác Hoodie Unisex", 1, "NotReviewed", 400000m, "XL", "AKH-XA-XL", 400000m, null, 4 });
+                values: new object[] { 4, "Xám", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "/images/heroimg.png", 400000m, 4, 3, "Áo Khoác Hoodie Unisex", 1, "NotReviewed", 400000m, "XL", "AKH-XA-XL", 400000m, null, 4 });
 
             migrationBuilder.InsertData(
                 table: "ProductImages",
                 columns: new[] { "ImageId", "AltText", "ColorAnalysisJson", "ContentType", "CreatedAt", "DominantColorHex", "FileName", "FileSize", "ImageUrl", "IsThumbnail", "ProductId", "SortOrder", "VariantId" },
                 values: new object[,]
                 {
-                    { 3, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "https://via.placeholder.com/600x800.png?text=Vay+Hoa", true, 2, 1, null },
-                    { 7, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "https://via.placeholder.com/600x800.png?text=So+Mi+Trang", true, 5, 1, null }
+                    { 3, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "/images/dressstyleimg3.png", true, 2, 1, null },
+                    { 7, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "/images/topsellingimg1.png", true, 5, 1, null },
+                    { 10, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "https://via.placeholder.com/600x800.png?text=Vay+Hoa", true, 2, 1, null },
+                    { 14, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "https://via.placeholder.com/600x800.png?text=So+Mi+Trang", true, 5, 1, null }
                 });
 
             migrationBuilder.InsertData(
@@ -737,30 +744,50 @@ namespace SHOP.CO.Infrastructure.Migrations
                 columns: new[] { "OrderItemId", "ColorSnapshot", "CreatedAt", "ImageUrlSnapshot", "LineTotal", "OrderId", "ProductId", "ProductNameSnapshot", "Quantity", "ReviewStatus", "SalePrice", "SizeSnapshot", "SkuSnapshot", "UnitPrice", "UpdatedAt", "VariantId" },
                 values: new object[,]
                 {
-                    { 1, "Trắng", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "https://via.placeholder.com/600x800.png?text=Ao+Thun+Trang", 240000m, 1, 1, "Áo Thun Cổ Tròn Basic", 2, "Reviewed", 120000m, "M", "ATB-TR-M", 150000m, null, 1 },
-                    { 2, "Xanh Denim", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "https://via.placeholder.com/600x800.png?text=Jeans+Denim", 399000m, 2, 4, "Quần Jeans Nam Slimfit", 1, "NotReviewed", 399000m, "30", "QJN-XANH-30", 450000m, null, 5 },
-                    { 3, "Đỏ", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "https://via.placeholder.com/600x800.png?text=Vay+Hoa", 300000m, 3, 2, "Váy Hoa Mùa Hè", 1, "NotReviewed", 300000m, "S", "VHM-DO-S", 350000m, null, 3 }
+                    { 1, "Trắng", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "/images/dressstyleimg1.png", 240000m, 1, 1, "Áo Thun Cổ Tròn Basic", 2, "Reviewed", 120000m, "M", "ATB-TR-M", 150000m, null, 1 },
+                    { 2, "Xanh Denim", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "/images/newarrivalimg2.png", 399000m, 2, 4, "Quần Jeans Nam Slimfit", 1, "NotReviewed", 399000m, "30", "QJN-XANH-30", 450000m, null, 5 },
+                    { 3, "Đỏ", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "/images/dressstyleimg3.png", 300000m, 3, 2, "Váy Hoa Mùa Hè", 1, "NotReviewed", 300000m, "S", "VHM-DO-S", 350000m, null, 3 }
                 });
 
             migrationBuilder.InsertData(
                 table: "ProductImages",
                 columns: new[] { "ImageId", "AltText", "ColorAnalysisJson", "ContentType", "CreatedAt", "DominantColorHex", "FileName", "FileSize", "ImageUrl", "IsThumbnail", "ProductId", "SortOrder", "VariantId" },
-                values: new object[] { 1, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "https://via.placeholder.com/600x800.png?text=Ao+Thun+Trang", true, 1, 1, 1 });
+                values: new object[] { 1, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "/images/dressstyleimg1.png", true, 1, 1, 1 });
 
             migrationBuilder.InsertData(
                 table: "ProductImages",
                 columns: new[] { "ImageId", "AltText", "ColorAnalysisJson", "ContentType", "CreatedAt", "DominantColorHex", "FileName", "FileSize", "ImageUrl", "ProductId", "SortOrder", "VariantId" },
-                values: new object[] { 2, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "https://via.placeholder.com/600x800.png?text=Ao+Thun+Den", 1, 2, 2 });
+                values: new object[] { 2, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "/images/newarrivalimg1.png", 1, 2, 2 });
 
             migrationBuilder.InsertData(
                 table: "ProductImages",
                 columns: new[] { "ImageId", "AltText", "ColorAnalysisJson", "ContentType", "CreatedAt", "DominantColorHex", "FileName", "FileSize", "ImageUrl", "IsThumbnail", "ProductId", "SortOrder", "VariantId" },
-                values: new object[] { 5, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "https://via.placeholder.com/600x800.png?text=Jeans+Denim", true, 4, 1, 5 });
+                values: new object[] { 5, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "/images/newarrivalimg2.png", true, 4, 1, 5 });
 
             migrationBuilder.InsertData(
                 table: "ProductImages",
                 columns: new[] { "ImageId", "AltText", "ColorAnalysisJson", "ContentType", "CreatedAt", "DominantColorHex", "FileName", "FileSize", "ImageUrl", "ProductId", "SortOrder", "VariantId" },
-                values: new object[] { 6, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "https://via.placeholder.com/600x800.png?text=Jeans+Dam", 4, 2, 6 });
+                values: new object[] { 6, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "/images/topsellingimg4.png", 4, 2, 6 });
+
+            migrationBuilder.InsertData(
+                table: "ProductImages",
+                columns: new[] { "ImageId", "AltText", "ColorAnalysisJson", "ContentType", "CreatedAt", "DominantColorHex", "FileName", "FileSize", "ImageUrl", "IsThumbnail", "ProductId", "SortOrder", "VariantId" },
+                values: new object[] { 8, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "https://via.placeholder.com/600x800.png?text=Ao+Thun+Trang", true, 1, 1, 1 });
+
+            migrationBuilder.InsertData(
+                table: "ProductImages",
+                columns: new[] { "ImageId", "AltText", "ColorAnalysisJson", "ContentType", "CreatedAt", "DominantColorHex", "FileName", "FileSize", "ImageUrl", "ProductId", "SortOrder", "VariantId" },
+                values: new object[] { 9, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "https://via.placeholder.com/600x800.png?text=Ao+Thun+Den", 1, 2, 2 });
+
+            migrationBuilder.InsertData(
+                table: "ProductImages",
+                columns: new[] { "ImageId", "AltText", "ColorAnalysisJson", "ContentType", "CreatedAt", "DominantColorHex", "FileName", "FileSize", "ImageUrl", "IsThumbnail", "ProductId", "SortOrder", "VariantId" },
+                values: new object[] { 12, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "https://via.placeholder.com/600x800.png?text=Jeans+Denim", true, 4, 1, 5 });
+
+            migrationBuilder.InsertData(
+                table: "ProductImages",
+                columns: new[] { "ImageId", "AltText", "ColorAnalysisJson", "ContentType", "CreatedAt", "DominantColorHex", "FileName", "FileSize", "ImageUrl", "ProductId", "SortOrder", "VariantId" },
+                values: new object[] { 13, null, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "https://via.placeholder.com/600x800.png?text=Jeans+Dam", 4, 2, 6 });
 
             migrationBuilder.InsertData(
                 table: "CustomerActivities",

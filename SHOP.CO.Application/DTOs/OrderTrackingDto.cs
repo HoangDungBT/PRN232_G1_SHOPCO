@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace SHOP.CO.Application.DTOs
 {
@@ -19,6 +20,7 @@ namespace SHOP.CO.Application.DTOs
 
         public DateTime? CompletedAt { get; set; }
 
+        [JsonPropertyName("statusHistory")]
         public List<OrderTrackingStepDto> Steps { get; set; } = new List<OrderTrackingStepDto>();
     }
 }

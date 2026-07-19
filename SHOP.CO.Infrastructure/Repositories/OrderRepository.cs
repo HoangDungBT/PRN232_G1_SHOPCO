@@ -10,7 +10,7 @@ namespace SHOP.CO.Infrastructure.Repositories
 {
 
 
-    public class OrderRepository : BaseRepository<Order>, SHOP.CO.Application.Repositories.IOrderRepository
+    public class OrderRepository : BaseRepository<Order>, SHOP.CO.Application.Repositories.IOrderRepository, SHOP.CO.Infrastructure.Repositories.IOrderRepository
     {
         public OrderRepository(ShopCoDbContext context) : base(context) { }
 
@@ -26,11 +26,23 @@ namespace SHOP.CO.Infrastructure.Repositories
                 .FirstOrDefaultAsync(o => o.OrderId == orderId);
         }
 
-        public async Task<List<Order>> GetOrdersByUserIdAsync(int userId)
+        public async Task<List<Order>> GetOrdersByUserIdAsync(int userId, string? status = null, string? search = null)
         {
-            return await _context.Orders
+            var query = _context.Orders
                 .Where(o => o.UserId == userId)
                 .Include(o => o.OrderItems)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(status))
+                query = query.Where(o => o.OrderStatus == status);
+
+            if (!string.IsNullOrWhiteSpace(search))
+                query = query.Where(o =>
+                    o.OrderCode.Contains(search) ||
+                    o.OrderItems.Any(i => i.ProductNameSnapshot.Contains(search)) ||
+                    o.ReceiverName.Contains(search));
+
+            return await query
                 .OrderByDescending(o => o.CreatedAt)
                 .ToListAsync();
         }
@@ -43,11 +55,53 @@ namespace SHOP.CO.Infrastructure.Repositories
                 .FirstOrDefaultAsync(o => o.OrderId == orderId) ?? throw new Exception("Order not found");
         }
 
-    public Task AddOrderAsync(Order order) => throw new NotImplementedException();
-    public Task<User> GetUserByIdAsync(int id) => throw new NotImplementedException();
-    public Task ExecuteInTransactionAsync(Func<Task> action) => throw new NotImplementedException();
-    public Task SaveChangesAsync() => throw new NotImplementedException();
-    public Task<Order> GetOrderWithItemsAndVariantsByIdAsync(int id) => throw new NotImplementedException();
-    public Task<Order> GetOrderByCodeAsync(string code) => throw new NotImplementedException();
+        public async Task AddOrderAsync(Order order)
+        {
+            await _context.Orders.AddAsync(order);
+        }
+
+        public async Task<User?> GetUserByIdAsync(int id)
+        {
+            return await _context.Users
+                .Include(u => u.UserAddresses)
+                .FirstOrDefaultAsync(u => u.UserId == id);
+        }
+
+        public async Task ExecuteInTransactionAsync(Func<Task> action)
+        {
+            var executionStrategy = _context.Database.CreateExecutionStrategy();
+            await executionStrategy.ExecuteAsync(async () =>
+            {
+                using var transaction = await _context.Database.BeginTransactionAsync();
+                try
+                {
+                    await action();
+                    await transaction.CommitAsync();
+                }
+                catch
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
+            });
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<Order?> GetOrderWithItemsAndVariantsByIdAsync(int id)
+        {
+            return await _context.Orders
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.ProductVariant)
+                .FirstOrDefaultAsync(o => o.OrderId == id);
+        }
+
+        public async Task<Order?> GetOrderByCodeAsync(string code)
+        {
+            return await _context.Orders.FirstOrDefaultAsync(o => o.OrderCode == code);
+        }
     }
 }

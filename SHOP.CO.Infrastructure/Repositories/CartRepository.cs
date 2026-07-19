@@ -132,7 +132,11 @@ namespace SHOP.CO.Infrastructure.Repositories
         {
             await _context.SaveChangesAsync();
         }
-public Task UpdateCartItemAsync(CartItem item) => throw new NotImplementedException();
+        public async Task UpdateCartItemAsync(CartItem item)
+        {
+            _context.CartItems.Update(item);
+            await SaveChangesAsync();
+        }
     }
 }
 
