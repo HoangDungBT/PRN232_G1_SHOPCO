@@ -1,0 +1,161 @@
+@{
+    ViewData["Title"] = "Quản Lý Voucher";
+}
+
+<div class="card shadow-sm border-0 mt-3">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+        <h5 class="mb-0 fw-bold"><i class="fas fa-ticket-alt text-warning me-2"></i> Danh Sách Mã Giảm Giá</h5>
+        <button type="button" class="btn btn-primary btn-sm" onclick="VoucherManager.openOffcanvas('create')">
+            <i class="fas fa-plus me-1"></i> Tạo Voucher Mới
+        </button>
+    </div>
+    <div class="card-body">
+
+        <!-- Bộ Lọc -->
+        <div class="row mb-3 g-2">
+            <div class="col-md-4">
+                <input type="text" id="searchInput" class="form-control" placeholder="Tìm theo Mã hoặc Tên chương trình...">
+            </div>
+            <div class="col-md-3">
+                <select id="filterStatus" class="form-select" onchange="VoucherManager.resetPageAndLoad()">
+                    <option value="all">Tất cả Trạng thái</option>
+                    <option value="Active">Đang hoạt động</option>
+                    <option value="Disabled">Đang khóa</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="button" id="btnSearch" class="btn btn-outline-secondary w-100" onclick="VoucherManager.resetPageAndLoad()">
+                    <i class="fas fa-search"></i> Tìm
+                </button>
+            </div>
+        </div>
+
+        <!-- Bảng Dữ Liệu -->
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th width="150">Mã (Code)</th>
+                        <th>Chương Trình</th>
+                        <th class="text-center">Loại / Giá Trị</th>
+                        <th class="text-center">Lượt Dùng</th>
+                        <th class="text-center">Thời Gian</th>
+                        <th class="text-center">Trạng Thái</th>
+                        <th class="text-center" width="160">Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody id="voucherTableBody">
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">
+                            <i class="fas fa-spinner fa-spin me-2"></i> Đang tải dữ liệu...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Phân trang -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <div class="text-muted" id="paginationInfo"></div>
+            <nav><ul class="pagination mb-0" id="paginationUl"></ul></nav>
+        </div>
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasVoucher" aria-labelledby="offcanvasVoucherLabel" style="width: 600px;">
+    <div class="offcanvas-header bg-light border-bottom">
+        <h5 class="offcanvas-title fw-bold" id="offcanvasVoucherLabel">Tạo Voucher Mới</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+        <form id="voucherForm">
+            <input type="hidden" id="VoucherId" value="0" />
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold text-danger">Mã Voucher (*)</label>
+                    <input type="text" id="Code" class="form-control text-uppercase font-monospace" placeholder="VD: SUMMER50" required
+                           pattern="^[A-Z0-9_]+$" title="Chỉ chứa chữ in hoa, số và gạch dưới" oninput="this.value = this.value.toUpperCase()" />
+                    <small class="text-muted">Chỉ chứa chữ cái, số và dấu gạch dưới.</small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Loại Giảm Giá (*)</label>
+                    <select id="DiscountType" class="form-select border-primary" onchange="VoucherManager.toggleDiscountTypeUI()">
+                        <option value="Percent">Giảm theo Phần Trăm (%)</option>
+                        <option value="Fixed">Giảm Tiền Mặt (VNĐ)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Tên Chương Trình (*)</label>
+                <input type="text" id="Name" class="form-control" placeholder="VD: Khuyến mãi mùa hè 50%" required />
+            </div>
+
+            <div class="row bg-light border rounded p-3 mx-0 mb-3">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <label class="form-label fw-bold text-primary">Giá Trị Giảm (*)</label>
+                    <div class="input-group">
+                        <input type="number" id="DiscountValue" class="form-control" required min="1" step="1" />
+                        <span class="input-group-text fw-bold" id="DiscountValueAddon">%</span>
+                    </div>
+                </div>
+                <div class="col-md-6" id="MaxDiscountAmountWrapper">
+                    <label class="form-label text-secondary fw-bold">Giảm Tối Đa (VNĐ)</label>
+                    <input type="number" id="MaxDiscountAmount" class="form-control" min="0" step="1000" placeholder="0 = Không giới hạn" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Đơn Tối Thiểu (VNĐ)</label>
+                    <input type="number" id="MinOrderAmount" class="form-control" min="0" step="1000" value="0" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Giới Hạn Lượt Dùng (*)</label>
+                    <input type="number" id="UsageLimit" class="form-control border-warning" required min="1" value="100" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold text-success">Bắt Đầu Từ (*)</label>
+                    <input type="datetime-local" id="StartAt" class="form-control" required />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold text-danger">Kết Thúc Lúc (*)</label>
+                    <input type="datetime-local" id="EndAt" class="form-control" required />
+                </div>
+            </div>
+
+            <div class="form-check form-switch mt-4">
+                <input class="form-check-input" type="checkbox" id="IsActive" checked>
+                <label class="form-check-label fw-bold">Mở khóa Voucher ngay lập tức</label>
+            </div>
+        </form>
+    </div>
+    <div class="offcanvas-footer border-top p-3 bg-white d-flex justify-content-end">
+        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="offcanvas">Hủy</button>
+        <button type="button" class="btn btn-primary px-4" id="btnSaveVoucher" onclick="VoucherManager.saveVoucher()">
+            <i class="fas fa-save me-1"></i> LƯU VOUCHER
+        </button>
+    </div>
+</div>
+
+<input type="hidden" id="apiBaseUrl" value="@ViewBag.ApiBaseUrl" />
+<input type="hidden" id="jwtToken" value="@ViewBag.Token" />
+<input type="hidden" id="currentRole" value="@ViewBag.Role" />
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/admin/common.js" asp-append-version="true"></script>
+    <script src="~/js/admin/voucher.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function () {
+            const apiUrl = $('#apiBaseUrl').val();
+            const token = $('#jwtToken').val();
+            const currentRole = $('#currentRole').val();
+            VoucherManager.init(apiUrl, token, currentRole);
+        });
+    </script>
+}

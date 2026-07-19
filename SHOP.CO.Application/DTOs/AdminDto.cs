@@ -292,4 +292,63 @@ namespace SHOP.CO.Application.DTOs
     public string? PayloadJson { get; set; }
 }
     #endregion
+
+    #region Voucher
+        public class VoucherDto
+    {
+        public int RecordId { get; set; }
+        public string Code { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string DiscountType { get; set; } = string.Empty;
+        public decimal DiscountValue { get; set; }
+        public decimal? MaxDiscountAmount { get; set; }
+        public decimal? MinOrderAmount { get; set; }
+        public int UsageLimit { get; set; }
+        public int UsedCount { get; set; }
+        public DateTime? StartAt { get; set; }
+        public DateTime? EndAt { get; set; }
+        public string Status { get; set; } = string.Empty;
+    }
+
+    public class SaveVoucherDto : IValidatableObject
+    {
+        [Required(ErrorMessage = "Mã Voucher không được để trống")]
+        [RegularExpression(@"^[A-Z0-9_]+$", ErrorMessage = "Mã Voucher chỉ được chứa chữ in hoa, số và dấu gạch dưới")]
+        public string Code { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Tên chương trình không được để trống")]
+        public string Name { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Loại giảm giá là bắt buộc")]
+        [RegularExpression("^(Percent|Fixed)$", ErrorMessage = "Loại giảm giá phải là Percent hoặc Fixed")]
+        public string DiscountType { get; set; } = string.Empty;
+
+        [Range(1, double.MaxValue, ErrorMessage = "Giá trị giảm phải lớn hơn 0")]
+        public decimal DiscountValue { get; set; }
+
+        public decimal? MaxDiscountAmount { get; set; }
+        public decimal? MinOrderAmount { get; set; }
+
+        [Range(1, int.MaxValue, ErrorMessage = "Giới hạn sử dụng phải lớn hơn 0")]
+        public int UsageLimit { get; set; }
+
+        [Required(ErrorMessage = "Ngày bắt đầu là bắt buộc")]
+        public DateTime StartAt { get; set; }
+
+        [Required(ErrorMessage = "Ngày kết thúc là bắt buộc")]
+        public DateTime EndAt { get; set; }
+
+        public bool IsActive { get; set; } = true;
+
+        // 🟢 VALIDATE LOGIC NGHIỆP VỤ VOUCHER
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (StartAt >= EndAt)
+                yield return new ValidationResult("Ngày kết thúc phải lớn hơn ngày bắt đầu!", new[] { nameof(EndAt) });
+
+            if (DiscountType == "Percent" && DiscountValue > 100)
+                yield return new ValidationResult("Giảm theo phần trăm không được vượt quá 100%!", new[] { nameof(DiscountValue) });
+        }
+    }
+    #endregion
 }

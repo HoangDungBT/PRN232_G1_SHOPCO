@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using SHOP.CO.MVC.Common;
 
 namespace SHOP.CO.MVC.Areas.Admin.Controllers

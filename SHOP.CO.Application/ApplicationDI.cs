@@ -1,19 +1,20 @@
+global using AutoMapper;
+global using AutoMapper.QueryableExtensions;
+global using Microsoft.AspNetCore.Hosting;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using SHOP.CO.Application.Common;
 global using SHOP.CO.Application.DTOs;
+global using SHOP.CO.Application.Repositories;
 global using SHOP.CO.Application.Services;
 global using SHOP.CO.Application.Utilities;
 global using SHOP.CO.Domain.Entities;
-global using AutoMapper;
-global using AutoMapper.QueryableExtensions;
-global using SHOP.CO.Application.Common;
-global using SHOP.CO.Application.Repositories;
-global using Microsoft.Extensions.Configuration;
-global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.AspNetCore.Hosting;
-global using Microsoft.EntityFrameworkCore;
 global using SHOP.CO.Infrastructure.Persistence;
 global using SHOP.CO.Infrastructure.Repositories;
 global using System.Reflection;
 using Microsoft.AspNetCore.Identity;
+
 
 namespace SHOP.CO.Application
 {
@@ -44,9 +45,10 @@ namespace SHOP.CO.Application
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IContactService, ContactService>();
+            services.AddScoped<IAdminVoucherService, AdminVoucherService>();
             services.AddScoped<IPasswordHasher<SHOP.CO.Domain.Entities.User>, PasswordHasher<SHOP.CO.Domain.Entities.User>>();
 
-            // 5. Đăng ký Admin Services
+            // 5. Đăng ký Admin Services        
             #region Admin Services
             services.AddScoped<IAdminDashboardService, AdminDashboardService>();
             services.AddScoped<IAdminProductService, AdminProductService>();

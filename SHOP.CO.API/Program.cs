@@ -30,6 +30,8 @@ static IEdmModel GetEdmModel()
     odataBuilder.EntitySet<OrderDto>("AdminOrdersOData").EntityType.HasKey(u => u.OrderId);
     odataBuilder.EntitySet<ProductVariant>("AdminInventoryOData").EntityType.HasKey(v => v.VariantId);
     odataBuilder.EntitySet<InteractionLogDto>("AdminLogsOData").EntityType.HasKey(l => l.LogId);
+
+    odataBuilder.EntitySet<VoucherDto>("AdminVouchersOData").EntityType.HasKey(v => v.RecordId);
     return odataBuilder.GetEdmModel();
 }
 #endregion
