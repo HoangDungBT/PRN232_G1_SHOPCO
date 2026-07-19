@@ -73,41 +73,109 @@
 </section>
 
 <!-- PRODUCTS -->
+@{
+    var newArrivals = Model.Take(4).ToList();
+    var topSelling = Model.Skip(4).Take(4).ToList();
+}
 
 <section class="products-section">
-
     <h2>NEW ARRIVALS</h2>
-
     <div class="products">
-
-        @foreach (var item in Model)
+        @foreach (var item in newArrivals)
         {
+            var displayRating = 4.0 + (item.Id % 10) * 0.1;
+            if (displayRating > 5.0) displayRating = 5.0;
+            var hasDiscount = item.SalePrice.HasValue && item.SalePrice < item.BasePrice;
+            var discountPercent = hasDiscount ? (int)Math.Round((1 - (item.SalePrice!.Value / item.BasePrice)) * 100) : 0;
+
             <div class="card">
-
                 <a href="/Home/Detail/@item.Id">
-
                     <img src="@(string.IsNullOrEmpty(item.Image) ? "/images/heroimg.png" : item.Image)" onerror="this.onerror=null; this.src='/images/heroimg.png';" />
-
                 </a>
-
                 <h3>@item.Name</h3>
+                
+                <div class="rating-row" style="margin-top: 8px; display: flex; gap: 4px; align-items: center;">
+                    <div class="star-rating" style="color: #FFC72C; font-size: 16px;">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= Math.Round(displayRating))
+                            {
+                                <span>★</span>
+                            }
+                            else
+                            {
+                                <span style="color: #E0E0E0;">★</span>
+                            }
+                        }
+                    </div>
+                    <span style="font-size: 13px; color: rgba(0,0,0,0.6);">@displayRating.ToString("F1")/5</span>
+                </div>
 
-                <p class="price">
-                    $@item.Price
-                </p>
-
-                <a class="add-btn"
-                   href="/Cart/AddToCart?id=@item.Id&name=@item.Name&price=@item.Price&image=@item.Image">
-
-                    Add To Cart
-
-                </a>
-
+                <div class="price-row" style="margin-top: 10px; display: flex; align-items: center; gap: 10px;">
+                    <span class="price" style="font-size: 22px; font-weight: 700; color: #000000; margin: 0;">@item.Price.ToString("N0")đ</span>
+                    @if (hasDiscount)
+                    {
+                        <span class="original-price" style="font-size: 18px; font-weight: 700; color: rgba(0,0,0,0.3); text-decoration: line-through;">@item.BasePrice.ToString("N0")đ</span>
+                        <span class="discount-tag" style="font-size: 12px; font-weight: 600; color: #FF3333; background: rgba(255,51,51,0.1); padding: 4px 10px; border-radius: 20px;">-@discountPercent%</span>
+                    }
+                </div>
             </div>
         }
-
     </div>
+    <div style="text-align: center; margin-top: 40px;">
+        <a href="/Home/Category" style="display: inline-block; padding: 12px 50px; border: 1px solid rgba(0,0,0,0.1); border-radius: 40px; text-decoration: none; color: #000000; font-weight: 500; font-size: 15px; background: #FFFFFF; transition: all 0.2s;">View All</a>
+    </div>
+</section>
 
+<hr style="border: 0; border-top: 1px solid rgba(0,0,0,0.08); margin: 60px 80px 0 80px;" />
+
+<section class="products-section">
+    <h2>TOP SELLING</h2>
+    <div class="products">
+        @foreach (var item in topSelling)
+        {
+            var displayRating = 4.0 + (item.Id % 10) * 0.1;
+            if (displayRating > 5.0) displayRating = 5.0;
+            var hasDiscount = item.SalePrice.HasValue && item.SalePrice < item.BasePrice;
+            var discountPercent = hasDiscount ? (int)Math.Round((1 - (item.SalePrice!.Value / item.BasePrice)) * 100) : 0;
+
+            <div class="card">
+                <a href="/Home/Detail/@item.Id">
+                    <img src="@(string.IsNullOrEmpty(item.Image) ? "/images/heroimg.png" : item.Image)" onerror="this.onerror=null; this.src='/images/heroimg.png';" />
+                </a>
+                <h3>@item.Name</h3>
+                
+                <div class="rating-row" style="margin-top: 8px; display: flex; gap: 4px; align-items: center;">
+                    <div class="star-rating" style="color: #FFC72C; font-size: 16px;">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= Math.Round(displayRating))
+                            {
+                                <span>★</span>
+                            }
+                            else
+                            {
+                                <span style="color: #E0E0E0;">★</span>
+                            }
+                        }
+                    </div>
+                    <span style="font-size: 13px; color: rgba(0,0,0,0.6);">@displayRating.ToString("F1")/5</span>
+                </div>
+
+                <div class="price-row" style="margin-top: 10px; display: flex; align-items: center; gap: 10px;">
+                    <span class="price" style="font-size: 22px; font-weight: 700; color: #000000; margin: 0;">@item.Price.ToString("N0")đ</span>
+                    @if (hasDiscount)
+                    {
+                        <span class="original-price" style="font-size: 18px; font-weight: 700; color: rgba(0,0,0,0.3); text-decoration: line-through;">@item.BasePrice.ToString("N0")đ</span>
+                        <span class="discount-tag" style="font-size: 12px; font-weight: 600; color: #FF3333; background: rgba(255,51,51,0.1); padding: 4px 10px; border-radius: 20px;">-@discountPercent%</span>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+    <div style="text-align: center; margin-top: 40px;">
+        <a href="/Home/Category" style="display: inline-block; padding: 12px 50px; border: 1px solid rgba(0,0,0,0.1); border-radius: 40px; text-decoration: none; color: #000000; font-weight: 500; font-size: 15px; background: #FFFFFF; transition: all 0.2s;">View All</a>
+    </div>
 </section>
 
 <!-- DRESS STYLE -->

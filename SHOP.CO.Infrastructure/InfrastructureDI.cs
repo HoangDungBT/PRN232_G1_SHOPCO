@@ -37,6 +37,8 @@ namespace SHOP.CO.Infrastructure
             services.AddScoped<ICartRepository, CartRepository>();
             services.AddScoped<SHOP.CO.Domain.Repositories.IProductUiRepository, MockProductUiRepository>();
             services.AddScoped<SHOP.CO.Application.Repositories.IOrderRepository, OrderRepository>();
+            services.AddScoped<SHOP.CO.Infrastructure.Repositories.IOrderRepository, OrderRepository>();
+            services.AddScoped<ICommerceRecordRepository, CommerceRecordRepository>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
             services.AddScoped<IContactRepository, ContactRepository>();
 

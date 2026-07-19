@@ -8,5 +8,7 @@ namespace SHOP.CO.Application.DTOs
         public string Image { get; set; } = null!;
         public string Description { get; set; } = null!;
         public string Category { get; set; } = null!;
+        public decimal BasePrice { get; set; }
+        public decimal? SalePrice { get; set; }
     }
 }

@@ -1,4 +1,12 @@
 using SHOP.CO.MVC.Services;
+using System.Globalization;
+
+// ===== SET CULTURE: VND (vi-VN) toàn project =====
+// Đảm bảo .ToString("C") luôn ra định dạng: 120.000 ₫
+var viVN = new CultureInfo("vi-VN");
+CultureInfo.DefaultThreadCurrentCulture = viVN;
+CultureInfo.DefaultThreadCurrentUICulture = viVN;
+// ==================================================
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -10,7 +10,7 @@ namespace SHOP.CO.Infrastructure.Repositories
 {
 
 
-    public class OrderRepository : BaseRepository<Order>, SHOP.CO.Application.Repositories.IOrderRepository
+    public class OrderRepository : BaseRepository<Order>, SHOP.CO.Application.Repositories.IOrderRepository, SHOP.CO.Infrastructure.Repositories.IOrderRepository
     {
         public OrderRepository(ShopCoDbContext context) : base(context) { }
 
