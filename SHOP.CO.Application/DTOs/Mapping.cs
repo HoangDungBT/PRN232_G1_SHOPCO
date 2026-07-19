@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 
 namespace SHOP.CO.Application.DTOs
 {
@@ -15,14 +15,15 @@ namespace SHOP.CO.Application.DTOs
             // ==========================================
             // 2. PRODUCT MAPPINGS
             // ==========================================
-            // Map cho danh sách (OData & Client)
             CreateMap<Product, ProductDto>()
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category != null ? src.Category.CategoryName : "Không có"))
                 .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src =>
                     src.ProductImages.FirstOrDefault(i => i.IsThumbnail) != null
                     ? src.ProductImages.FirstOrDefault(i => i.IsThumbnail)!.ImageUrl
-                    : src.ProductImages.FirstOrDefault()!.ImageUrl))
-                .ForMember(dest => dest.HasLowStock, opt => opt.MapFrom(src => src.ProductVariants.Any(v => v.StockQuantity <= v.LowStockThreshold)));
+                    : src.ProductImages.FirstOrDefault() != null ? src.ProductImages.FirstOrDefault()!.ImageUrl : null))
+                .ForMember(dest => dest.HasLowStock, opt => opt.MapFrom(src => src.ProductVariants.Any(v => v.StockQuantity <= v.LowStockThreshold)))
+                .ForMember(dest => dest.Variants, opt => opt.MapFrom(src => src.ProductVariants))
+                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.ProductImages));
 
             // Map cho Chi tiết Admin (Kèm List con)
             CreateMap<Product, ProductDetailAdminDto>()
@@ -30,6 +31,7 @@ namespace SHOP.CO.Application.DTOs
                 .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.ProductImages));
 
             CreateMap<ProductVariant, CreateVariantDto>(); // Entity -> Dto
+            CreateMap<ProductVariant, ProductVariantDto>(); // Entity -> Dto
             CreateMap<ProductImage, ProductImageDto>();
 
             // ==========================================

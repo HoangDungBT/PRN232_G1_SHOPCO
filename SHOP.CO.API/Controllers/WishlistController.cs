@@ -1,5 +1,7 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SHOP.CO.Application.DTOs;
 using SHOP.CO.Application.Services;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -12,10 +14,12 @@ namespace SHOP.CO.API.Controllers
     public class WishlistController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly IMapper _mapper;
 
-        public WishlistController(IProductService productService)
+        public WishlistController(IProductService productService, IMapper mapper)
         {
             _productService = productService;
+            _mapper = mapper;
         }
 
         [HttpPost("{productId}")]
@@ -48,7 +52,8 @@ namespace SHOP.CO.API.Controllers
             }
 
             var wishlist = await _productService.GetWishlistAsync(userId);
-            return Ok(wishlist);
+            var dtos = _mapper.Map<IEnumerable<ProductDto>>(wishlist);
+            return Ok(dtos);
         }
     }
 }

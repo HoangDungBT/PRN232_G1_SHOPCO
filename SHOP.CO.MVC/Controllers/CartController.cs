@@ -103,11 +103,11 @@ namespace SHOP.CO.MVC.Controllers
         /// Add a product to the cart and redirect to cart index
         /// </summary>
         [HttpGet]
-        public async Task<IActionResult> AddToCart(int id, string name, decimal price, string image, int userId = 1)
+        public async Task<IActionResult> AddToCart(int id, string name, decimal price, string image, int quantity = 1, int userId = 1)
         {
             try
             {
-                var success = await _cartApiClient.AddToCartAsync(userId, id, 1);
+                var success = await _cartApiClient.AddToCartAsync(userId, id, quantity);
                 if (!success)
                 {
                     TempData["Error"] = "Failed to add item to cart.";

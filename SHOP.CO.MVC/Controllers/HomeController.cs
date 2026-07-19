@@ -95,7 +95,7 @@ namespace SHOP.CO.MVC.Controllers
             string rawJson = "";
             try
             {
-                using (HttpClient client = new HttpClient())
+                using (HttpClient client = _clientFactory.CreateClient("ShopCoApi"))
                 {
                     // Thiết lập Accept header chuẩn để yêu cầu JSON
                     client.DefaultRequestHeaders.Accept.Clear();

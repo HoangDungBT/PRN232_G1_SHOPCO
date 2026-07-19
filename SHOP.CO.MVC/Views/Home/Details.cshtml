@@ -12,6 +12,11 @@
     {
         galleryImages.Add(Model.ThumbnailUrl);
     }
+    // Duplicate first image if we have less than 3 images to fill Figma layout properly
+    while (galleryImages.Count > 0 && galleryImages.Count < 3)
+    {
+        galleryImages.Add(galleryImages[0]);
+    }
     var thumbnailImages = galleryImages.Take(3).ToList();
     var mainImage = galleryImages.FirstOrDefault() ?? "/images/heroimg.png";
 
@@ -91,10 +96,10 @@
 
         <!-- Prices -->
         <div class="product-price-container">
-            <span class="current-price">$@priceToShow</span>
+            <span class="current-price">@priceToShow.ToString("N0")đ</span>
             @if (hasDiscount)
             {
-                <span class="original-price">$@Model.BasePrice</span>
+                <span class="original-price">@Model.BasePrice.ToString("N0")đ</span>
                 <span class="discount-badge">-@discountPercent%</span>
             }
         </div>
@@ -113,7 +118,10 @@
                     @for (int i = 0; i < colorVariants.Count; i++)
                     {
                         var activeClass = i == 0 ? "active" : "";
-                        <div class="color-dot @activeClass" style="background-color: @colorVariants[i].ColorHex;" data-color="@colorVariants[i].Color" title="@colorVariants[i].Color"></div>
+                        var checkColor = colorVariants[i].ColorHex.ToLower() == "#ffffff" ? "#000" : "#fff";
+                        <div class="color-dot @activeClass" style="background-color: @colorVariants[i].ColorHex;" data-color="@colorVariants[i].Color" title="@colorVariants[i].Color">
+                            <span class="checkmark" style="display: @(i == 0 ? "block" : "none"); color: @checkColor; font-size: 14px; font-weight: bold; user-select: none;">✓</span>
+                        </div>
                     }
                 </div>
             </div>
@@ -288,7 +296,7 @@
 @if (relatedProducts.Any())
 {
     <section class="related-products-section">
-        <h2>You Might Also Like</h2>
+        <h2>YOU MIGHT ALSO LIKE</h2>
         <div class="products">
             @foreach (var item in relatedProducts)
             {
@@ -318,10 +326,10 @@
                             <span class="rating-value" style="font-size: 12px;">@item.AverageRating/5</span>
                         </div>
                         <div class="product-price-container" style="margin-top: 10px; gap: 8px;">
-                            <span class="current-price" style="font-size: 20px;">$@priceToShowItem</span>
+                            <span class="current-price" style="font-size: 20px;">@priceToShowItem.ToString("N0")đ</span>
                             @if (hasDiscountItem)
                             {
-                                <span class="original-price" style="font-size: 16px;">$@item.BasePrice</span>
+                                <span class="original-price" style="font-size: 16px;">@item.BasePrice.ToString("N0")đ</span>
                                 <span class="discount-badge" style="padding: 2px 8px; font-size: 11px;">-@discountPercentItem%</span>
                             }
                         </div>
@@ -334,17 +342,38 @@
 
 <!-- INTERACTION SCRIPT -->
 <script>
+    const productVariants = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Variants));
+
     function changeMainImage(el) {
         document.getElementById('mainImage').src = el.src;
         document.querySelectorAll('.gallery-thumbnails img').forEach(img => img.classList.remove('active'));
         el.classList.add('active');
     }
 
+    let selectedColor = "";
+    let selectedSize = "";
+
+    const initialColorEl = document.querySelector('.color-dot.active');
+    if (initialColorEl) {
+        selectedColor = initialColorEl.getAttribute('data-color');
+    }
+    const initialSizeEl = document.querySelector('.size-btn.active');
+    if (initialSizeEl) {
+        selectedSize = initialSizeEl.getAttribute('data-size');
+    }
+
     // Color Selector
     document.querySelectorAll('.color-dot').forEach(dot => {
         dot.addEventListener('click', function() {
-            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+            document.querySelectorAll('.color-dot').forEach(d => {
+                d.classList.remove('active');
+                const chk = d.querySelector('.checkmark');
+                if (chk) chk.style.display = 'none';
+            });
             this.classList.add('active');
+            selectedColor = this.getAttribute('data-color');
+            const myChk = this.querySelector('.checkmark');
+            if (myChk) myChk.style.display = 'block';
         });
     });
 
@@ -353,6 +382,7 @@
         btn.addEventListener('click', function() {
             document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
+            selectedSize = this.getAttribute('data-size');
         });
     });
 
@@ -371,8 +401,27 @@
 
     // Add To Cart button redirect
     document.querySelector('.btn-add-to-cart').addEventListener('click', function() {
-        var quantity = qtyValue.innerText;
-        window.location.href = `/Cart/AddToCart?id=@Model.ProductId&name=@Uri.EscapeDataString(Model.ProductName)&price=@priceToShow&image=@Uri.EscapeDataString(mainImage)`;
+        var quantity = parseInt(qtyValue.innerText);
+        
+        let matchingVariant = null;
+        if (productVariants && productVariants.length > 0) {
+            matchingVariant = productVariants.find(v => {
+                const colorMatch = !selectedColor || v.Color.toLowerCase() === selectedColor.toLowerCase();
+                const sizeMatch = !selectedSize || v.Size.toLowerCase() === selectedSize.toLowerCase();
+                return colorMatch && sizeMatch;
+            });
+        }
+
+        let variantId = @(Model.Variants?.FirstOrDefault()?.VariantId ?? Model.ProductId);
+        if (matchingVariant) {
+            variantId = matchingVariant.VariantId;
+        } else {
+            if (productVariants && productVariants.length > 0) {
+                variantId = productVariants[0].VariantId;
+            }
+        }
+
+        window.location.href = `/Cart/AddToCart?id=${variantId}&quantity=${quantity}&name=@Uri.EscapeDataString(Model.ProductName)&price=@priceToShow&image=@Uri.EscapeDataString(mainImage)`;
     });
 
     // Tab switcher

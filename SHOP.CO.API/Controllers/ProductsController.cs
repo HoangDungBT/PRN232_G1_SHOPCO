@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.Authorization;
 using SHOP.CO.Application.Services;
 using SHOP.CO.Application.DTOs;
+using AutoMapper;
 
 namespace SHOP.CO.API.Controllers
 {
@@ -12,11 +13,13 @@ namespace SHOP.CO.API.Controllers
     {
         private readonly IProductService _productService;
         private readonly IProductUiService _productUiService;
+        private readonly IMapper _mapper;
 
-        public ProductsController(IProductService productService, IProductUiService productUiService)
+        public ProductsController(IProductService productService, IProductUiService productUiService, IMapper mapper)
         {
             _productService = productService;
             _productUiService = productUiService;
+            _mapper = mapper;
         }
 
         // OData API hỗ trợ dynamic query (lọc, sắp xếp, tìm kiếm nâng cao)
@@ -25,7 +28,46 @@ namespace SHOP.CO.API.Controllers
         public IActionResult GetODataProducts()
         {
             var query = _productService.GetProductsQuery();
-            return Ok(query);
+            var projected = query.Select(p => new ProductDto
+            {
+                ProductId = p.ProductId,
+                CategoryId = p.CategoryId,
+                ProductName = p.ProductName,
+                Slug = p.Slug,
+                Brand = p.Brand,
+                Description = p.Description,
+                Material = p.Material,
+                GenderTarget = p.GenderTarget,
+                BasePrice = p.BasePrice,
+                SalePrice = p.SalePrice,
+                AverageRating = p.AverageRating,
+                ReviewCount = p.ReviewCount,
+                ViewCount = p.ViewCount,
+                IsFeatured = p.IsFeatured,
+                IsBestSeller = p.IsBestSeller,
+                IsNewArrival = p.IsNewArrival,
+                IsActive = p.IsActive,
+                CategoryName = p.Category != null ? p.Category.CategoryName : null,
+                ThumbnailUrl = p.ProductImages.FirstOrDefault(i => i.IsThumbnail) != null
+                    ? p.ProductImages.FirstOrDefault(i => i.IsThumbnail)!.ImageUrl
+                    : p.ProductImages.FirstOrDefault() != null ? p.ProductImages.FirstOrDefault()!.ImageUrl : null,
+                HasLowStock = p.ProductVariants.Any(v => v.StockQuantity <= v.LowStockThreshold),
+                // ✅ FIX: Map Variants để OData filter Variants/any(v: v/Color eq '...') hoạt động
+                Variants = p.ProductVariants.Select(v => new ProductVariantDto
+                {
+                    VariantId = v.VariantId,
+                    ProductId = v.ProductId,
+                    Sku = v.Sku ?? "",
+                    Size = v.Size,
+                    Color = v.Color,
+                    ColorHex = v.ColorHex,
+                    ExtraPrice = v.ExtraPrice,
+                    StockQuantity = v.StockQuantity,
+                    LowStockThreshold = v.LowStockThreshold
+                }).ToList()
+
+            });
+            return Ok(projected);
         }
 
         // API thật của bạn
@@ -44,7 +86,21 @@ namespace SHOP.CO.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetProductsUi()
         {
-            var products = await _productUiService.GetUiProductsAsync();
+            var query = _productService.GetProductsQuery();
+            var realProducts = query.Where(p => p.IsActive).OrderByDescending(p => p.ProductId).Take(8).ToList();
+            var products = realProducts.Select(p => new ProductUiDto
+            {
+                Id = p.ProductId,
+                Name = p.ProductName,
+                Price = p.SalePrice ?? p.BasePrice,
+                BasePrice = p.BasePrice,
+                SalePrice = p.SalePrice,
+                Image = p.ProductImages.FirstOrDefault(i => i.IsThumbnail) != null
+                    ? p.ProductImages.FirstOrDefault(i => i.IsThumbnail)!.ImageUrl
+                    : p.ProductImages.FirstOrDefault() != null ? p.ProductImages.FirstOrDefault()!.ImageUrl : "/images/heroimg.png",
+                Description = p.Description ?? "",
+                Category = p.Category != null ? p.Category.CategoryName : "Fashion"
+            }).ToList();
             return Ok(products);
         }
 
@@ -56,14 +112,16 @@ namespace SHOP.CO.API.Controllers
             {
                 return NotFound(new { message = $"Product with ID {id} not found." });
             }
-            return Ok(product);
+            var productDto = _mapper.Map<ProductDto>(product);
+            return Ok(productDto);
         }
 
         [HttpGet("{id}/related")]
         public async Task<IActionResult> GetRelatedProducts(int id, [FromQuery] int limit = 4)
         {
             var relatedProducts = await _productService.GetRelatedProductsAsync(id, 0, limit);
-            return Ok(relatedProducts);
+            var dtos = _mapper.Map<List<ProductDto>>(relatedProducts);
+            return Ok(dtos);
         }
 
         [HttpGet("{id}/reviews")]
@@ -89,7 +147,7 @@ namespace SHOP.CO.API.Controllers
                 {
                     return Unauthorized();
                 }
-                await _productService.AddReviewAsync(null);
+                await _productService.AddReviewAsync(userId, id, request.Rating, request.Comment);
                 return Ok(new { message = "Đánh giá thành công!" });
             }
             catch (KeyNotFoundException ex)

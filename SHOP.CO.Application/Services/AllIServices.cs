@@ -22,12 +22,12 @@ namespace SHOP.CO.Application.Services
 
         IQueryable<Product> GetProductsQuery();
         Task<IEnumerable<Category>> GetActiveCategoriesAsync();
-        Task<bool> ToggleWishlistAsync(int userId, int productId);
+        Task<bool> ToggleWishlistAsync(int productId, int userId);
         Task<IEnumerable<Product>> GetWishlistAsync(int userId);
         Task<Product> GetProductByIdAsync(int id);
         Task<IEnumerable<Product>> GetRelatedProductsAsync(int productId, int categoryId, int limit);
-        Task<IEnumerable<object>> GetReviewsByProductIdAsync(int productId);
-        Task AddReviewAsync(object review);
+        Task<IEnumerable<ReviewDto>> GetReviewsByProductIdAsync(int productId);
+        Task AddReviewAsync(int userId, int productId, int rating, string comment);
 
     }
 

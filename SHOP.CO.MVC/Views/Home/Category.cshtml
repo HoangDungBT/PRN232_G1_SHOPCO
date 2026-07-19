@@ -14,7 +14,7 @@
                 <span class="filter-toggle-icon">🎛️</span>
             </div>
 
-            <form id="filterForm" method="get" action="/Home/Category">
+            <form id="filterForm" method="get" action="/Home/Category" onsubmit="return validatePriceFilter()">
                 <!-- Hidden inputs for state management -->
                 <input type="hidden" name="categoryId" id="hiddenCategoryId" value="@ViewBag.CategoryId" />
                 <input type="hidden" name="color" id="hiddenColor" value="@ViewBag.Color" />
@@ -59,20 +59,26 @@
                 <!-- Price Filter -->
                 <div class="filter-section">
                     <div class="section-title">
-                        <h3>Price</h3>
+                        <h3>Giá (VNĐ)</h3>
                         <span class="toggle-arrow">▲</span>
                     </div>
                     <div class="price-slider-container">
                         <div class="price-inputs">
                             <div class="price-input-box">
-                                <span class="currency">$</span>
-                                <input type="number" id="minPriceInput" name="minPrice" value="@ViewBag.MinPrice" placeholder="Min" />
+                                <input type="number" id="minPriceInput" name="minPrice" min="0" max="1000000" step="10000" value="@ViewBag.MinPrice" placeholder="VD: 100000" style="width: 100%; padding-right: 4px;" oninput="clearPriceError()" />
+                                <span class="currency" style="position: static; font-size: 12px; color: #666;">đ</span>
                             </div>
                             <span class="price-separator">-</span>
                             <div class="price-input-box">
-                                <span class="currency">$</span>
-                                <input type="number" id="maxPriceInput" name="maxPrice" value="@ViewBag.MaxPrice" placeholder="Max" />
+                                <input type="number" id="maxPriceInput" name="maxPrice" min="0" max="1000000" step="10000" value="@ViewBag.MaxPrice" placeholder="VD: 500000" style="width: 100%; padding-right: 4px;" oninput="clearPriceError()" />
+                                <span class="currency" style="position: static; font-size: 12px; color: #666;">đ</span>
                             </div>
+                        </div>
+                        <!-- Validator message -->
+                        <div id="priceErrorMsg" style="display:none; color: #e53e3e; font-size: 12px; margin-top: 6px; font-weight: 500;">⚠️ Giá tối thiểu không được lớn hơn giá tối đa!</div>
+                        <div style="display: flex; justify-content: space-between; font-size: 11px; color: #999; margin-top: 6px;">
+                            <span>120.000đ</span>
+                            <span>850.000đ</span>
                         </div>
                     </div>
                 </div>
@@ -80,35 +86,40 @@
                 <!-- Colors Filter -->
                 <div class="filter-section">
                     <div class="section-title">
-                        <h3>Colors</h3>
+                        <h3>Màu sắc</h3>
                         <span class="toggle-arrow">▲</span>
                     </div>
                     <div class="color-grid">
-                        <!-- Color dots with matching HEX codes -->
-                        <div class="color-option @(ViewBag.Color == "Green" ? "selected" : "")" style="background-color: #00C12B;" data-color="Green" title="Green"></div>
-                        <div class="color-option @(ViewBag.Color == "Red" ? "selected" : "")" style="background-color: #F52525;" data-color="Red" title="Red"></div>
-                        <div class="color-option @(ViewBag.Color == "Yellow" ? "selected" : "")" style="background-color: #F5DD00;" data-color="Yellow" title="Yellow"></div>
-                        <div class="color-option @(ViewBag.Color == "Orange" ? "selected" : "")" style="background-color: #F57E00;" data-color="Orange" title="Orange"></div>
-                        <div class="color-option @(ViewBag.Color == "Blue" ? "selected" : "")" style="background-color: #06CAF5;" data-color="Blue" title="Blue"></div>
-                        <div class="color-option @(ViewBag.Color == "Purple" ? "selected" : "")" style="background-color: #7D06F5;" data-color="Purple" title="Purple"></div>
-                        <div class="color-option @(ViewBag.Color == "Pink" ? "selected" : "")" style="background-color: #F506A4;" data-color="Pink" title="Pink"></div>
-                        <div class="color-option @(ViewBag.Color == "White" ? "selected" : "")" style="background-color: #FFFFFF; border: 1px solid #E0E0E0;" data-color="White" title="White"></div>
-                        <div class="color-option @(ViewBag.Color == "Black" ? "selected" : "")" style="background-color: #000000;" data-color="Black" title="Black"></div>
+                        <!-- Màu sắc khớp với DB (tiếng Việt) -->
+                        <div class="color-option @(ViewBag.Color == "Đen" ? "selected" : "")" style="background-color: #000000;" data-color="Đen" title="Đen"></div>
+                        <div class="color-option @(ViewBag.Color == "Trắng" ? "selected" : "")" style="background-color: #FFFFFF; border: 1px solid #E0E0E0;" data-color="Trắng" title="Trắng"></div>
+                        <div class="color-option @(ViewBag.Color == "Đỏ" ? "selected" : "")" style="background-color: #FF0000;" data-color="Đỏ" title="Đỏ"></div>
+                        <div class="color-option @(ViewBag.Color == "Xám" ? "selected" : "")" style="background-color: #808080;" data-color="Xám" title="Xám"></div>
+                        <div class="color-option @(ViewBag.Color == "Hồng" ? "selected" : "")" style="background-color: #FFB6C1;" data-color="Hồng" title="Hồng"></div>
+                        <div class="color-option @(ViewBag.Color == "Xanh Nhạt" ? "selected" : "")" style="background-color: #ADD8E6;" data-color="Xanh Nhạt" title="Xanh Nhạt"></div>
+                        <div class="color-option @(ViewBag.Color == "Xanh Denim" ? "selected" : "")" style="background-color: #1560BD;" data-color="Xanh Denim" title="Xanh Denim"></div>
+                        <div class="color-option @(ViewBag.Color == "Xanh Đậm" ? "selected" : "")" style="background-color: #00008B;" data-color="Xanh Đậm" title="Xanh Đậm"></div>
+                        <div class="color-option @(ViewBag.Color == "Be" ? "selected" : "")" style="background-color: #F5F5DC; border: 1px solid #E0E0E0;" data-color="Be" title="Be"></div>
                     </div>
                 </div>
 
                 <!-- Sizes Filter -->
                 <div class="filter-section">
                     <div class="section-title">
-                        <h3>Size</h3>
+                        <h3>Kích cỡ</h3>
                         <span class="toggle-arrow">▲</span>
                     </div>
                     <div class="size-pill-grid">
-                        <div class="size-pill @(ViewBag.Size == "S" ? "selected" : "")" data-size="S">S (Small)</div>
-                        <div class="size-pill @(ViewBag.Size == "M" ? "selected" : "")" data-size="M">M (Medium)</div>
-                        <div class="size-pill @(ViewBag.Size == "L" ? "selected" : "")" data-size="L">L (Large)</div>
-                        <div class="size-pill @(ViewBag.Size == "XL" ? "selected" : "")" data-size="XL">XL (Extra Large)</div>
-                        <div class="size-pill @(ViewBag.Size == "XXL" ? "selected" : "")" data-size="XXL">XXL</div>
+                        <div class="size-pill @(ViewBag.Size == "S" ? "selected" : "")" data-size="S">S</div>
+                        <div class="size-pill @(ViewBag.Size == "M" ? "selected" : "")" data-size="M">M</div>
+                        <div class="size-pill @(ViewBag.Size == "L" ? "selected" : "")" data-size="L">L</div>
+                        <div class="size-pill @(ViewBag.Size == "XL" ? "selected" : "")" data-size="XL">XL</div>
+                        <div class="size-pill @(ViewBag.Size == "38" ? "selected" : "")" data-size="38">38</div>
+                        <div class="size-pill @(ViewBag.Size == "39" ? "selected" : "")" data-size="39">39</div>
+                        <div class="size-pill @(ViewBag.Size == "40" ? "selected" : "")" data-size="40">40</div>
+                        <div class="size-pill @(ViewBag.Size == "41" ? "selected" : "")" data-size="41">41</div>
+                        <div class="size-pill @(ViewBag.Size == "30" ? "selected" : "")" data-size="30">30</div>
+                        <div class="size-pill @(ViewBag.Size == "31" ? "selected" : "")" data-size="31">31</div>
                     </div>
                 </div>
 
@@ -204,10 +215,10 @@
                                     <span class="rating-score">@displayRating.ToString("F1")/5</span>
                                 </div>
                                 <div class="price-row">
-                                    <span class="sale-price">$@item.Price.ToString("F0")</span>
+                                    <span class="sale-price">@item.Price.ToString("N0")đ</span>
                                     @if (hasDiscount)
                                     {
-                                        <span class="original-price">$@item.BasePrice.ToString("F0")</span>
+                                        <span class="original-price">@item.BasePrice.ToString("N0")đ</span>
                                         <span class="discount-tag">-@discountPercent%</span>
                                     }
                                 </div>
@@ -404,4 +415,56 @@
             alert('Lỗi kết nối máy chủ.');
         });
     }
+
+    // ===== PRICE FILTER VALIDATOR =====
+    function validatePriceFilter() {
+        const minInput = document.getElementById('minPriceInput');
+        const maxInput = document.getElementById('maxPriceInput');
+        const errorMsg = document.getElementById('priceErrorMsg');
+
+        const minVal = minInput.value !== '' ? parseFloat(minInput.value) : null;
+        const maxVal = maxInput.value !== '' ? parseFloat(maxInput.value) : null;
+
+        // Reset styles
+        minInput.style.borderColor = '';
+        maxInput.style.borderColor = '';
+        errorMsg.style.display = 'none';
+
+        // Fix negative values
+        if (minVal !== null && minVal < 0) { minInput.value = 0; return false; }
+        if (maxVal !== null && maxVal < 0) { maxInput.value = 0; return false; }
+
+        // Validate: min > max
+        if (minVal !== null && maxVal !== null && minVal > maxVal) {
+            minInput.style.borderColor = '#e53e3e';
+            maxInput.style.borderColor = '#e53e3e';
+            errorMsg.style.display = 'block';
+
+            // Shake animation
+            [minInput, maxInput].forEach(el => {
+                el.style.animation = 'none';
+                setTimeout(() => { el.style.animation = 'shake 0.3s ease'; }, 10);
+            });
+            return false; // Chặn submit
+        }
+
+        return true; // Cho phép submit
+    }
+
+    function clearPriceError() {
+        const errorMsg = document.getElementById('priceErrorMsg');
+        const minInput = document.getElementById('minPriceInput');
+        const maxInput = document.getElementById('maxPriceInput');
+        errorMsg.style.display = 'none';
+        minInput.style.borderColor = '';
+        maxInput.style.borderColor = '';
+    }
 </script>
+
+<style>
+    @@keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-4px); }
+        75% { transform: translateX(4px); }
+    }
+</style>

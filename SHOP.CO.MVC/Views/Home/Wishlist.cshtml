@@ -60,10 +60,10 @@
                             <span class="rating-score">@displayRating.ToString("F1")/5</span>
                         </div>
                         <div class="price-row">
-                            <span class="sale-price">$@item.Price.ToString("F0")</span>
+                            <span class="sale-price">@item.Price.ToString("N0")đ</span>
                             @if (hasDiscount)
                             {
-                                <span class="original-price">$@item.BasePrice.ToString("F0")</span>
+                                <span class="original-price">@item.BasePrice.ToString("N0")đ</span>
                                 <span class="discount-tag">-@discountPercent%</span>
                             }
                         </div>
