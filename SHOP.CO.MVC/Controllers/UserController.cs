@@ -1,39 +1,53 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SHOP.CO.MVC.Models;
+using SHOP.CO.MVC.Common;
 using System.Text;
 
 namespace SHOP.CO.MVC.Controllers
 {
     public class UserController : Controller
     {
-        private readonly string apiBaseUrl = "https://localhost:7196/api"; // Đổi port đúng với API của bạn
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IHttpClientFactory _clientFactory;
+        private readonly IConfiguration _configuration;
 
-        public UserController(IHttpContextAccessor httpContextAccessor)
+        public UserController(IHttpClientFactory clientFactory, IConfiguration configuration)
         {
-            _httpContextAccessor = httpContextAccessor;
+            _clientFactory = clientFactory;
+            _configuration = configuration;
         }
 
-        // Helper lấy Token từ Cookie
-        private string GetToken()
+        // Helper: lấy JWT token từ Session (nhất quán với cả hệ thống)
+        private string? GetToken()
         {
-            return _httpContextAccessor.HttpContext?.Request.Cookies["AuthToken"];
+            return HttpContext.Session.GetString(MvcConstants.SessionToken);
+        }
+
+        // Helper: tạo HttpClient đã gắn Auth header
+        private HttpClient CreateAuthClient()
+        {
+            var client = _clientFactory.CreateClient("ShopCoApi");
+            var token = GetToken();
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
+            return client;
         }
 
         // === 1. Profile ===
         public async Task<IActionResult> Profile()
         {
-            ProfileViewModel model = null;
-            using (HttpClient client = new HttpClient())
-            {
-                var token = GetToken();
-                if (!string.IsNullOrEmpty(token))
-                {
-                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-                }
+            var token = GetToken();
+            if (string.IsNullOrEmpty(token))
+                return RedirectToAction("Login", "Auth");
 
-                var response = await client.GetAsync($"{apiBaseUrl}/users/profile");
+            ProfileViewModel? model = null;
+            try
+            {
+                using var client = CreateAuthClient();
+                var response = await client.GetAsync("api/users/profile");
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
@@ -41,48 +55,72 @@ namespace SHOP.CO.MVC.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("Login", "Account");
+                    TempData["Error"] = "Không thể tải thông tin hồ sơ.";
+                    return RedirectToAction("Index", "Home");
                 }
             }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Lỗi kết nối: " + ex.Message;
+                return RedirectToAction("Index", "Home");
+            }
+
             return View(model);
         }
 
         [HttpPost]
         public async Task<IActionResult> UpdateProfile(ProfileViewModel model)
         {
-            using (HttpClient client = new HttpClient())
+            var token = GetToken();
+            if (string.IsNullOrEmpty(token))
+                return RedirectToAction("Login", "Auth");
+
+            try
             {
-                var token = GetToken();
-                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-
+                using var client = CreateAuthClient();
                 var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
-                var response = await client.PutAsync($"{apiBaseUrl}/users/profile", content);
+                var response = await client.PutAsync("api/users/profile", content);
 
-                if (response.IsSuccessStatusCode) TempData["Success"] = "Cập nhật thành công!";
-                else TempData["Error"] = "Có lỗi xảy ra!";
+                if (response.IsSuccessStatusCode)
+                    TempData["Success"] = "Cập nhật hồ sơ thành công!";
+                else
+                    TempData["Error"] = "Có lỗi khi cập nhật. Vui lòng thử lại.";
             }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Lỗi kết nối: " + ex.Message;
+            }
+
             return RedirectToAction("Profile");
         }
 
         // === 2. Change Password ===
-        public IActionResult ChangePassword() => View();
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            if (string.IsNullOrEmpty(GetToken()))
+                return RedirectToAction("Login", "Auth");
+            return View();
+        }
 
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
+            var token = GetToken();
+            if (string.IsNullOrEmpty(token))
+                return RedirectToAction("Login", "Auth");
+
             if (model.NewPassword != model.ConfirmPassword)
             {
                 ModelState.AddModelError("ConfirmPassword", "Mật khẩu xác nhận không khớp.");
                 return View(model);
             }
 
-            using (HttpClient client = new HttpClient())
+            try
             {
-                var token = GetToken();
-                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-
+                using var client = CreateAuthClient();
                 var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
-                var response = await client.PostAsync($"{apiBaseUrl}/users/change-password", content);
+                var response = await client.PostAsync("api/users/change-password", content);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -91,40 +129,129 @@ namespace SHOP.CO.MVC.Controllers
                 }
                 else
                 {
+                    var errorJson = await response.Content.ReadAsStringAsync();
                     ModelState.AddModelError("CurrentPassword", "Mật khẩu hiện tại không đúng.");
                 }
             }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Lỗi kết nối: " + ex.Message);
+            }
+
             return View(model);
         }
 
         // === 3. Address Book ===
         public async Task<IActionResult> AddressBook()
         {
-            List<AddressViewModel> addresses = new();
-            using (HttpClient client = new HttpClient())
-            {
-                var token = GetToken();
-                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            var token = GetToken();
+            if (string.IsNullOrEmpty(token))
+                return RedirectToAction("Login", "Auth");
 
-                var response = await client.GetAsync($"{apiBaseUrl}/users/addresses");
+            List<AddressViewModel> addresses = new();
+            try
+            {
+                using var client = CreateAuthClient();
+                var response = await client.GetAsync("api/users/addresses");
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
-                    addresses = JsonConvert.DeserializeObject<List<AddressViewModel>>(json);
+                    addresses = JsonConvert.DeserializeObject<List<AddressViewModel>>(json) ?? new();
                 }
             }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Lỗi kết nối: " + ex.Message;
+            }
+
             return View(addresses);
         }
 
         [HttpPost]
         public async Task<IActionResult> DeleteAddress(int id)
         {
-            using (HttpClient client = new HttpClient())
-            {
-                var token = GetToken();
-                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            var token = GetToken();
+            if (string.IsNullOrEmpty(token))
+                return RedirectToAction("Login", "Auth");
 
-                await client.DeleteAsync($"{apiBaseUrl}/users/addresses/{id}");
+            try
+            {
+                using var client = CreateAuthClient();
+                await client.DeleteAsync($"api/users/addresses/{id}");
+            }
+            catch { /* ignore */ }
+
+            return RedirectToAction("AddressBook");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddAddress(AddressViewModel model)
+        {
+            var token = GetToken();
+            if (string.IsNullOrEmpty(token))
+                return RedirectToAction("Login", "Auth");
+
+            try
+            {
+                using var client = CreateAuthClient();
+                var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
+                var response = await client.PostAsync("api/users/addresses", content);
+                if (response.IsSuccessStatusCode)
+                    TempData["Success"] = "Thêm địa chỉ thành công!";
+                else
+                    TempData["Error"] = "Thêm địa chỉ thất bại.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Lỗi kết nối: " + ex.Message;
+            }
+            return RedirectToAction("AddressBook");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditAddress(AddressViewModel model)
+        {
+            var token = GetToken();
+            if (string.IsNullOrEmpty(token))
+                return RedirectToAction("Login", "Auth");
+
+            try
+            {
+                using var client = CreateAuthClient();
+                var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
+                var response = await client.PutAsync($"api/users/addresses/{model.AddressId}", content);
+                if (response.IsSuccessStatusCode)
+                    TempData["Success"] = "Cập nhật địa chỉ thành công!";
+                else
+                    TempData["Error"] = "Cập nhật địa chỉ thất bại.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Lỗi kết nối: " + ex.Message;
+            }
+            return RedirectToAction("AddressBook");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SetDefaultAddress(int id)
+        {
+            var token = GetToken();
+            if (string.IsNullOrEmpty(token))
+                return RedirectToAction("Login", "Auth");
+
+            try
+            {
+                using var client = CreateAuthClient();
+                var content = new StringContent("{}", Encoding.UTF8, "application/json");
+                var response = await client.PatchAsync($"api/users/addresses/{id}/default", content);
+                if (response.IsSuccessStatusCode)
+                    TempData["Success"] = "Đã đặt làm mặc định!";
+                else
+                    TempData["Error"] = "Thao tác thất bại.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Lỗi kết nối: " + ex.Message;
             }
             return RedirectToAction("AddressBook");
         }
@@ -133,18 +260,22 @@ namespace SHOP.CO.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteAccount()
         {
-            using (HttpClient client = new HttpClient())
-            {
-                var token = GetToken();
-                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            var token = GetToken();
+            if (string.IsNullOrEmpty(token))
+                return RedirectToAction("Login", "Auth");
 
-                var response = await client.DeleteAsync($"{apiBaseUrl}/users/delete-account");
+            try
+            {
+                using var client = CreateAuthClient();
+                var response = await client.DeleteAsync("api/users/delete-account");
                 if (response.IsSuccessStatusCode)
                 {
-                    Response.Cookies.Delete("AuthToken");
+                    HttpContext.Session.Clear();
                     return RedirectToAction("Index", "Home");
                 }
             }
+            catch { /* ignore */ }
+
             TempData["Error"] = "Xóa tài khoản thất bại.";
             return RedirectToAction("Profile");
         }
@@ -153,12 +284,17 @@ namespace SHOP.CO.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> SubscribeNewsletter(bool subscribe)
         {
-            using (HttpClient client = new HttpClient())
+            var token = GetToken();
+            if (string.IsNullOrEmpty(token))
+                return RedirectToAction("Login", "Auth");
+
+            try
             {
-                var token = GetToken();
-                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-                await client.PutAsync($"{apiBaseUrl}/users/newsletter?subscribe={subscribe}", null);
+                using var client = CreateAuthClient();
+                await client.PutAsync($"api/users/newsletter?subscribe={subscribe}", null);
             }
+            catch { /* ignore */ }
+
             return RedirectToAction("Profile");
         }
     }

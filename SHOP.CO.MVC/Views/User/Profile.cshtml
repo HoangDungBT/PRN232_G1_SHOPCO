@@ -1,4 +1,4 @@
-﻿@model SHOP.CO.MVC.Models.ProfileViewModel
+@model SHOP.CO.MVC.Models.ProfileViewModel
 
 <div class="page-wrapper">
     <h1 class="page-title">Hồ sơ cá nhân</h1>
@@ -10,7 +10,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Email</label>
-                <input asp-for="Email" class="form-control" disabled />
+                <input asp-for="Email" class="form-control" readonly />
             </div>
             <div class="form-group">
                 <label class="form-label">Số điện thoại</label>
@@ -20,6 +20,12 @@
                 <label class="form-label">Size yêu thích</label>
                 <input asp-for="PreferredSize" placeholder="Ví dụ: M, L, XL" class="form-control" />
             </div>
+
+            <input type="hidden" asp-for="DateOfBirth" />
+            <input type="hidden" asp-for="Gender" />
+            <input type="hidden" asp-for="PreferredStyle" />
+            <input type="hidden" asp-for="IsNewsletterSubscribed" />
+
             <button type="submit" class="btn-primary" style="width: 100%;">Cập nhật hồ sơ</button>
         </form>
 

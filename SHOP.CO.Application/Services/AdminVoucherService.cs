@@ -12,12 +12,12 @@ namespace SHOP.CO.Application.Services
 
     public class AdminVoucherService : IAdminVoucherService
     {
-        private readonly ICommerceRecordRepository _repo;
+        private readonly SHOP.CO.Application.Repositories.ICommerceRecordRepository _repo;
         private readonly IMapper _mapper;
         private readonly ShopCoDbContext _context;
         private readonly Microsoft.AspNetCore.Http.IHttpContextAccessor _http;
 
-        public AdminVoucherService(ICommerceRecordRepository repo, IMapper mapper, ShopCoDbContext context, Microsoft.AspNetCore.Http.IHttpContextAccessor http)
+        public AdminVoucherService(SHOP.CO.Application.Repositories.ICommerceRecordRepository repo, IMapper mapper, ShopCoDbContext context, Microsoft.AspNetCore.Http.IHttpContextAccessor http)
         {
             _repo = repo;
             _mapper = mapper;

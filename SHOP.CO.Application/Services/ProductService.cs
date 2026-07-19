@@ -96,6 +96,12 @@ namespace SHOP.CO.Application.Services
 
         public async Task AddReviewAsync(int userId, int productId, int rating, string comment)
         {
+            bool hasPurchased = await _repository.HasUserPurchasedProductAsync(userId, productId);
+            if (!hasPurchased)
+            {
+                throw new InvalidOperationException("Chỉ người dùng đã mua và nhận sản phẩm này mới được phép đánh giá.");
+            }
+
             var reviewActivity = new CustomerActivity
             {
                 UserId = userId,

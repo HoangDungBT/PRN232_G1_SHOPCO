@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SHOP.CO.Infrastructure.Repositories
 {
-    public class CommerceRecordRepository : BaseRepository<CommerceRecord>, ICommerceRecordRepository
+    public class CommerceRecordRepository : BaseRepository<CommerceRecord>, SHOP.CO.Application.Repositories.ICommerceRecordRepository, SHOP.CO.Infrastructure.Repositories.ICommerceRecordRepository
     {
         public CommerceRecordRepository(ShopCoDbContext context) : base(context) { }
 
@@ -26,6 +26,16 @@ namespace SHOP.CO.Infrastructure.Repositories
             }
 
             return await query.AnyAsync();
+        }
+
+        public async Task<CommerceRecord?> GetCouponByCodeAsync(string code)
+        {
+            return await _dbSet.FirstOrDefaultAsync(c => c.RecordType == "Voucher" && c.Code == code);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -1,10 +1,42 @@
-﻿@model List<SHOP.CO.MVC.Models.AddressViewModel>
+@model List<SHOP.CO.MVC.Models.AddressViewModel>
 
 <div class="page-wrapper">
     <h1 class="page-title" style="display: flex; justify-content: space-between; align-items: center;">
         Sổ địa chỉ
-        <a href="#" class="btn-primary">+ Thêm địa chỉ mới</a>
+        <button onclick="document.getElementById('addAddressForm').style.display='block'" class="btn-primary">+ Thêm địa chỉ mới</button>
     </h1>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <!-- ADD ADDRESS FORM -->
+    <div id="addAddressForm" style="display:none; background:#f9f9f9; padding:20px; margin-bottom:20px; border-radius:8px; border:1px solid #ddd;">
+        <h3>Thêm địa chỉ mới</h3>
+        <form asp-action="AddAddress" method="post">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <input type="text" name="ReceiverName" placeholder="Tên người nhận" required class="form-control" />
+                <input type="text" name="ReceiverPhone" placeholder="Số điện thoại" required class="form-control" />
+                <input type="text" name="Province" placeholder="Tỉnh / Thành phố" required class="form-control" />
+                <input type="text" name="District" placeholder="Quận / Huyện" required class="form-control" />
+                <input type="text" name="Ward" placeholder="Phường / Xã" required class="form-control" />
+            </div>
+            <input type="text" name="StreetAddress" placeholder="Địa chỉ cụ thể (Số nhà, đường...)" required class="form-control" style="width:100%; margin-top:15px;" />
+            <div style="margin-top:15px;">
+                <label><input type="checkbox" name="IsDefault" value="true" /> Đặt làm mặc định</label>
+                <input type="hidden" name="IsDefault" value="false" />
+            </div>
+            <div style="margin-top:15px;">
+                <button type="submit" class="btn btn-success">Lưu địa chỉ</button>
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('addAddressForm').style.display='none'">Hủy</button>
+            </div>
+        </form>
+    </div>
 
     <div class="addr-grid">
         @if (!Model.Any())
@@ -28,8 +60,37 @@
                         @item.StreetAddress, @item.Ward, @item.District, @item.Province
                     </p>
                     <div style="margin-top: 15px; display: flex; gap: 10px;">
+                        <button onclick="document.getElementById('editAddressForm_@item.AddressId').style.display='block'" class="btn btn-sm btn-outline-dark">Sửa</button>
+
                         <form asp-action="DeleteAddress" method="post" asp-route-id="@item.AddressId" onsubmit="return confirm('Bạn chắc chắn muốn xóa địa chỉ này?');">
-                            <button type="submit" class="btn-danger" style="padding: 6px 15px; font-size: 13px;">Xóa</button>
+                            <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
+                        </form>
+                        
+                        @if (!item.IsDefault)
+                        {
+                            <form asp-action="SetDefaultAddress" method="post" asp-route-id="@item.AddressId">
+                                <button type="submit" class="btn btn-sm btn-primary">Đặt mặc định</button>
+                            </form>
+                        }
+                    </div>
+
+                    <!-- EDIT ADDRESS FORM -->
+                    <div id="editAddressForm_@item.AddressId" style="display:none; background:#f9f9f9; padding:20px; margin-top:20px; border-radius:8px; border:1px solid #ddd;">
+                        <h4>Sửa địa chỉ</h4>
+                        <form asp-action="EditAddress" method="post">
+                            <input type="hidden" name="AddressId" value="@item.AddressId" />
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                <input type="text" name="ReceiverName" value="@item.ReceiverName" required class="form-control" />
+                                <input type="text" name="ReceiverPhone" value="@item.ReceiverPhone" required class="form-control" />
+                                <input type="text" name="Province" value="@item.Province" required class="form-control" />
+                                <input type="text" name="District" value="@item.District" required class="form-control" />
+                                <input type="text" name="Ward" value="@item.Ward" required class="form-control" />
+                            </div>
+                            <input type="text" name="StreetAddress" value="@item.StreetAddress" required class="form-control" style="width:100%; margin-top:15px;" />
+                            <div style="margin-top:15px;">
+                                <button type="submit" class="btn btn-success">Cập nhật</button>
+                                <button type="button" class="btn btn-secondary" onclick="document.getElementById('editAddressForm_@item.AddressId').style.display='none'">Hủy</button>
+                            </div>
                         </form>
                     </div>
                 </div>

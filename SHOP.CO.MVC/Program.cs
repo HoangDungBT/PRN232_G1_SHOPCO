@@ -59,8 +59,6 @@ builder.Services.AddHttpClient<ICartApiClient, CartApiClient>(client =>
 });
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-// Add services to the container.
-builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
 // Configure HttpClient to call SHOP.CO.API
 builder.Services.AddHttpClient("ShopApi", client =>
@@ -130,11 +128,6 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-app.UseSession();
 
 app.Run();

@@ -47,7 +47,7 @@ namespace SHOP.CO.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Order?> GetOrderByIdAsync(int orderId)
+        public async Task<Order> GetOrderByIdAsync(int orderId)
         {
             return await _context.Orders
                 .Include(o => o.OrderItems)

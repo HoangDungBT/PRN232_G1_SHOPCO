@@ -175,5 +175,15 @@ namespace SHOP.CO.Infrastructure.Repositories
                 .Select(a => a.Product!)
                 .ToListAsync();
         }
+
+        public async Task<bool> HasUserPurchasedProductAsync(int userId, int productId)
+        {
+            return await _context.OrderItems
+                .Include(oi => oi.Order)
+                .Include(oi => oi.ProductVariant)
+                .AnyAsync(oi => oi.Order.UserId == userId 
+                             && oi.ProductVariant.ProductId == productId 
+                             && (oi.Order.OrderStatus == "Completed" || oi.Order.OrderStatus == "Delivered"));
+        }
     }
 }

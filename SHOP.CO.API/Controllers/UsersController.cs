@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SHOP.CO.Application.DTOs;
 using SHOP.CO.Application.Services;
@@ -73,6 +73,66 @@ namespace SHOP.CO.API.Controllers
             var result = await _userService.ToggleNewsletterAsync(userId, subscribe);
             if (!result) return BadRequest("Thao tác thất bại.");
             return Ok(subscribe ? "Đã đăng ký nhận bản tin." : "Đã hủy nhận bản tin.");
+        }
+
+        // 6. [HttpGet("addresses")] -> Danh sách địa chỉ (cho User Profile)
+        [HttpGet("addresses")]
+        public async Task<IActionResult> GetAddresses([FromServices] IOrderService orderService)
+        {
+            var userId = GetUserId();
+            var addresses = await orderService.GetUserAddressesAsync(userId);
+            return Ok(addresses); // Trả về List trực tiếp cho AddressBook()
+        }
+
+        // 7. [HttpGet("{userId}/addresses")] -> Danh sách địa chỉ (cho CartApiClient)
+        [HttpGet("{userId}/addresses")]
+        [AllowAnonymous] // Allow CartApiClient to call without token
+        public async Task<IActionResult> GetUserAddressesForCart([FromServices] IOrderService orderService, int userId)
+        {
+            var addresses = await orderService.GetUserAddressesAsync(userId);
+            // Wrap trong ApiResponse để khớp với Serialize của CartApiClient
+            return Ok(new { Success = true, Data = addresses });
+        }
+
+        // 8. [HttpDelete("addresses/{id}")] -> Xóa địa chỉ
+        [HttpDelete("addresses/{id}")]
+        public async Task<IActionResult> DeleteAddress(int id)
+        {
+            var userId = GetUserId();
+            var result = await _userService.DeleteUserAddressAsync(userId, id);
+            if (!result) return NotFound("Address not found.");
+            return Ok("Address deleted.");
+        }
+
+        // 9. [HttpPost("addresses")] -> Thêm địa chỉ mới
+        [HttpPost("addresses")]
+        public async Task<IActionResult> AddAddress([FromBody] UserAddressDto dto)
+        {
+            var userId = GetUserId();
+            var newAddress = await _userService.AddUserAddressAsync(userId, dto);
+            if (newAddress == null) return BadRequest("Cannot add address.");
+            return Ok(newAddress);
+        }
+
+        // 10. [HttpPut("addresses/{id}")] -> Cập nhật địa chỉ
+        [HttpPut("addresses/{id}")]
+        public async Task<IActionResult> UpdateAddress(int id, [FromBody] UserAddressDto dto)
+        {
+            var userId = GetUserId();
+            dto.AddressId = id;
+            var result = await _userService.UpdateUserAddressAsync(userId, dto);
+            if (!result) return NotFound("Address not found.");
+            return Ok("Address updated.");
+        }
+
+        // 11. [HttpPatch("addresses/{id}/default")] -> Đặt làm mặc định
+        [HttpPatch("addresses/{id}/default")]
+        public async Task<IActionResult> SetDefaultAddress(int id)
+        {
+            var userId = GetUserId();
+            var result = await _userService.SetDefaultAddressAsync(userId, id);
+            if (!result) return NotFound("Address not found.");
+            return Ok("Default address updated.");
         }
     }
 }

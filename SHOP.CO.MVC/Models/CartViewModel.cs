@@ -5,7 +5,7 @@ namespace SHOP.CO.MVC.Models
     public class CartViewModel
     {
         public List<CartItemViewModel> Items { get; set; } = new List<CartItemViewModel>();
-        public decimal TotalAmount { get; set; }
+        public decimal SubtotalAmount { get; set; }
         public string? CouponCode { get; set; }
         public decimal DiscountAmount { get; set; }
         public decimal ShippingFee { get; set; }

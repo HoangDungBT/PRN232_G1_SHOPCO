@@ -279,11 +279,6 @@ namespace SHOP.CO.MVC.Controllers
             return View("Details", product);
         }
 
-        // SHOPPING CART
-        public IActionResult Cart()
-        {
-            return View();
-        }
 
         public IActionResult AboutUs()
         {

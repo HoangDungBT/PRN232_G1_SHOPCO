@@ -11,9 +11,9 @@ namespace SHOP.CO.Application.Services
     {
         private readonly SHOP.CO.Infrastructure.Repositories.IOrderRepository _orderRepository;
         private readonly ICartRepository _cartRepository;
-        private readonly ICommerceRecordRepository _commerceRecordRepository;
+        private readonly SHOP.CO.Infrastructure.Repositories.ICommerceRecordRepository _commerceRecordRepository;
 
-        public OrderService(SHOP.CO.Infrastructure.Repositories.IOrderRepository orderRepository, ICartRepository cartRepository, ICommerceRecordRepository commerceRecordRepository)
+        public OrderService(SHOP.CO.Infrastructure.Repositories.IOrderRepository orderRepository, ICartRepository cartRepository, SHOP.CO.Infrastructure.Repositories.ICommerceRecordRepository commerceRecordRepository)
         {
             _orderRepository = orderRepository;
             _cartRepository = cartRepository;

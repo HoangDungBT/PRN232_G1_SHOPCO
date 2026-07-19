@@ -35,5 +35,12 @@ namespace SHOP.CO.Application.DTOs
         /// Timestamp when the cart was last updated
         /// </summary>
         public DateTime LastUpdated { get; set; }
+
+        public decimal ShippingFee { get; set; }
+        public decimal DiscountAmount { get; set; }
+        public decimal FinalAmount { get; set; }
+        public string? CouponCode { get; set; }
+        public int? AddressId { get; set; }
+        public string? AddressText { get; set; }
     }
 }

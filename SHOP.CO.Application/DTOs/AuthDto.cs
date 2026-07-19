@@ -19,7 +19,7 @@ namespace SHOP.CO.Application.DTOs
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Vui lòng nhập mật khẩu!")]
-        [MinLength(8, ErrorMessage = "Mật khẩu cần ít nhất 8 kí tự")]
+        [MinLength(6, ErrorMessage = "Mật khẩu cần ít nhất 6 kí tự")]
         public string Password { get; set; } = string.Empty;
     }
     #endregion
@@ -32,7 +32,6 @@ namespace SHOP.CO.Application.DTOs
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Vui lòng nhập mật khẩu!")]
-        [MinLength(8, ErrorMessage = "Mật khẩu cần ít nhất 8 kí tự")]
         public string Password { get; set; } = string.Empty;
     }
     public class VerifyEmailDto

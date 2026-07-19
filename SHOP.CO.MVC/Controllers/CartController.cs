@@ -56,14 +56,14 @@ namespace SHOP.CO.MVC.Controllers
                     else
                     {
                         cart.DiscountAmount = 0m;
-                        cart.FinalAmount = cart.TotalAmount + cart.ShippingFee;
+                        cart.FinalAmount = cart.SubtotalAmount + cart.ShippingFee;
                         TempData["Error"] = couponResult?.Message ?? "Invalid coupon";
                     }
                 }
                 else
                 {
                     cart.DiscountAmount = 0m;
-                    cart.FinalAmount = cart.TotalAmount + cart.ShippingFee;
+                    cart.FinalAmount = cart.SubtotalAmount + cart.ShippingFee;
                 }
 
                 return View(cart);
@@ -170,6 +170,19 @@ namespace SHOP.CO.MVC.Controllers
                     }
                 }
 
+                var addresses = await _cartApiClient.GetUserAddressesAsync(userId);
+                var defaultAddress = addresses?.FirstOrDefault(a => a.IsDefault) ?? addresses?.FirstOrDefault();
+
+                decimal shippingFee = 0m;
+                if (cart.SubtotalAmount < 500000m)
+                {
+                    if (defaultAddress != null && (defaultAddress.Province.Contains("Hồ Chí Minh") || defaultAddress.Province.Contains("Hà Nội")))
+                        shippingFee = 30000m;
+                    else
+                        shippingFee = 50000m;
+                }
+                cart.ShippingFee = shippingFee;
+
                 if (!string.IsNullOrWhiteSpace(couponCode))
                 {
                     cart.CouponCode = couponCode;
@@ -177,24 +190,23 @@ namespace SHOP.CO.MVC.Controllers
                     if (couponResult != null && couponResult.Success)
                     {
                         cart.DiscountAmount = couponResult.DiscountAmount;
-                        cart.FinalAmount = couponResult.FinalAmount + cart.ShippingFee;
+                        cart.FinalAmount = cart.SubtotalAmount - cart.DiscountAmount + cart.ShippingFee;
                         TempData["CouponSuccess"] = couponResult.Message ?? "Coupon applied successfully.";
                     }
                     else
                     {
                         cart.DiscountAmount = 0m;
-                        cart.FinalAmount = cart.TotalAmount + cart.ShippingFee;
+                        cart.FinalAmount = cart.SubtotalAmount + cart.ShippingFee;
                         TempData["Error"] = couponResult?.Message ?? "Invalid coupon";
                     }
                 }
                 else
                 {
                     cart.DiscountAmount = 0m;
-                    cart.FinalAmount = cart.TotalAmount + cart.ShippingFee;
+                    cart.FinalAmount = cart.SubtotalAmount + cart.ShippingFee;
                 }
 
-                var addresses = await _cartApiClient.GetUserAddressesAsync(userId);
-                foreach (var a in addresses)
+                foreach (var a in addresses ?? new List<SHOP.CO.MVC.Models.UserAddressViewModel>())
                 {
                     if (a.IsDefault)
                     {

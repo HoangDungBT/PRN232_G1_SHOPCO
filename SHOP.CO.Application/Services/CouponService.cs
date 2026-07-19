@@ -14,10 +14,10 @@ namespace SHOP.CO.Application.Services
 {
     public class CouponService : ICouponService
     {
-        private readonly ICommerceRecordRepository _commerceRecordRepository;
+        private readonly SHOP.CO.Infrastructure.Repositories.ICommerceRecordRepository _commerceRecordRepository;
         private readonly ICartRepository _cartRepository;
 
-        public CouponService(ICommerceRecordRepository commerceRecordRepository, ICartRepository cartRepository)
+        public CouponService(SHOP.CO.Infrastructure.Repositories.ICommerceRecordRepository commerceRecordRepository, ICartRepository cartRepository)
         {
             _commerceRecordRepository = commerceRecordRepository;
             _cartRepository = cartRepository;

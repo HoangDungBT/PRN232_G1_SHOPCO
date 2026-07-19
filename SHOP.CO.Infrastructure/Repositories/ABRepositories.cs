@@ -84,6 +84,7 @@ namespace SHOP.CO.Application.Repositories
         Task AddWishlistItemAsync(CustomerActivity wishlistActivity);
         Task RemoveWishlistItemAsync(CustomerActivity wishlistActivity);
         Task<List<Product>> GetWishlistProductsAsync(int userId);
+        Task<bool> HasUserPurchasedProductAsync(int userId, int productId);
     }
 
     public interface IUserRepository : IBaseRepository<User>

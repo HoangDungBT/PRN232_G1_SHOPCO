@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace SHOP.CO.MVC.Common
@@ -13,7 +13,7 @@ namespace SHOP.CO.MVC.Common
             // Nếu không phải Admin hoặc Staff -> Đuổi về trang chủ hoặc báo lỗi 403
             if (role != "Admin" && role != "Staff")
             {
-                context.Result = new RedirectToActionResult("Index", "Home", null);
+                context.Result = new RedirectToActionResult("Index", "Home", new { area = "" });
                 // Hoặc: context.Result = new ForbidResult();
             }
 

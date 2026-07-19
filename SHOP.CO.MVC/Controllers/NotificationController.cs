@@ -1,48 +1,66 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using SHOP.CO.MVC.Common;
 using SHOP.CO.MVC.Models;
 
 namespace SHOP.CO.MVC.Controllers
 {
     public class NotificationController : Controller
     {
-        private readonly string apiBaseUrl = "https://localhost:7196/api";
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IHttpClientFactory _clientFactory;
 
-        public NotificationController(IHttpContextAccessor httpContextAccessor)
+        public NotificationController(IHttpClientFactory clientFactory)
         {
-            _httpContextAccessor = httpContextAccessor;
+            _clientFactory = clientFactory;
         }
 
-        private string GetToken() => _httpContextAccessor.HttpContext?.Request.Cookies["AuthToken"];
+        private HttpClient CreateAuthClient()
+        {
+            var client = _clientFactory.CreateClient("ShopCoApi");
+            var token = HttpContext.Session.GetString(MvcConstants.SessionToken);
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
+            return client;
+        }
 
         public async Task<IActionResult> Index()
         {
-            List<NotificationViewModel> list = new();
-            using (HttpClient client = new HttpClient())
-            {
-                var token = GetToken();
-                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            var token = HttpContext.Session.GetString(MvcConstants.SessionToken);
+            if (string.IsNullOrEmpty(token))
+                return RedirectToAction("Login", "Auth");
 
-                var response = await client.GetAsync($"{apiBaseUrl}/notifications");
+            List<NotificationViewModel> list = new();
+            try
+            {
+                using var client = CreateAuthClient();
+                var response = await client.GetAsync("api/notifications");
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
-                    list = JsonConvert.DeserializeObject<List<NotificationViewModel>>(json);
+                    list = JsonConvert.DeserializeObject<List<NotificationViewModel>>(json) ?? new();
                 }
             }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Không thể tải thông báo: " + ex.Message;
+            }
+
             return View(list);
         }
 
         [HttpPost]
         public async Task<IActionResult> MarkRead(int id)
         {
-            using (HttpClient client = new HttpClient())
+            try
             {
-                var token = GetToken();
-                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-                await client.PutAsync($"{apiBaseUrl}/notifications/{id}/read", null);
+                using var client = CreateAuthClient();
+                await client.PutAsync($"api/notifications/{id}/read", null);
             }
+            catch { /* ignore */ }
+
             return RedirectToAction("Index");
         }
     }
