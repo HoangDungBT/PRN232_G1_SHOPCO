@@ -57,11 +57,40 @@ namespace SHOP.CO.MVC.Controllers
             try
             {
                 using var client = CreateAuthClient();
-                await client.PutAsync($"api/notifications/{id}/read", null);
+                var response = await client.PutAsync($"api/notifications/{id}/read", new StringContent(""));
+                if (!response.IsSuccessStatusCode)
+                {
+                    TempData["Error"] = "Lỗi khi đánh dấu đã đọc: " + await response.Content.ReadAsStringAsync();
+                }
             }
-            catch { /* ignore */ }
+            catch (Exception ex) 
+            { 
+                TempData["Error"] = "Ngoại lệ: " + ex.Message;
+            }
 
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> UnreadCount()
+        {
+            var token = HttpContext.Session.GetString(MvcConstants.SessionToken);
+            if (string.IsNullOrEmpty(token)) return Json(new { count = 0 });
+
+            try
+            {
+                using var client = CreateAuthClient();
+                var response = await client.GetAsync("api/notifications");
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    var list = JsonConvert.DeserializeObject<List<NotificationViewModel>>(json) ?? new();
+                    var unread = list.Count(n => !n.IsRead);
+                    return Json(new { count = unread });
+                }
+            }
+            catch { }
+            return Json(new { count = 0 });
         }
     }
 }

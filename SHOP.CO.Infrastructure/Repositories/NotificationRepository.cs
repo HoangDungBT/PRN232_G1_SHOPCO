@@ -11,6 +11,7 @@ namespace SHOP.CO.Infrastructure.Repositories
         Task<List<InteractionLog>> GetUserNotificationsAsync(int userId);
         Task<InteractionLog> GetNotificationByIdAsync(int logId);
         void MarkAsRead(InteractionLog log);
+        void AddNotificationReadReceipt(int userId, int logId);
         Task SaveChangesAsync();
     }
 
@@ -21,10 +22,39 @@ namespace SHOP.CO.Infrastructure.Repositories
 
         public async Task<List<InteractionLog>> GetUserNotificationsAsync(int userId)
         {
-            return await _context.InteractionLogs
-                .Where(l => l.UserId == userId && l.LogType == "Notification")
+            var readGlobalIds = await _context.InteractionLogs
+                .Where(l => l.UserId == userId && l.LogType == "Audit" && l.ActionName == "NotificationRead")
+                .Select(l => l.Message)
+                .ToListAsync();
+
+            var notifications = await _context.InteractionLogs
+                .Where(l => (l.UserId == userId || l.UserId == null) && l.LogType == "Notification")
                 .OrderByDescending(l => l.CreatedAt)
                 .ToListAsync();
+
+            foreach (var n in notifications)
+            {
+                if (n.UserId == null && readGlobalIds.Contains(n.LogId.ToString()))
+                {
+                    n.IsRead = true;
+                }
+            }
+            return notifications;
+        }
+
+        public void AddNotificationReadReceipt(int userId, int logId)
+        {
+            var log = new InteractionLog
+            {
+                UserId = userId,
+                LogType = "Audit",
+                ActionName = "NotificationRead",
+                Title = "ReadReceipt",
+                Message = logId.ToString(),
+                CreatedAt = DateTime.UtcNow,
+                IsRead = true
+            };
+            _context.InteractionLogs.Add(log);
         }
 
         public async Task<InteractionLog> GetNotificationByIdAsync(int logId)

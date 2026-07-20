@@ -1,3 +1,44 @@
+const AdminCommon = {
+    ajaxGet: function(url, token) {
+        return $.ajax({ url: url, type: 'GET', headers: { 'Authorization': 'Bearer ' + token } });
+    },
+    ajaxPost: function(url, data, token) {
+        return $.ajax({ url: url, type: 'POST', contentType: 'application/json', data: JSON.stringify(data), headers: { 'Authorization': 'Bearer ' + token } });
+    },
+    ajaxDelete: function(url, token) {
+        return $.ajax({ url: url, type: 'DELETE', headers: { 'Authorization': 'Bearer ' + token } });
+    },
+    formatDateTime: function(dateStr) {
+        return dateStr ? new Date(dateStr).toLocaleString('vi-VN') : '';
+    },
+    showToast: function(message, type) {
+        if (type === 'error') AdminHelper.showError(message);
+        else if (type === 'success') AdminHelper.showSuccess(message);
+        else Swal.fire(message, '', type);
+    },
+    setButtonLoading: function(btn, isLoading, text) {
+        if(isLoading) {
+            btn.prop('disabled', true).html(`<i class="fas fa-spinner fa-spin"></i> ${text}`);
+        } else {
+            btn.prop('disabled', false).html(text);
+        }
+    },
+    renderPagination: function(totalRecords, pageSize, currentPage, ulId, infoId, callback) {
+        let totalPages = Math.ceil(totalRecords / pageSize);
+        let html = '';
+        for (let i = 1; i <= totalPages; i++) {
+            html += `<li class="page-item ${currentPage === i ? 'active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+        }
+        $(`#${ulId}`).html(html);
+        $(`#${ulId} a.page-link`).click(function(e) {
+            e.preventDefault();
+            let p = $(this).data('page');
+            callback(p);
+        });
+        $(`#${infoId}`).text(`Tổng: ${totalRecords} bản ghi`);
+    }
+};
+
 const NotificationManager = (function () {
     let _apiUrl = '';
     let _token = '';
