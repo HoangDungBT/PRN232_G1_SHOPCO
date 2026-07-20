@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
@@ -111,5 +111,20 @@ namespace SHOP.CO.API.Controllers.OData
 
         [EnableQuery(PageSize = 100)]
         public IActionResult Get() => Ok(_service.GetVouchersODataQuery());
+    }
+
+    [ApiExplorerSettings(IgnoreApi = true)]
+    [Authorize(Roles = "Admin,Staff")]
+    public class AdminNotificationsODataController : ODataController
+    {
+        private readonly IAdminNotificationService _service;
+
+        public AdminNotificationsODataController(IAdminNotificationService service)
+        {
+            _service = service;
+        }
+
+        [EnableQuery(PageSize = 100)]
+        public IActionResult Get() => Ok(_service.GetNotificationsQuery());
     }
 }

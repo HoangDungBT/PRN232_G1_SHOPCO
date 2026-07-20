@@ -293,6 +293,28 @@ namespace SHOP.CO.Application.DTOs
 }
     #endregion
 
+    #region NotificationAdmin
+    public class NotificationAdminDto
+    {
+        public int LogId { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Message { get; set; } = string.Empty;
+        public string? Status { get; set; } // "Sent" etc.
+        public DateTime CreatedAt { get; set; }
+    }
+
+    public class SaveNotificationDto
+    {
+        [Required(ErrorMessage = "Tiêu đề không được để trống")]
+        public string Title { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Nội dung không được để trống")]
+        public string Message { get; set; } = string.Empty;
+        
+        public bool SendImmediately { get; set; } = true;
+    }
+    #endregion
+
     #region Voucher
         public class VoucherDto
     {

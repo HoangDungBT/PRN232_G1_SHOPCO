@@ -55,6 +55,27 @@ namespace SHOP.CO.API.Controllers
             }
         }
 
+        [HttpPost("send-otp")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(object), 200)]
+        [ProducesResponseType(typeof(object), 400)]
+        public async Task<IActionResult> SendCheckoutOtp([FromQuery] int userId)
+        {
+            try
+            {
+                var result = await _orderService.SendCheckoutOtpAsync(userId);
+                if (result.IsSuccess)
+                {
+                    return Ok(new { success = true, message = result.Message });
+                }
+                return BadRequest(new { success = false, message = result.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An unexpected error occurred: " + ex.Message });
+            }
+        }
+
         [HttpGet("user/{userId:int}")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(object), 200)]
@@ -114,6 +135,37 @@ namespace SHOP.CO.API.Controllers
                 var cancelReason = requestDto.CancelReason;
                 var result = await _orderService.CancelOrderAsync(orderId, userId, cancelReason);
                 return Ok(new { success = true, message = "Order canceled successfully", data = result });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { success = false, message = ex.Message });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return StatusCode(403, new { success = false, message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An unexpected error occurred: " + ex.Message });
+            }
+        }
+
+        [HttpPost("{orderId:int}/confirm-received")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(object), 200)]
+        [ProducesResponseType(typeof(object), 400)]
+        [ProducesResponseType(typeof(object), 403)]
+        [ProducesResponseType(typeof(object), 404)]
+        public async Task<IActionResult> ConfirmReceived([FromRoute] int orderId, [FromQuery] int userId)
+        {
+            try
+            {
+                var result = await _orderService.ConfirmReceivedAsync(orderId, userId);
+                return Ok(new { success = true, message = "Order confirmed successfully", data = result });
             }
             catch (KeyNotFoundException ex)
             {

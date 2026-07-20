@@ -1,0 +1,66 @@
+@{
+    ViewData["Title"] = "Waiting for Payment - SHOP.CO";
+}
+
+<div class="container py-5 mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 rounded-4 text-center p-5">
+                <div class="mb-4">
+                    <div class="spinner-border text-primary" style="width: 4rem; height: 4rem;" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                
+                <h2 class="fw-bold mb-3">Đang chờ thanh toán</h2>
+                <p class="text-muted mb-4">
+                    Hệ thống đang kiểm tra trạng thái thanh toán VNPay của đơn hàng <strong>@ViewBag.OrderCode</strong>.<br />
+                    Vui lòng không đóng trình duyệt lúc này.
+                </p>
+
+                <div class="d-flex justify-content-center gap-3 mt-4">
+                    <!-- Cancel VNPay API endpoint -->
+                    <a href="/Orders/Details/@ViewBag.OrderId" class="btn btn-outline-danger px-4 rounded-pill fw-bold" onclick="return confirm('Bạn có chắc chắn muốn rời khỏi trang này? Giao dịch vẫn có thể thành công nếu bạn đã thanh toán.');">Rời khỏi & Xem đơn hàng</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Poll backend every 3 seconds to check if order status is Paid
+        let checkCount = 0;
+        const maxChecks = 1200; // 1 hour at 3s intervals (approx)
+        const orderId = @ViewBag.OrderId;
+        const orderCode = '@ViewBag.OrderCode';
+
+        function checkPaymentStatus() {
+            if (checkCount >= maxChecks) {
+                window.location.href = `/Payment/Success?orderCode=${orderCode}&paymentStatus=Failed&paymentMethod=VNPay`;
+                return;
+            }
+            checkCount++;
+
+            // Call our API to check order status
+            fetch(`http://localhost:5035/api/orders/${orderId}`)
+                .then(response => {
+                    if (response.ok) return response.json();
+                    throw new Error("Network response was not ok.");
+                })
+                .then(data => {
+                    if (data && data.success && data.data) {
+                        const status = data.data.paymentStatus;
+                        if (status === 'Paid') {
+                            window.location.href = `/Payment/Success?orderCode=${orderCode}&paymentStatus=Paid&paymentMethod=VNPay`;
+                        } else if (status === 'Failed' || status === 'Canceled') {
+                            window.location.href = `/Payment/Success?orderCode=${orderCode}&paymentStatus=Failed&paymentMethod=VNPay`;
+                        }
+                    }
+                })
+                .catch(error => console.error("Error checking status:", error));
+        }
+
+        setInterval(checkPaymentStatus, 3000);
+    </script>
+}

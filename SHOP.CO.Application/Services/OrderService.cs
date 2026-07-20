@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using SHOP.CO.Application.Common;
 using SHOP.CO.Application.DTOs;
 using SHOP.CO.Domain.Entities;
 using SHOP.CO.Infrastructure.Repositories;
@@ -12,12 +13,49 @@ namespace SHOP.CO.Application.Services
         private readonly SHOP.CO.Infrastructure.Repositories.IOrderRepository _orderRepository;
         private readonly ICartRepository _cartRepository;
         private readonly SHOP.CO.Infrastructure.Repositories.ICommerceRecordRepository _commerceRecordRepository;
+        private readonly IEmailSender _emailSender;
 
-        public OrderService(SHOP.CO.Infrastructure.Repositories.IOrderRepository orderRepository, ICartRepository cartRepository, SHOP.CO.Infrastructure.Repositories.ICommerceRecordRepository commerceRecordRepository)
+        public OrderService(
+            SHOP.CO.Infrastructure.Repositories.IOrderRepository orderRepository, 
+            ICartRepository cartRepository, 
+            SHOP.CO.Infrastructure.Repositories.ICommerceRecordRepository commerceRecordRepository,
+            IEmailSender emailSender)
         {
             _orderRepository = orderRepository;
             _cartRepository = cartRepository;
             _commerceRecordRepository = commerceRecordRepository;
+            _emailSender = emailSender;
+        }
+
+        public async Task<ResultModel<string>> SendCheckoutOtpAsync(int userId)
+        {
+            var user = await _orderRepository.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return ResultModel<string>.Error("Không tìm thấy tài khoản!", 404);
+            }
+
+            // Sinh mã OTP 6 số
+            string otpCode = new Random().Next(100000, 999999).ToString();
+
+            // Lưu tạm vào DB: sử dụng ResetPasswordToken cho Checkout OTP
+            user.ResetPasswordToken = otpCode;
+            user.ResetPasswordExpiresAt = DateTime.UtcNow.AddMinutes(5);
+            
+            await _orderRepository.SaveChangesAsync();
+
+            string emailBody = $@"
+                <div style='font-family: Arial, sans-serif; padding: 20px;'>
+                    <h2>Xác nhận Đơn hàng SHOP.CO!</h2>
+                    <p>Xin chào <strong>{user.FullName}</strong>,</p>
+                    <p>Bạn vừa yêu cầu thanh toán giỏ hàng. Mã OTP xác nhận đơn hàng của bạn là:</p>
+                    <h1 style='color: #dc3545; letter-spacing: 5px;'>{otpCode}</h1>
+                    <p>Mã này sẽ hết hạn sau <strong>5 phút</strong>.</p>
+                </div>";
+
+            await _emailSender.SendEmailAsync(user.Email, "Mã OTP Xác Nhận Đơn Hàng", emailBody);
+
+            return ResultModel<string>.Success(null, "Mã OTP xác nhận đã được gửi vào Email của bạn.", 200);
         }
 
         public async Task<CheckoutResponseDto> CheckoutAsync(CheckoutRequestDto requestDto)
@@ -33,6 +71,24 @@ namespace SHOP.CO.Application.Services
             {
                 throw new InvalidOperationException("User not found.");
             }
+
+            // OTP Validation
+            if (string.IsNullOrWhiteSpace(requestDto.OtpCode))
+            {
+                throw new InvalidOperationException("Mã OTP là bắt buộc để xác nhận đơn hàng.");
+            }
+            if (user.ResetPasswordToken != requestDto.OtpCode)
+            {
+                throw new InvalidOperationException("Mã OTP không chính xác.");
+            }
+            if (user.ResetPasswordExpiresAt < DateTime.UtcNow)
+            {
+                throw new InvalidOperationException("Mã OTP đã hết hạn.");
+            }
+            
+            // Clear OTP
+            user.ResetPasswordToken = null;
+            user.ResetPasswordExpiresAt = null;
 
             // 2. Load all CartItems for user
             var cartItems = await _cartRepository.GetCartByUserIdAsync(requestDto.UserId);
@@ -581,5 +637,40 @@ namespace SHOP.CO.Application.Services
 
     public Task<IEnumerable<Order>> GetOrderHistoryAsync(int userId) => throw new NotImplementedException();
     public Task<Order> GetOrderDetailAsync(int orderId, int userId) => throw new NotImplementedException();
+
+        public async Task<bool> ConfirmReceivedAsync(int orderId, int userId)
+        {
+            var order = await _orderRepository.GetOrderByIdAsync(orderId);
+            if (order == null)
+            {
+                throw new KeyNotFoundException("Order not found.");
+            }
+
+            if (order.UserId != userId)
+            {
+                throw new UnauthorizedAccessException("You are not authorized to confirm this order.");
+            }
+
+            // Normal flow assumes it must be Shipping or Delivered to be confirmed
+            if (!string.Equals(order.OrderStatus, "Shipping", StringComparison.OrdinalIgnoreCase) && 
+                !string.Equals(order.OrderStatus, "Delivered", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException("You can only confirm received for orders that are shipping or delivered.");
+            }
+
+            await _orderRepository.ExecuteInTransactionAsync(async () =>
+            {
+                order.OrderStatus = "Completed";
+                order.CompletedAt = DateTime.UtcNow;
+                if (!string.Equals(order.PaymentStatus, "Paid", StringComparison.OrdinalIgnoreCase))
+                {
+                    order.PaymentStatus = "Paid";
+                }
+                order.UpdatedAt = DateTime.UtcNow;
+                await _orderRepository.SaveChangesAsync();
+            });
+
+            return true;
+        }
     }
 }

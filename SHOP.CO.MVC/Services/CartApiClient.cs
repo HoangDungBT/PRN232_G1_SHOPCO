@@ -59,9 +59,9 @@ namespace SHOP.CO.MVC.Services
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<CheckoutResultViewModel?> CheckoutAsync(int userId, string? couponCode, int? addressId = null, string? customerNote = null, string? paymentMethod = null)
+        public async Task<CheckoutResultViewModel?> CheckoutAsync(int userId, string? couponCode, int? addressId = null, string? customerNote = null, string? paymentMethod = null, string? otpCode = null)
         {
-            var contentObject = new { userId, couponCode, addressId, customerNote, paymentMethod };
+            var contentObject = new { userId, couponCode, addressId, customerNote, paymentMethod, otpCode };
             var json = JsonSerializer.Serialize(contentObject);
             var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("api/orders/checkout", content);
@@ -110,6 +110,25 @@ namespace SHOP.CO.MVC.Services
             }
 
             return apiResponse.Data;
+        }
+        public async Task<(bool success, string message)> SendCheckoutOtpAsync(int userId)
+        {
+            var response = await _httpClient.PostAsync($"api/orders/send-otp?userId={userId}", null);
+            var content = await response.Content.ReadAsStringAsync();
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(content))
+                {
+                    var parsed = System.Text.Json.JsonSerializer.Deserialize<System.Text.Json.JsonElement>(content);
+                    var msg = parsed.TryGetProperty("message", out var m) ? m.GetString() ?? "" : "";
+                    return (response.IsSuccessStatusCode, msg);
+                }
+            }
+            catch
+            {
+                // ignore parse errors
+            }
+            return (response.IsSuccessStatusCode, response.IsSuccessStatusCode ? "OTP sent successfully." : "Failed to send OTP.");
         }
     }
 }

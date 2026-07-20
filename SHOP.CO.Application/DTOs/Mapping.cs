@@ -47,6 +47,7 @@ namespace SHOP.CO.Application.DTOs
             // 4. ORDER MAPPINGS
             // ==========================================
             CreateMap<Order, OrderDto>();
+            CreateMap<OrderItem, OrderItemDto>();
 
             CreateMap<Order, OrderDetailAdminDto>()
                 .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.OrderItems));

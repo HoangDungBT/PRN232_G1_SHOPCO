@@ -1,4 +1,4 @@
-﻿namespace SHOP.CO.MVC.Common
+namespace SHOP.CO.MVC.Common
 {
     public static class MvcConstants
     {
@@ -6,5 +6,6 @@
         public const string SessionToken = "AccessToken";
         public const string SessionFullName = "FullName";
         public const string SessionRole = "Role";
+        public const string SessionUserId = "UserId";
     }
 }

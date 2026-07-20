@@ -108,79 +108,70 @@ namespace SHOP.CO.MVC.Controllers
 
         /// <summary>
         /// GET /Payment/VnpayReturn
-        /// Sandbox simulation page: shows order info and lets user simulate success/failure.
-        /// In real VNPay integration this would receive VNPay callback parameters.
+        /// Handles the return redirect from VNPay portal.
         /// </summary>
         [HttpGet]
-        public IActionResult VnpayReturn(
+        public async Task<IActionResult> VnpayReturn(
             int orderId,
             string orderCode,
             decimal totalAmount,
-            [FromQuery(Name = "vnp_Amount")] string? vnpAmount = null,
+            [FromQuery(Name = "vnp_ResponseCode")] string? responseCode = null,
             [FromQuery(Name = "vnp_TxnRef")] string? txnRef = null)
         {
-            // Show the simulation page with order details
-            ViewBag.OrderId = orderId;
-            ViewBag.OrderCode = !string.IsNullOrWhiteSpace(txnRef) ? txnRef : orderCode;
-            ViewBag.TotalAmount = totalAmount;
-            ViewBag.AllParams = Request.QueryString.Value ?? "";
-            return View();
+            var actualOrderCode = !string.IsNullOrWhiteSpace(txnRef) ? txnRef : orderCode;
+
+            // If we have a response code, process it via API callback endpoint
+            if (!string.IsNullOrWhiteSpace(responseCode))
+            {
+                // In a real scenario, we should pass all vnp_ params to the API to verify the signature.
+                // However, the IPN might have already processed it.
+                // Let's call the API callback to process it, and it will safely ignore if already paid.
+                var queryParams = Request.QueryString.Value;
+                using var httpClient = new HttpClient { BaseAddress = new Uri(_apiBaseUrl) };
+                
+                // Forward the exact query string to our API callback to verify HMAC and update DB
+                var callbackUrl = $"api/payment/callback{queryParams}";
+                var response = await httpClient.GetAsync(callbackUrl);
+                
+                if (!response.IsSuccessStatusCode)
+                {
+                    // API failed to validate or update the DB (e.g. HMAC mismatch)
+                    return RedirectToAction("Success", new { sorderCode = actualOrderCode, paymentStatus = "Failed", paymentMethod = "VNPay" });
+                }
+
+                // "24" means user canceled on VNPay
+                if (responseCode == "24")
+                {
+                    // Call API to cancel order if needed or just show failed
+                    return RedirectToAction("Success", new { orderCode = actualOrderCode, paymentStatus = "Failed", paymentMethod = "VNPay" });
+                }
+
+                // If responseCode is "00", it's a success
+                if (responseCode == "00")
+                {
+                    return RedirectToAction("Success", new { orderCode = actualOrderCode, paymentStatus = "Paid", paymentMethod = "VNPay" });
+                }
+
+                // Other error codes
+                return RedirectToAction("Success", new { orderCode = actualOrderCode, paymentStatus = "Failed", paymentMethod = "VNPay" });
+            }
+
+            // If there's no response code (e.g. they opened VNPay QR and returned to our site manually),
+            // show the Pending waiting screen
+            return RedirectToAction("Pending", new { orderId, orderCode = actualOrderCode, totalAmount });
         }
 
         /// <summary>
-        /// POST /Payment/SimulateVnpay
-        /// Simulate VNPay callback by calling the API callback endpoint directly.
+        /// GET /Payment/Pending
+        /// Shows the waiting screen that polls for payment status.
         /// </summary>
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SimulateVnpay(string orderCode, decimal totalAmount, bool simulateSuccess)
+        [HttpGet]
+        public IActionResult Pending(int orderId, string orderCode, decimal totalAmount)
         {
-            try
-            {
-                // Build callback query to API
-                var responseCode = simulateSuccess ? "00" : "99";
-
-                // Build the raw query the API expects (without SecureHash for simulate — API will skip verify in simulate mode)
-                // For simulation we call the API callback endpoint directly with a pre-computed hash
-                using var httpClient = new HttpClient { BaseAddress = new Uri(_apiBaseUrl) };
-
-                // Compute HMAC signature for the simulation request
-                var paramString = $"vnp_ResponseCode={responseCode}&vnp_TxnRef={orderCode}";
-                var hashSecret = "SHOPCODEMO1234567890ABCDEF12345678";
-                var signature = ComputeHmacSha512(hashSecret, paramString);
-
-                var callbackUrl = $"api/payment/callback?vnp_TxnRef={Uri.EscapeDataString(orderCode)}&vnp_ResponseCode={responseCode}&vnp_SecureHash={Uri.EscapeDataString(signature)}";
-                var response = await httpClient.GetAsync(callbackUrl);
-                var content = await response.Content.ReadAsStringAsync();
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var paymentStatus = simulateSuccess ? "Paid" : "Failed";
-                    return RedirectToAction("Success", new
-                    {
-                        orderCode,
-                        paymentStatus,
-                        paymentMethod = "VNPay"
-                    });
-                }
-                else
-                {
-                    // Parse error and try to show success page anyway in simulate mode
-                    var paymentStatus = simulateSuccess ? "Paid" : "Failed";
-                    TempData["Warning"] = $"Callback note: {content}";
-                    return RedirectToAction("Success", new
-                    {
-                        orderCode,
-                        paymentStatus,
-                        paymentMethod = "VNPay"
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = ex.Message ?? "Simulation failed.";
-                return RedirectToAction("Index");
-            }
+            ViewBag.OrderId = orderId;
+            ViewBag.OrderCode = orderCode;
+            ViewBag.TotalAmount = totalAmount;
+            return View();
         }
 
         /// <summary>

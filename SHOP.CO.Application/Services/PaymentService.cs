@@ -22,12 +22,16 @@ namespace SHOP.CO.Application.Services
         private readonly SHOP.CO.Infrastructure.Repositories.IOrderRepository _orderRepository;
         private readonly string _hashSecret;
         private readonly string _apiReturnUrl;
+        private readonly string _tmnCode;
+        private readonly string _vnpUrl;
 
         public PaymentService(SHOP.CO.Infrastructure.Repositories.IOrderRepository orderRepository, IConfiguration configuration)
         {
             _orderRepository = orderRepository;
-            _hashSecret = configuration["VnPay:HashSecret"] ?? "SHOPCODEMO1234567890ABCDEF12345678";
+            _hashSecret = configuration["VnPay:HashSecret"] ?? "KGJFM6ZNUK8LIJUW4NVC7RSCVKC5QPB6";
             _apiReturnUrl = configuration["VnPay:ReturnUrl"] ?? "http://localhost:5035/api/payment/callback";
+            _tmnCode = configuration["VnPay:TmnCode"] ?? "YMFRE6R1";
+            _vnpUrl = configuration["VnPay:BaseUrl"] ?? "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
         }
 
         // ─────────────────────────────────────────────────────────────
@@ -142,8 +146,8 @@ namespace SHOP.CO.Application.Services
 
         private PaymentResponseDto BuildVnpayUrl(string orderCode, decimal amount, string? mvcReturnUrl)
         {
-            // VNPay simulate: build a signed URL that points back to MVC VnpayReturn page
-            var createDate = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+            // Build a signed URL that points to the actual VNPay portal
+            var createDate = DateTime.Now.ToString("yyyyMMddHHmmss");
             var returnUrl = string.IsNullOrWhiteSpace(mvcReturnUrl)
                 ? _apiReturnUrl
                 : mvcReturnUrl;
@@ -157,44 +161,35 @@ namespace SHOP.CO.Application.Services
                 ["vnp_CurrCode"]    = "VND",
                 ["vnp_IpAddr"]      = "127.0.0.1",
                 ["vnp_Locale"]      = "vn",
-                ["vnp_OrderInfo"]   = Uri.EscapeDataString($"Thanh toan don hang {orderCode}"),
+                ["vnp_OrderInfo"]   = $"Thanh toan don hang {orderCode}",
                 ["vnp_OrderType"]   = "other",
-                ["vnp_ReturnUrl"]   = Uri.EscapeDataString(returnUrl),
-                ["vnp_TmnCode"]     = "SHOPCODEMO",
+                ["vnp_ReturnUrl"]   = returnUrl,
+                ["vnp_TmnCode"]     = _tmnCode,
                 ["vnp_TxnRef"]      = orderCode,
                 ["vnp_Version"]     = "2.1.0",
             };
 
-            // Build raw string to sign (key=value& pairs, NOT URL-encoded values for signature)
+            // Build raw string to sign (key=value& pairs, URL-encoded values)
             var rawBuilder = new StringBuilder();
             foreach (var kv in paramDict)
             {
                 if (rawBuilder.Length > 0) rawBuilder.Append('&');
-                rawBuilder.Append(kv.Key).Append('=').Append(kv.Value);
+                rawBuilder.Append(System.Net.WebUtility.UrlEncode(kv.Key))
+                          .Append('=')
+                          .Append(System.Net.WebUtility.UrlEncode(kv.Value));
             }
             var rawData = rawBuilder.ToString();
 
             // HMAC-SHA512 signature
             var signature = ComputeHmacSha512(_hashSecret, rawData);
-            paramDict["vnp_SecureHash"] = signature;
 
-            // Build final URL (simulate: point to MVC VnpayReturn with all params)
-            var urlBuilder = new StringBuilder(returnUrl);
-            urlBuilder.Append('?');
-            bool first = true;
-            foreach (var kv in paramDict)
-            {
-                if (!first) urlBuilder.Append('&');
-                urlBuilder.Append(Uri.EscapeDataString(kv.Key))
-                          .Append('=')
-                          .Append(Uri.EscapeDataString(kv.Value));
-                first = false;
-            }
+            // Build final URL (points to VNPay BaseUrl)
+            var paymentUrl = $"{_vnpUrl}?{rawData}&vnp_SecureHash={signature}";
 
             return new PaymentResponseDto
             {
                 Success = true,
-                PaymentUrl = urlBuilder.ToString(),
+                PaymentUrl = paymentUrl,
                 Message = "VNPay payment URL generated. Redirect customer to complete payment.",
                 OrderCode = orderCode,
                 PaymentStatus = "Unpaid"

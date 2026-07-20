@@ -1,70 +1,321 @@
 @model SHOP.CO.MVC.Models.CartViewModel
 
 @{
-    ViewData["Title"] = "Shopping Cart";
+    ViewData["Title"] = "Shopping Cart - SHOP.CO";
 }
 
-<div class="container mt-4">
-    <h1 class="mb-4">Your Shopping Cart</h1>
+<style>
+    body {
+        background-color: #f9fafb;
+    }
+
+    .cart-page {
+        padding: 48px 20px 80px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    @@media (min-width: 992px) {
+        .cart-page { padding: 64px 40px 80px; }
+    }
+
+    .cart-title {
+        font-size: 2.5rem;
+        font-weight: 900;
+        letter-spacing: -1px;
+        color: #111;
+        text-transform: uppercase;
+        margin-bottom: 40px;
+    }
+
+    /* Cart Item Card */
+    .cart-item-card {
+        background: #fff;
+        border: 1px solid #f3f4f6;
+        border-radius: 20px;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        margin-bottom: 16px;
+        transition: all 0.2s;
+    }
+
+    .cart-item-card:hover {
+        box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+        border-color: #e5e7eb;
+    }
+
+    .item-image {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 12px;
+        background: #f3f4f6;
+    }
+
+    .item-details {
+        flex: 1;
+    }
+
+    .item-name {
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: #111;
+        margin-bottom: 8px;
+    }
+
+    .item-price {
+        font-weight: 700;
+        color: #111;
+        font-size: 1.1rem;
+    }
+
+    /* Quantity Input */
+    .qty-control {
+        display: flex;
+        align-items: center;
+        background: #f3f4f6;
+        border-radius: 999px;
+        padding: 4px;
+        width: 120px;
+    }
+
+    .qty-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: none;
+        background: #fff;
+        color: #111;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .qty-btn:hover:not(:disabled) {
+        background: #e5e7eb;
+    }
+    .qty-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .qty-value {
+        flex: 1;
+        text-align: center;
+        font-weight: 800;
+        font-size: 1rem;
+        color: #111;
+    }
+
+    /* Actions */
+    .btn-remove {
+        background: none;
+        border: none;
+        color: #ef4444;
+        font-size: 1.25rem;
+        padding: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        opacity: 0.7;
+    }
+    .btn-remove:hover {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+
+    /* Cart Summary (matches checkout) */
+    .cart-summary {
+        background: #ffffff;
+        border: 1px solid #f3f4f6;
+        border-radius: 24px;
+        box-shadow: 0 4px 32px rgba(0,0,0,0.06);
+        padding: 32px;
+        position: sticky;
+        top: 32px;
+    }
+
+    .cart-summary h3 {
+        font-size: 1.25rem;
+        font-weight: 800;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #f3f4f6;
+        color: #111;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        font-size: 1rem;
+    }
+
+    .summary-row .lbl { color: #4b5563; }
+    .summary-row .val { font-weight: 700; color: #111; }
+    
+    .summary-row.total-row {
+        padding-top: 20px;
+        margin-top: 12px;
+        border-top: 2px dashed #e5e7eb;
+    }
+    .summary-row.total-row .lbl { font-weight: 800; font-size: 1.1rem; color: #111; }
+    .summary-row.total-row .val { font-size: 1.5rem; font-weight: 900; color: #111; }
+
+    .btn-checkout {
+        width: 100%;
+        padding: 18px;
+        background: #111;
+        color: #fff;
+        border: none;
+        border-radius: 16px;
+        font-size: 1.1rem;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        margin-top: 28px;
+        display: block;
+        text-align: center;
+        text-decoration: none;
+    }
+    .btn-checkout:hover {
+        background: #000;
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(17,17,17,0.25);
+    }
+
+    .empty-cart {
+        text-align: center;
+        padding: 64px 20px;
+        background: #fff;
+        border-radius: 24px;
+        border: 1px dashed #d1d5db;
+    }
+    .empty-cart i {
+        font-size: 4rem;
+        color: #d1d5db;
+        margin-bottom: 24px;
+    }
+    .empty-cart h2 {
+        font-weight: 800;
+        color: #111;
+        margin-bottom: 16px;
+    }
+    .btn-shop {
+        display: inline-block;
+        padding: 12px 32px;
+        background: #111;
+        color: #fff;
+        border-radius: 999px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+    .btn-shop:hover {
+        background: #000;
+        color: #fff;
+        transform: translateY(-2px);
+    }
+</style>
+
+<div class="cart-page">
+    <h1 class="cart-title">Your Cart</h1>
 
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger">@TempData["Error"]</div>
+        <div class="alert alert-danger border-0 rounded-4 shadow-sm mb-4">
+            <i class="fas fa-exclamation-circle me-1"></i> @TempData["Error"]
+        </div>
     }
 
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Product</th>
-                    <th class="text-center">Quantity</th>
-                    <th class="text-right">Unit Price</th>
-                    <th class="text-right">Subtotal</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model.Items != null && Model.Items.Any())
+    @if (Model.Items != null && Model.Items.Any())
+    {
+        <div class="row">
+            <div class="col-lg-8 col-12 mb-4">
+                @foreach (var item in Model.Items)
                 {
-                    foreach (var item in Model.Items)
-                    {
-                        <tr>
-                            <td>@item.ProductName</td>
-                            <td class="text-center">@item.Quantity</td>
-                            <td class="text-right">@item.UnitPrice.ToString("C")</td>
-                            <td class="text-right">@item.Subtotal.ToString("C")</td>
-                            <td class="text-right">
-                                <form asp-action="Remove" method="post" class="d-inline">
+                    <div class="cart-item-card">
+                        <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/no-image.png" : "http://localhost:5035" + item.ImageUrl)" alt="@item.ProductName" class="item-image" onerror="this.src='/images/no-image.png';" />
+                        
+                        <div class="item-details">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h4 class="item-name">@item.ProductName</h4>
+                                    <div class="item-price">@item.UnitPrice.ToString("C")</div>
+                                </div>
+                                <form asp-action="Remove" method="post">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="cartItemId" value="@item.CartItemId" />
                                     <input type="hidden" name="userId" value="@Model.UserId" />
-                                    <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                                    <button type="submit" class="btn-remove" title="Remove item"><i class="fas fa-trash-alt"></i></button>
                                 </form>
-                            </td>
-                        </tr>
-                    }
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div class="qty-control">
+                                    <form asp-action="UpdateQuantity" method="post" class="m-0 p-0">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="cartItemId" value="@item.CartItemId" />
+                                        <input type="hidden" name="quantity" value="@(item.Quantity - 1)" />
+                                        <button type="submit" class="qty-btn" @(item.Quantity <= 1 ? "disabled" : "")><i class="fas fa-minus small"></i></button>
+                                    </form>
+                                    <div class="qty-value">@item.Quantity</div>
+                                    <form asp-action="UpdateQuantity" method="post" class="m-0 p-0">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="cartItemId" value="@item.CartItemId" />
+                                        <input type="hidden" name="quantity" value="@(item.Quantity + 1)" />
+                                        <button type="submit" class="qty-btn"><i class="fas fa-plus small"></i></button>
+                                    </form>
+                                </div>
+                                <div class="fw-bold fs-5 text-dark">
+                                    @item.Subtotal.ToString("C")
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 }
-                else
-                {
-                    <tr>
-                        <td colspan="5">Your cart is empty.</td>
-                    </tr>
-                }
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td class="text-right"><strong>Total:</strong></td>
-                    <td class="text-right"><strong>@Model.SubtotalAmount.ToString("C")</strong></td>
-                    <td></td>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
+            </div>
 
-    <div class="d-flex justify-content-end">
-        <a href="/" class="btn btn-primary">Continue Shopping</a>
-        <a asp-controller="Cart" asp-action="Checkout" class="btn btn-success ms-2">Proceed to Checkout</a>
-    </div>
+            <div class="col-lg-4 col-12">
+                <div class="cart-summary">
+                    <h3>Order Summary</h3>
+
+                    <div class="summary-row">
+                        <span class="lbl">Subtotal</span>
+                        <span class="val">@Model.SubtotalAmount.ToString("C")</span>
+                    </div>
+                    
+                    <p class="small text-muted mt-2 mb-0">Taxes and shipping calculated at checkout</p>
+
+                    <div class="summary-row total-row">
+                        <span class="lbl">Total</span>
+                        <span class="val">@Model.SubtotalAmount.ToString("C")</span>
+                    </div>
+
+                    <a asp-controller="Cart" asp-action="Checkout" class="btn-checkout">
+                        Go to Checkout <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                    
+                    <div class="text-center mt-3">
+                        <a href="/" class="text-dark fw-bold text-decoration-underline small"><i class="fas fa-arrow-left me-1"></i> Continue Shopping</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="empty-cart">
+            <i class="fas fa-shopping-cart"></i>
+            <h2>Your cart is empty</h2>
+            <p class="text-muted mb-4">Looks like you haven't added any items to your cart yet.</p>
+            <a href="/" class="btn-shop">Explore Products</a>
+        </div>
+    }
 </div>

@@ -21,12 +21,23 @@ namespace SHOP.CO.MVC.Controllers
             _paymentApiClient = paymentApiClient;
         }
 
+        private int GetUserIdOrDefault(int providedUserId)
+        {
+            var sessionUserIdStr = HttpContext.Session.GetString(SHOP.CO.MVC.Common.MvcConstants.SessionUserId);
+            if (!string.IsNullOrEmpty(sessionUserIdStr) && int.TryParse(sessionUserIdStr, out int sessionUserId))
+            {
+                return sessionUserId;
+            }
+            return providedUserId > 0 ? providedUserId : 1;
+        }
+
         /// <summary>
         /// Display user's shopping cart by calling GET /api/cart/{userId}
         /// </summary>
         /// <param name="userId">Optional user id; defaults to 1 for demo</param>
         public async Task<IActionResult> Index(int userId = 1, string? couponCode = null)
         {
+            userId = GetUserIdOrDefault(userId);
             try
             {
                 var cart = await _cartApiClient.GetCartAsync(userId);
@@ -82,6 +93,7 @@ namespace SHOP.CO.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Remove(int cartItemId, int userId = 1)
         {
+            userId = GetUserIdOrDefault(userId);
             try
             {
                 var success = await _cartApiClient.RemoveFromCartAsync(cartItemId, userId);
@@ -105,6 +117,7 @@ namespace SHOP.CO.MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> AddToCart(int id, string name, decimal price, string image, int quantity = 1, int userId = 1)
         {
+            userId = GetUserIdOrDefault(userId);
             try
             {
                 var success = await _cartApiClient.AddToCartAsync(userId, id, quantity);
@@ -125,6 +138,7 @@ namespace SHOP.CO.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateQuantity(int cartItemId, int quantity, int userId = 1)
         {
+            userId = GetUserIdOrDefault(userId);
             try
             {
                 if (quantity <= 0)
@@ -150,23 +164,23 @@ namespace SHOP.CO.MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Checkout(int userId = 1, string? couponCode = null)
         {
+            userId = GetUserIdOrDefault(userId);
             try
             {
                 var cart = await _cartApiClient.GetCartAsync(userId);
                 if (cart == null || cart.Items == null || !cart.Items.Any())
                 {
-                    TempData["Error"] = "Your cart is empty. Please add items to checkout.";
+                    TempData["Error"] = "Giỏ hàng trống. Vui lòng thêm sản phẩm trước khi thanh toán.";
                     return RedirectToAction("Index", new { userId });
                 }
 
-                // Check for stock warning
                 foreach (var item in cart.Items)
                 {
                     item.ImageUrl = GetProductImageUrl(item.ProductName);
                     if (item.Quantity > item.AvailableStock)
                     {
-                        TempData["Error"] = $"Some items in your cart exceed available stock. Please update quantity before checking out.";
-                        return RedirectToAction("Index", new { userId, couponCode });
+                        TempData["Error"] = "Một số sản phẩm đã vượt số lượng tồn kho. Vui lòng cập nhật trước khi thanh toán.";
+                        return RedirectToAction("Index", new { userId });
                     }
                 }
 
@@ -183,6 +197,7 @@ namespace SHOP.CO.MVC.Controllers
                 }
                 cart.ShippingFee = shippingFee;
 
+                // Apply coupon if provided
                 if (!string.IsNullOrWhiteSpace(couponCode))
                 {
                     cart.CouponCode = couponCode;
@@ -191,13 +206,14 @@ namespace SHOP.CO.MVC.Controllers
                     {
                         cart.DiscountAmount = couponResult.DiscountAmount;
                         cart.FinalAmount = cart.SubtotalAmount - cart.DiscountAmount + cart.ShippingFee;
-                        TempData["CouponSuccess"] = couponResult.Message ?? "Coupon applied successfully.";
+                        TempData["CouponSuccess"] = couponResult.Message ?? "Áp mã giảm giá thành công!";
                     }
                     else
                     {
                         cart.DiscountAmount = 0m;
                         cart.FinalAmount = cart.SubtotalAmount + cart.ShippingFee;
-                        TempData["Error"] = couponResult?.Message ?? "Invalid coupon";
+                        TempData["Error"] = couponResult?.Message ?? "Mã giảm giá không hợp lệ";
+                        cart.CouponCode = null;
                     }
                 }
                 else
@@ -208,18 +224,8 @@ namespace SHOP.CO.MVC.Controllers
 
                 foreach (var a in addresses ?? new List<SHOP.CO.MVC.Models.UserAddressViewModel>())
                 {
-                    if (a.IsDefault)
-                    {
-                        a.AddressType = "Home (Default)";
-                    }
-                    else if (a.ReceiverName.ToLower().Contains("công ty") || a.ReceiverName.ToLower().Contains("office") || a.ReceiverName.ToLower().Contains("co") || a.StreetAddress.ToLower().Contains("lầu") || a.StreetAddress.ToLower().Contains("tầng"))
-                    {
-                        a.AddressType = "Office";
-                    }
-                    else
-                    {
-                        a.AddressType = "Other";
-                    }
+                    a.AddressType = a.IsDefault ? "Home (Default)" :
+                        (a.ReceiverName.ToLower().Contains("công ty") || a.StreetAddress.ToLower().Contains("lầu") || a.StreetAddress.ToLower().Contains("tầng")) ? "Office" : "Other";
                 }
 
                 ViewBag.Addresses = addresses;
@@ -227,46 +233,135 @@ namespace SHOP.CO.MVC.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Error"] = ex.Message ?? "An error occurred while loading checkout page.";
-                return RedirectToAction("Index", new { userId, couponCode });
+                TempData["Error"] = ex.Message ?? "Đã xảy ra lỗi khi tải trang thanh toán.";
+                return RedirectToAction("Index", new { userId });
             }
         }
 
+        /// <summary>
+        /// Step 1 of checkout: Validate inputs, send OTP, store pending checkout info in Session.
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> PlaceOrder(int userId, string? couponCode, int addressId, string? customerNote, string paymentMethod)
         {
+            userId = GetUserIdOrDefault(userId);
             try
             {
                 if (addressId <= 0)
                 {
-                    TempData["Error"] = "Please select a shipping address.";
+                    TempData["Error"] = "Vui lòng chọn địa chỉ giao hàng.";
                     return RedirectToAction("Checkout", new { userId, couponCode });
                 }
 
                 if (string.IsNullOrWhiteSpace(paymentMethod))
                 {
-                    TempData["Error"] = "Please select a payment method.";
+                    TempData["Error"] = "Vui lòng chọn phương thức thanh toán.";
                     return RedirectToAction("Checkout", new { userId, couponCode });
                 }
 
-                var result = await _cartApiClient.CheckoutAsync(userId, couponCode, addressId, customerNote, paymentMethod);
+                // Store pending checkout data in Session
+                HttpContext.Session.SetString("PendingAddressId", addressId.ToString());
+                HttpContext.Session.SetString("PendingCouponCode", couponCode ?? "");
+                HttpContext.Session.SetString("PendingCustomerNote", customerNote ?? "");
+                HttpContext.Session.SetString("PendingPaymentMethod", paymentMethod);
+
+                // Send OTP to user's email
+                var (otpSent, otpMsg) = await _cartApiClient.SendCheckoutOtpAsync(userId);
+                if (!otpSent)
+                {
+                    TempData["Error"] = otpMsg.Length > 0 ? otpMsg : "Không thể gửi mã OTP. Vui lòng thử lại.";
+                    return RedirectToAction("Checkout", new { userId, couponCode });
+                }
+
+                TempData["OtpInfo"] = "Mã OTP đã được gửi vào email của bạn. Mã có hiệu lực trong 5 phút.";
+                return RedirectToAction("VerifyOTP", new { userId });
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message ?? "Đã xảy ra lỗi trong quá trình đặt hàng.";
+                return RedirectToAction("Checkout", new { userId, couponCode });
+            }
+        }
+
+        /// <summary>
+        /// Show OTP verification page.
+        /// </summary>
+        [HttpGet]
+        public IActionResult VerifyOTP(int userId = 1)
+        {
+            userId = GetUserIdOrDefault(userId);
+            // Check if pending checkout exists
+            var pendingAddress = HttpContext.Session.GetString("PendingAddressId");
+            if (string.IsNullOrEmpty(pendingAddress))
+            {
+                TempData["Error"] = "Phiên đặt hàng đã hết hạn. Vui lòng thực hiện lại.";
+                return RedirectToAction("Checkout", new { userId });
+            }
+            ViewBag.UserId = userId;
+            return View();
+        }
+
+        /// <summary>
+        /// Step 2 of checkout: Verify OTP, then call checkout API to create order.
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ConfirmOrder(int userId, string otpCode)
+        {
+            userId = GetUserIdOrDefault(userId);
+            try
+            {
+                if (string.IsNullOrWhiteSpace(otpCode) || otpCode.Trim().Length != 6)
+                {
+                    TempData["Error"] = "Mã OTP không hợp lệ. Vui lòng nhập đủ 6 chữ số.";
+                    return RedirectToAction("VerifyOTP", new { userId });
+                }
+
+                // Retrieve pending checkout from Session
+                var pendingAddressStr = HttpContext.Session.GetString("PendingAddressId");
+                var couponCode = HttpContext.Session.GetString("PendingCouponCode");
+                var customerNote = HttpContext.Session.GetString("PendingCustomerNote");
+                var paymentMethod = HttpContext.Session.GetString("PendingPaymentMethod");
+
+                if (string.IsNullOrEmpty(pendingAddressStr) || !int.TryParse(pendingAddressStr, out int addressId))
+                {
+                    TempData["Error"] = "Phiên đặt hàng đã hết hạn. Vui lòng thực hiện lại từ đầu.";
+                    return RedirectToAction("Checkout", new { userId });
+                }
+
+                // Clear session
+                HttpContext.Session.Remove("PendingAddressId");
+                HttpContext.Session.Remove("PendingCouponCode");
+                HttpContext.Session.Remove("PendingCustomerNote");
+                HttpContext.Session.Remove("PendingPaymentMethod");
+
+                // Call checkout API with OTP
+                var result = await _cartApiClient.CheckoutAsync(
+                    userId,
+                    string.IsNullOrWhiteSpace(couponCode) ? null : couponCode,
+                    addressId,
+                    customerNote,
+                    paymentMethod,
+                    otpCode.Trim());
+
                 if (result == null)
                 {
-                    TempData["Error"] = "Checkout failed. Order could not be created.";
-                    return RedirectToAction("Checkout", new { userId, couponCode });
+                    TempData["Error"] = "Đặt hàng thất bại. Không thể tạo đơn hàng.";
+                    return RedirectToAction("Checkout", new { userId });
                 }
 
+                // Process payment
                 var returnUrl = $"{Request.Scheme}://{Request.Host}/Payment/VnpayReturn?orderId={result.OrderId}&orderCode={Uri.EscapeDataString(result.OrderCode)}&totalAmount={result.TotalAmount}";
-                var payResult = await _paymentApiClient.ProcessPaymentAsync(result.OrderId, paymentMethod, returnUrl);
+                var payResult = await _paymentApiClient.ProcessPaymentAsync(result.OrderId, paymentMethod ?? "COD", returnUrl);
 
                 if (payResult == null || !payResult.Success)
                 {
-                    TempData["Error"] = payResult?.Message ?? "Payment processing failed.";
+                    TempData["Error"] = payResult?.Message ?? "Xử lý thanh toán thất bại.";
                     return RedirectToAction("Index", "Payment", new { orderId = result.OrderId, orderCode = result.OrderCode, totalAmount = result.TotalAmount });
                 }
 
-                if (paymentMethod.Equals("COD", StringComparison.OrdinalIgnoreCase))
+                if ((paymentMethod ?? "").Equals("COD", StringComparison.OrdinalIgnoreCase))
                 {
                     return RedirectToAction("Success", "Payment", new
                     {
@@ -278,17 +373,16 @@ namespace SHOP.CO.MVC.Controllers
                 else
                 {
                     if (!string.IsNullOrWhiteSpace(payResult.PaymentUrl))
-                    {
                         return Redirect(payResult.PaymentUrl);
-                    }
-                    TempData["Error"] = "Failed to generate VNPay payment URL.";
+
+                    TempData["Error"] = "Không thể tạo URL thanh toán VNPay.";
                     return RedirectToAction("Index", "Payment", new { orderId = result.OrderId, orderCode = result.OrderCode, totalAmount = result.TotalAmount });
                 }
             }
             catch (Exception ex)
             {
-                TempData["Error"] = ex.Message ?? "An error occurred during order placement.";
-                return RedirectToAction("Checkout", new { userId, couponCode });
+                TempData["Error"] = ex.Message ?? "Đã xảy ra lỗi khi xác nhận đơn hàng.";
+                return RedirectToAction("VerifyOTP", new { userId });
             }
         }
 
@@ -296,6 +390,7 @@ namespace SHOP.CO.MVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult ApplyCoupon(string couponCode, int userId = 1)
         {
+            userId = GetUserIdOrDefault(userId);
             return RedirectToAction("Index", new { userId, couponCode });
         }
 

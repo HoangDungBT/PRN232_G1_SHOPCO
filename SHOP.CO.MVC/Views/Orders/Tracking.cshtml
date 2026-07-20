@@ -413,6 +413,16 @@
     <!-- Action Buttons -->
     <div class="tracking-actions">
         <a asp-action="Index" asp-controller="Orders" class="btn-track-back">← Back to My Orders</a>
+        
+        @if (Model.OrderStatus.Equals("Shipping", StringComparison.OrdinalIgnoreCase))
+        {
+            <form asp-action="ConfirmReceived" asp-controller="Orders" method="post" style="display:inline-block;">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="orderId" value="@Model.OrderId" />
+                <button type="submit" class="btn-track-shop" style="background:#059669;" onclick="return confirm('Xác nhận bạn đã nhận được đơn hàng này?');">✓ Đã nhận hàng</button>
+            </form>
+        }
+
         <a href="/" class="btn-track-shop">Continue Shopping</a>
     </div>
 </div>

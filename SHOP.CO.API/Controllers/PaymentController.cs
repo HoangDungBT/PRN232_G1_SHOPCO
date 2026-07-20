@@ -121,55 +121,55 @@ namespace SHOP.CO.API.Controllers
             foreach (var kv in query)
             {
                 if (!string.IsNullOrEmpty(kv.Key) &&
+                    kv.Key.StartsWith("vnp_", StringComparison.OrdinalIgnoreCase) &&
                     !kv.Key.Equals("vnp_SecureHash", StringComparison.OrdinalIgnoreCase) &&
                     !kv.Key.Equals("vnp_SecureHashType", StringComparison.OrdinalIgnoreCase))
                 {
-                    parts[kv.Key] = kv.Value.ToString();
+                    parts[kv.Key] = System.Net.WebUtility.UrlEncode(kv.Value.ToString());
                 }
             }
-            return string.Join("&", System.Linq.Enumerable.Select(parts, kv => $"{kv.Key}={kv.Value}"));
+            return string.Join("&", System.Linq.Enumerable.Select(parts, kv => $"{System.Net.WebUtility.UrlEncode(kv.Key)}={kv.Value}"));
         }
 
         /// <summary>
-        /// POST /api/payment/simulate-callback
-        /// Simulated callback endpoint used for regression testing.
+        /// GET /api/payment/vnpay-ipn
+        /// VNPay IPN webhook endpoint
         /// </summary>
-        [HttpPost("simulate-callback")]
+        [HttpGet("vnpay-ipn")]
         [Produces("application/json")]
-        public async Task<IActionResult> SimulateCallback([FromBody] SimulateCallbackRequest request)
+        public async Task<IActionResult> VnpayIpn(
+            [FromQuery(Name = "vnp_TxnRef")] string? txnRef,
+            [FromQuery(Name = "vnp_ResponseCode")] string? responseCode,
+            [FromQuery(Name = "vnp_SecureHash")] string? secureHash)
         {
             try
             {
-                if (request == null || string.IsNullOrWhiteSpace(request.OrderCode) || string.IsNullOrWhiteSpace(request.ResponseCode))
+                if (string.IsNullOrWhiteSpace(txnRef) ||
+                    string.IsNullOrWhiteSpace(responseCode) ||
+                    string.IsNullOrWhiteSpace(secureHash))
                 {
-                    return BadRequest(new { success = false, message = "Missing required fields." });
+                    return Ok(new { RspCode = "99", Message = "Unknown error" });
                 }
 
-                var result = await _paymentService.SimulateCallbackAsync(request.OrderCode, request.ResponseCode);
-                return Ok(new
-                {
-                    success = result.Success,
-                    message = result.Message,
-                    data = new
-                    {
-                        paymentStatus = result.PaymentStatus
-                    }
-                });
+                var rawQuery = BuildRawQuery(Request.Query);
+
+                var result = await _paymentService.HandlePaymentCallbackAsync(
+                    txnRef, responseCode, secureHash, rawQuery);
+
+                return Ok(new { RspCode = "00", Message = "Confirm Success" });
             }
-            catch (KeyNotFoundException ex)
+            catch (InvalidOperationException)
             {
-                return NotFound(new { success = false, message = ex.Message });
+                return Ok(new { RspCode = "97", Message = "Invalid signature" });
             }
-            catch (Exception ex)
+            catch (KeyNotFoundException)
             {
-                return StatusCode(500, new { success = false, message = "An unexpected error occurred: " + ex.Message });
+                return Ok(new { RspCode = "01", Message = "Order not found" });
+            }
+            catch (Exception)
+            {
+                return Ok(new { RspCode = "99", Message = "Unknown error" });
             }
         }
-    }
-
-    public class SimulateCallbackRequest
-    {
-        public string OrderCode { get; set; } = null!;
-        public string ResponseCode { get; set; } = null!;
     }
 }

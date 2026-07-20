@@ -32,6 +32,7 @@ static IEdmModel GetEdmModel()
     odataBuilder.EntitySet<InteractionLogDto>("AdminLogsOData").EntityType.HasKey(l => l.LogId);
 
     odataBuilder.EntitySet<VoucherDto>("AdminVouchersOData").EntityType.HasKey(v => v.RecordId);
+    odataBuilder.EntitySet<NotificationAdminDto>("AdminNotificationsOData").EntityType.HasKey(n => n.LogId);
     return odataBuilder.GetEdmModel();
 }
 #endregion

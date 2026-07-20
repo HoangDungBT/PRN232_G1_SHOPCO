@@ -36,11 +36,15 @@ namespace SHOP.CO.MVC.Controllers
 
                 var fullName = jwtToken.Claims.FirstOrDefault(c => c.Type == "name" || c.Type == System.Security.Claims.ClaimTypes.Name)?.Value ?? "User";
                 var role = jwtToken.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value ?? "Customer";
+                var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier || c.Type == "sub")?.Value;
 
                 HttpContext.Session.SetString(MvcConstants.SessionFullName, fullName);
                 HttpContext.Session.SetString(MvcConstants.SessionRole, role);
+                if (!string.IsNullOrEmpty(userIdClaim))
+                {
+                    HttpContext.Session.SetString(MvcConstants.SessionUserId, userIdClaim);
+                }
 
-                
                 // Check Role
                 string redirectUrl = "/Home/Index";
                 if (role == "Admin" || role == "Staff")

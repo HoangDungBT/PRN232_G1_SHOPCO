@@ -48,6 +48,11 @@ namespace SHOP.CO.Application.Services
                 throw new ArgumentException("Quantity must be greater than zero.");
             }
 
+            if (requestDto.Quantity > 200)
+            {
+                throw new InvalidOperationException("Mỗi sản phẩm thêm vào giỏ hàng tối đa 200 sản phẩm.");
+            }
+
             // Fetch product variant with related product details
             var variant = await _cartRepository.GetProductVariantByIdAsync(requestDto.VariantId);
             if (variant == null)
@@ -68,35 +73,47 @@ namespace SHOP.CO.Application.Services
             // Calculate UnitPrice based on: (variant.OriginalPrice ?? (variant.Product.SalePrice ?? variant.Product.BasePrice)) + variant.ExtraPrice
             decimal unitPrice = (variant.OriginalPrice ?? (variant.Product.SalePrice ?? variant.Product.BasePrice)) + variant.ExtraPrice;
 
-            var existingCartItem = await _cartRepository.GetCartItemAsync(userId, variant.VariantId);
+                var existingCartItem = await _cartRepository.GetCartItemAsync(userId, variant.VariantId);
 
-            if (existingCartItem != null)
-            {
-                int newQuantity = existingCartItem.Quantity + requestDto.Quantity;
-
-                if (newQuantity > variant.StockQuantity)
+                if (existingCartItem != null)
                 {
-                    throw new InvalidOperationException(
-                        $"Cannot add {requestDto.Quantity} units. Only {variant.StockQuantity - existingCartItem.Quantity} units available.");
+                    int newQuantity = existingCartItem.Quantity + requestDto.Quantity;
+
+                    if (newQuantity > 200)
+                    {
+                        throw new InvalidOperationException("Mỗi sản phẩm thêm vào giỏ hàng tối đa 200 sản phẩm.");
+                    }
+
+                    if (newQuantity > variant.StockQuantity)
+                    {
+                        throw new InvalidOperationException(
+                            $"Cannot add {requestDto.Quantity} units. Only {variant.StockQuantity - existingCartItem.Quantity} units available.");
+                    }
+
+                    existingCartItem.Quantity = newQuantity;
+                    existingCartItem.UnitPrice = unitPrice;
+                    existingCartItem.UpdatedAt = DateTime.UtcNow;
+
+                    await _cartRepository.SaveChangesAsync();
+
+                    return MapCartItemToDto(existingCartItem);
                 }
-
-                existingCartItem.Quantity = newQuantity;
-                existingCartItem.UnitPrice = unitPrice;
-                existingCartItem.UpdatedAt = DateTime.UtcNow;
-
-                await _cartRepository.SaveChangesAsync();
-
-                return MapCartItemToDto(existingCartItem);
-            }
-            else
-            {
-                if (requestDto.Quantity > variant.StockQuantity)
+                else
                 {
-                    throw new InvalidOperationException(
-                        $"Cannot add {requestDto.Quantity} units. Only {variant.StockQuantity} units available.");
-                }
+                    // Check limit of 20 distinct items
+                    var cartItems = await _cartRepository.GetCartByUserIdAsync(userId);
+                    if (cartItems.Count >= 20)
+                    {
+                        throw new InvalidOperationException("Giới hạn 20 sản phẩm khác nhau trong cùng 1 lần thanh toán.");
+                    }
 
-                var cartItem = new CartItem
+                    if (requestDto.Quantity > variant.StockQuantity)
+                    {
+                        throw new InvalidOperationException(
+                            $"Cannot add {requestDto.Quantity} units. Only {variant.StockQuantity} units available.");
+                    }
+
+                    var cartItem = new CartItem
                 {
                     UserId = userId,
                     VariantId = variant.VariantId,

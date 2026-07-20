@@ -8,7 +8,8 @@ namespace SHOP.CO.MVC.Services
         Task<bool> RemoveFromCartAsync(int cartItemId, int userId);
         Task<bool> AddToCartAsync(int userId, int variantId, int quantity);
         Task<bool> UpdateQuantityAsync(int cartItemId, int userId, int quantity);
-        Task<CheckoutResultViewModel?> CheckoutAsync(int userId, string? couponCode, int? addressId = null, string? customerNote = null, string? paymentMethod = null);
+        Task<CheckoutResultViewModel?> CheckoutAsync(int userId, string? couponCode, int? addressId = null, string? customerNote = null, string? paymentMethod = null, string? otpCode = null);
         Task<System.Collections.Generic.List<UserAddressViewModel>> GetUserAddressesAsync(int userId);
+        Task<(bool success, string message)> SendCheckoutOtpAsync(int userId);
     }
 }

@@ -7,5 +7,6 @@ namespace SHOP.CO.Application.DTOs
         public int? AddressId { get; set; }
         public string? CustomerNote { get; set; }
         public string? PaymentMethod { get; set; }
+        public string? OtpCode { get; set; }
     }
 }

@@ -126,13 +126,27 @@
                     }
                 </div>
             }
-            else if (string.Equals(Model.OrderStatus, "Delivered", StringComparison.OrdinalIgnoreCase))
+            else if (string.Equals(Model.OrderStatus, "Shipping", StringComparison.OrdinalIgnoreCase) || string.Equals(Model.OrderStatus, "Delivered", StringComparison.OrdinalIgnoreCase))
             {
-                @* Return Request form: only for Delivered orders *@
-                bool alreadyRequested = !string.IsNullOrWhiteSpace(Model.CustomerNote)
-                    && Model.CustomerNote.StartsWith("[RETURN REQUEST]");
+                <div class="card border-0 rounded-4 shadow-sm bg-light p-4 mb-4">
+                    <h3 class="h5 fw-bold text-success mb-3">Confirm Delivery</h3>
+                    <p class="text-muted small mb-4">Have you received your package? Please confirm to complete the order.</p>
+                    <form asp-action="ConfirmReceived" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="orderId" value="@Model.OrderId" />
+                        <button type="submit" class="btn btn-success rounded-pill px-4 fw-bold" onclick="confirmAction(event, 'Mọi thông tin đều chính xác và bạn đã nhận được hàng?', 'Xác nhận đã nhận', 'success');">
+                            Xác nhận đã nhận hàng
+                        </button>
+                    </form>
+                </div>
+                
+                @if (string.Equals(Model.OrderStatus, "Delivered", StringComparison.OrdinalIgnoreCase))
+                {
+                    @* Return Request form: only for Delivered orders *@
+                    bool alreadyRequested = !string.IsNullOrWhiteSpace(Model.CustomerNote)
+                        && Model.CustomerNote.StartsWith("[RETURN REQUEST]");
 
-                if (alreadyRequested)
+                    if (alreadyRequested)
                 {
                     <div class="card border-0 rounded-4 shadow-sm bg-light p-4 mb-4 border-start border-warning border-4">
                         <h3 class="h5 fw-bold text-warning mb-2">⏳ Return Request Submitted</h3>
@@ -163,12 +177,13 @@
                                           placeholder="Provide more details about the issue (e.g. description of damage, wrong size received)..." required style="border-radius:16px; padding: 12px;"></textarea>
                             </div>
                             <button type="submit" class="btn btn-warning rounded-pill px-4 fw-bold" id="submitReturnBtn"
-                                    onclick="return confirm('Submit return request for this order?');">
+                                    onclick="confirmAction(event, 'Bạn có chắc chắn muốn yêu cầu trả hàng/hoàn tiền cho đơn này?', 'Yêu cầu Trả hàng', 'warning');">
                                 Submit Return Request
                             </button>
                         </form>
                     </div>
                 }
+            }
             }
         </div>
 
@@ -224,6 +239,29 @@
 </div>
 
 <script>
+    function confirmAction(event, message, buttonText, icon) {
+        event.preventDefault();
+        var form = event.target.closest('form');
+        Swal.fire({
+            title: 'Xác nhận',
+            text: message,
+            icon: icon || 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#111',
+            cancelButtonColor: '#d33',
+            confirmButtonText: buttonText || 'Đồng ý',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Show loading on the button
+                var btn = event.target;
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+                form.submit();
+            }
+        });
+    }
+
     document.addEventListener("DOMContentLoaded", function() {
         var cancelForm = document.getElementById("cancelOrderForm");
         if (cancelForm) {

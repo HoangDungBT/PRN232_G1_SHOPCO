@@ -19,8 +19,14 @@ namespace SHOP.CO.MVC.Controllers
         }
 
         // List user's orders
-        public async Task<IActionResult> Index(int userId = 2)
+        public async Task<IActionResult> Index()
         {
+            var sessionIdStr = HttpContext.Session.GetString(SHOP.CO.MVC.Common.MvcConstants.SessionUserId);
+            if (string.IsNullOrEmpty(sessionIdStr) || !int.TryParse(sessionIdStr, out int userId) || userId <= 0)
+            {
+                TempData["Error"] = "Vui lòng đăng nhập để xem đơn hàng.";
+                return RedirectToAction("Login", "Auth");
+            }
             try
             {
                 ViewBag.UserId = userId;
@@ -87,6 +93,37 @@ namespace SHOP.CO.MVC.Controllers
             catch (Exception ex)
             {
                 TempData["Error"] = ex.Message ?? "An error occurred during order cancellation.";
+            }
+
+            return RedirectToAction("Details", new { orderId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ConfirmReceived(int orderId)
+        {
+            try
+            {
+                var order = await _orderApiClient.GetOrderByIdAsync(orderId);
+                if (order == null)
+                {
+                    TempData["Error"] = "Order not found.";
+                    return RedirectToAction("Index");
+                }
+
+                var success = await _orderApiClient.ConfirmReceivedAsync(orderId, order.UserId);
+                if (success)
+                {
+                    TempData["Success"] = "Thank you! Order confirmed as received.";
+                }
+                else
+                {
+                    TempData["Error"] = "Failed to confirm order receipt.";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message ?? "An error occurred while confirming receipt.";
             }
 
             return RedirectToAction("Details", new { orderId });

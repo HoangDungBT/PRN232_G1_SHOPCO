@@ -92,6 +92,30 @@ namespace SHOP.CO.MVC.Services
 
             return apiResponse != null && apiResponse.Success && apiResponse.Data;
         }
+
+        public async Task<bool> ConfirmReceivedAsync(int orderId, int userId)
+        {
+            var content = new StringContent("{}", System.Text.Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync($"api/orders/{orderId}/confirm-received?userId={userId}", content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                var errorResponse = JsonSerializer.Deserialize<ApiResponse<object>>(errorContent, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+                throw new InvalidOperationException(errorResponse?.Message ?? "Confirmation failed.");
+            }
+
+            var stream = await response.Content.ReadAsStreamAsync();
+            var apiResponse = await JsonSerializer.DeserializeAsync<ApiResponse<bool>>(stream, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            return apiResponse != null && apiResponse.Success && apiResponse.Data;
+        }
         public async Task<bool> SubmitReturnRequestAsync(int orderId, int userId, string reason, string description)
         {
             var contentObject = new { reason, description };

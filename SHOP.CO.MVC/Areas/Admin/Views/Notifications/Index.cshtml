@@ -1,0 +1,104 @@
+@{
+    ViewData["Title"] = "Quản Lý Thông Báo";
+}
+
+<div class="card shadow-sm border-0 mt-3">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+        <h5 class="mb-0 fw-bold"><i class="fas fa-bell text-warning me-2"></i> Danh Sách Thông Báo</h5>
+        <button type="button" class="btn btn-primary btn-sm" onclick="NotificationManager.openOffcanvas('create')">
+            <i class="fas fa-paper-plane me-1"></i> Gửi Thông Báo Mới
+        </button>
+    </div>
+    <div class="card-body">
+
+        <!-- Bộ Lọc -->
+        <div class="row mb-3 g-2">
+            <div class="col-md-6">
+                <input type="text" id="searchInput" class="form-control" placeholder="Tìm theo Tiêu đề hoặc Nội dung..." onkeyup="if(event.key === 'Enter') NotificationManager.resetPageAndLoad()">
+            </div>
+            <div class="col-md-2">
+                <button type="button" id="btnSearch" class="btn btn-outline-secondary w-100" onclick="NotificationManager.resetPageAndLoad()">
+                    <i class="fas fa-search"></i> Tìm
+                </button>
+            </div>
+        </div>
+
+        <!-- Bảng Dữ Liệu -->
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th width="80">ID</th>
+                        <th>Tiêu Đề</th>
+                        <th>Nội Dung</th>
+                        <th class="text-center" width="180">Thời Gian Gửi</th>
+                        <th class="text-center" width="120">Trạng Thái</th>
+                        <th class="text-center" width="120">Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody id="notificationTableBody">
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">
+                            <i class="fas fa-spinner fa-spin me-2"></i> Đang tải dữ liệu...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Phân trang -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <div class="text-muted" id="paginationInfo"></div>
+            <nav><ul class="pagination mb-0" id="paginationUl"></ul></nav>
+        </div>
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNotification" aria-labelledby="offcanvasNotificationLabel" style="width: 500px;">
+    <div class="offcanvas-header bg-light border-bottom">
+        <h5 class="offcanvas-title fw-bold" id="offcanvasNotificationLabel">Gửi Thông Báo Mới</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+        <form id="notificationForm">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Tiêu Đề (*)</label>
+                <input type="text" id="Title" class="form-control" placeholder="VD: Khuyến mãi mùa hè 50%" required />
+                <small class="text-muted">Tiêu đề ngắn gọn, hấp dẫn.</small>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Nội Dung (*)</label>
+                <textarea id="Message" class="form-control" rows="5" placeholder="Nhập nội dung thông báo..." required></textarea>
+            </div>
+
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-1"></i> Thông báo này sẽ được gửi tới tất cả người dùng (Global Broadcast).
+            </div>
+        </form>
+    </div>
+    <div class="offcanvas-footer border-top p-3 bg-white d-flex justify-content-end">
+        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="offcanvas">Hủy</button>
+        <button type="button" class="btn btn-primary px-4" id="btnSaveNotification" onclick="NotificationManager.saveNotification()">
+            <i class="fas fa-paper-plane me-1"></i> GỬI THÔNG BÁO
+        </button>
+    </div>
+</div>
+
+<input type="hidden" id="apiBaseUrl" value="@ViewBag.ApiBaseUrl" />
+<input type="hidden" id="jwtToken" value="@ViewBag.Token" />
+<input type="hidden" id="currentRole" value="@ViewBag.Role" />
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/admin/common.js" asp-append-version="true"></script>
+    <script src="~/js/admin/notification.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function () {
+            const apiUrl = $('#apiBaseUrl').val();
+            const token = $('#jwtToken').val();
+            const currentRole = $('#currentRole').val();
+            NotificationManager.init(apiUrl, token, currentRole);
+        });
+    </script>
+}
