@@ -10,5 +10,7 @@ namespace SHOP.CO.Application.DTOs
         public string Category { get; set; } = null!;
         public decimal BasePrice { get; set; }
         public decimal? SalePrice { get; set; }
+        public decimal AverageRating { get; set; }
+        public int ReviewCount { get; set; }
     }
 }

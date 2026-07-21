@@ -123,7 +123,9 @@ namespace SHOP.CO.MVC.Controllers
                                     SalePrice = p.SalePrice,
                                     Image = p.ThumbnailUrl ?? "/images/heroimg.png",
                                     Description = p.Description ?? "",
-                                    Category = p.CategoryName ?? ""
+                                    Category = p.CategoryName ?? "",
+                                    AverageRating = p.AverageRating,
+                                    ReviewCount = p.ReviewCount
                                 }).ToList();
                             }
                         }
@@ -143,7 +145,9 @@ namespace SHOP.CO.MVC.Controllers
                                     SalePrice = p.SalePrice,
                                     Image = p.ThumbnailUrl ?? "/images/heroimg.png",
                                     Description = p.Description ?? "",
-                                    Category = p.CategoryName ?? ""
+                                    Category = p.CategoryName ?? "",
+                                    AverageRating = p.AverageRating,
+                                    ReviewCount = p.ReviewCount
                                 }).ToList();
                             }
                         }
@@ -319,7 +323,9 @@ namespace SHOP.CO.MVC.Controllers
                             SalePrice = p.SalePrice,
                             Image = p.ThumbnailUrl ?? "/images/heroimg.png",
                             Description = p.Description ?? "",
-                            Category = p.CategoryName ?? ""
+                            Category = p.CategoryName ?? "",
+                            AverageRating = p.AverageRating,
+                            ReviewCount = p.ReviewCount
                         }).ToList();
                     }
                 }

@@ -240,8 +240,10 @@
             <div class="col-lg-8 col-12 mb-4">
                 @foreach (var item in Model.Items)
                 {
+                    var displayImg = string.IsNullOrEmpty(item.ImageUrl) ? "/images/heroimg.png" : item.ImageUrl;
+
                     <div class="cart-item-card">
-                        <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/no-image.png" : "http://localhost:5035" + item.ImageUrl)" alt="@item.ProductName" class="item-image" onerror="this.src='/images/no-image.png';" />
+                        <img src="@displayImg" alt="@item.ProductName" class="item-image" onerror="this.onerror=null; this.src='/images/heroimg.png';" />
                         
                         <div class="item-details">
                             <div class="d-flex justify-content-between align-items-start">

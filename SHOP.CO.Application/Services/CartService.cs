@@ -336,22 +336,27 @@ namespace SHOP.CO.Application.Services
         /// <returns>CartItemDto for client response</returns>
         private CartItemDto MapCartItemToDto(CartItem cartItem)
         {
+            var product = cartItem.ProductVariant?.Product;
+            var imageUrl = product?.ProductImages?.FirstOrDefault(i => i.IsThumbnail)?.ImageUrl
+                ?? product?.ProductImages?.FirstOrDefault()?.ImageUrl;
+
             return new CartItemDto
             {
                 CartItemId = cartItem.CartItemId,
                 VariantId = cartItem.VariantId,
-                ProductId = cartItem.ProductVariant.ProductId,
-                ProductName = cartItem.ProductVariant.Product.ProductName,
-                Sku = cartItem.ProductVariant.Sku,
-                Size = cartItem.ProductVariant.Size,
-                Color = cartItem.ProductVariant.Color,
-                ColorHex = cartItem.ProductVariant.ColorHex,
+                ProductId = cartItem.ProductVariant?.ProductId ?? 0,
+                ProductName = product?.ProductName ?? "",
+                ImageUrl = imageUrl,
+                Sku = cartItem.ProductVariant?.Sku ?? "",
+                Size = cartItem.ProductVariant?.Size,
+                Color = cartItem.ProductVariant?.Color,
+                ColorHex = cartItem.ProductVariant?.ColorHex,
                 Quantity = cartItem.Quantity,
                 UnitPrice = cartItem.UnitPrice,
                 SelectedSize = cartItem.SelectedSize,
                 SelectedColor = cartItem.SelectedColor,
                 IsSelected = cartItem.IsSelected,
-                AvailableStock = cartItem.ProductVariant.StockQuantity,
+                AvailableStock = cartItem.ProductVariant?.StockQuantity ?? 0,
                 CreatedAt = cartItem.CreatedAt,
                 UpdatedAt = cartItem.UpdatedAt
             };

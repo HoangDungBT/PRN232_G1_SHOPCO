@@ -83,8 +83,8 @@
     <div class="products">
         @foreach (var item in newArrivals)
         {
-            var displayRating = 4.0 + (item.Id % 10) * 0.1;
-            if (displayRating > 5.0) displayRating = 5.0;
+            var displayRating = item.ReviewCount > 0 ? item.AverageRating : 0m;
+            var roundedRating = (int)Math.Round(displayRating);
             var hasDiscount = item.SalePrice.HasValue && item.SalePrice < item.BasePrice;
             var discountPercent = hasDiscount ? (int)Math.Round((1 - (item.SalePrice!.Value / item.BasePrice)) * 100) : 0;
 
@@ -98,7 +98,7 @@
                     <div class="star-rating" style="color: #FFC72C; font-size: 16px;">
                         @for (int i = 1; i <= 5; i++)
                         {
-                            if (i <= Math.Round(displayRating))
+                            if (i <= roundedRating && item.ReviewCount > 0)
                             {
                                 <span>★</span>
                             }
@@ -108,7 +108,14 @@
                             }
                         }
                     </div>
-                    <span style="font-size: 13px; color: rgba(0,0,0,0.6);">@displayRating.ToString("F1")/5</span>
+                    @if (item.ReviewCount > 0)
+                    {
+                        <span style="font-size: 13px; color: rgba(0,0,0,0.6);">@displayRating.ToString("F1")/5 (@item.ReviewCount)</span>
+                    }
+                    else
+                    {
+                        <span style="font-size: 13px; color: rgba(0,0,0,0.4);">0/5 (0 đánh giá)</span>
+                    }
                 </div>
 
                 <div class="price-row" style="margin-top: 10px; display: flex; align-items: center; gap: 10px;">
@@ -134,8 +141,8 @@
     <div class="products">
         @foreach (var item in topSelling)
         {
-            var displayRating = 4.0 + (item.Id % 10) * 0.1;
-            if (displayRating > 5.0) displayRating = 5.0;
+            var displayRating = item.ReviewCount > 0 ? item.AverageRating : 0m;
+            var roundedRating = (int)Math.Round(displayRating);
             var hasDiscount = item.SalePrice.HasValue && item.SalePrice < item.BasePrice;
             var discountPercent = hasDiscount ? (int)Math.Round((1 - (item.SalePrice!.Value / item.BasePrice)) * 100) : 0;
 
@@ -149,7 +156,7 @@
                     <div class="star-rating" style="color: #FFC72C; font-size: 16px;">
                         @for (int i = 1; i <= 5; i++)
                         {
-                            if (i <= Math.Round(displayRating))
+                            if (i <= roundedRating && item.ReviewCount > 0)
                             {
                                 <span>★</span>
                             }
@@ -159,7 +166,14 @@
                             }
                         }
                     </div>
-                    <span style="font-size: 13px; color: rgba(0,0,0,0.6);">@displayRating.ToString("F1")/5</span>
+                    @if (item.ReviewCount > 0)
+                    {
+                        <span style="font-size: 13px; color: rgba(0,0,0,0.6);">@displayRating.ToString("F1")/5 (@item.ReviewCount)</span>
+                    }
+                    else
+                    {
+                        <span style="font-size: 13px; color: rgba(0,0,0,0.4);">0/5 (0 đánh giá)</span>
+                    }
                 </div>
 
                 <div class="price-row" style="margin-top: 10px; display: flex; align-items: center; gap: 10px;">

@@ -54,8 +54,10 @@
                 {
                     foreach (var item in Model.OrderItems)
                     {
+                        var itemImg = string.IsNullOrEmpty(item.DisplayImageUrl) ? "/images/heroimg.png" : item.DisplayImageUrl;
+
                         <div class="d-flex align-items-start border-bottom pb-4 mb-4 last-no-border" style="gap: 20px;">
-                            <img src="@item.DisplayImageUrl" alt="@item.ProductNameSnapshot" class="img-fluid rounded" style="width: 100px; height: 100px; object-fit: cover; border: 1px solid #ddd;" />
+                            <img src="@itemImg" alt="@item.ProductNameSnapshot" class="img-fluid rounded" style="width: 100px; height: 100px; object-fit: cover; border: 1px solid #ddd;" onerror="this.onerror=null; this.src='/images/heroimg.png';" />
                             <div class="flex-grow-1">
                                 <h4 class="h6 fw-bold text-dark mb-1">@item.ProductNameSnapshot</h4>
                                 <p class="text-muted mb-2" style="font-size: 13px;">

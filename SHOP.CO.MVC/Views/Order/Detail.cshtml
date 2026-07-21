@@ -1,4 +1,4 @@
-﻿@model SHOP.CO.MVC.Models.OrderHistoryViewModel
+@model SHOP.CO.MVC.Models.OrderHistoryViewModel
 
 <div class="page-wrapper">
     <h1 class="page-title">Chi tiết đơn hàng #@Model.OrderCode</h1>
@@ -18,8 +18,10 @@
             <h4>Danh sách sản phẩm</h4>
             @foreach (var item in Model.Items)
             {
+                var itemImg = string.IsNullOrEmpty(item.ImageUrlSnapshot) ? "/images/heroimg.png" : item.ImageUrlSnapshot;
+
                 <div style="display: flex; align-items: center; padding: 15px 0; border-bottom: 1px solid #f5f5f5;">
-                    <img src="@item.ImageUrlSnapshot" style="width: 70px; height: 70px; object-fit: cover; border-radius: 8px; margin-right: 20px;" />
+                    <img src="@itemImg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 8px; margin-right: 20px;" onerror="this.onerror=null; this.src='/images/heroimg.png';" />
                     <div style="flex: 1;">
                         <h5 style="margin: 0 0 5px 0;">@item.ProductNameSnapshot</h5>
                         <p style="margin: 0; font-size: 13px; color: #666;">Size: @item.SizeSnapshot | Màu: @item.ColorSnapshot</p>

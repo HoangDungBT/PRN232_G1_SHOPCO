@@ -116,24 +116,20 @@ namespace SHOP.CO.Infrastructure.Repositories
         public async Task AddReviewAsync(CustomerActivity review)
         {
             await _context.CustomerActivities.AddAsync(review);
-            var ratings = await _context.CustomerActivities
-                .Where(a => a.ProductId == review.ProductId && a.ActivityType == "Review" && a.IsActive)
-                .Select(a => a.Rating)
-                .ToListAsync();
+            await _context.SaveChangesAsync();
 
-            if (review.IsActive && review.ActivityType == "Review")
-            {
-                ratings.Add(review.Rating);
-            }
+            var validRatings = await _context.CustomerActivities
+                .Where(a => a.ProductId == review.ProductId && a.ActivityType == "Review" && a.IsActive && a.Rating.HasValue)
+                .Select(a => (decimal)a.Rating!.Value)
+                .ToListAsync();
 
             var product = await _context.Products.FindAsync(review.ProductId);
             if (product != null)
             {
-                product.ReviewCount = ratings.Count;
-                product.AverageRating = ratings.Any() ? Math.Round((decimal)ratings.Average(r => r ?? 0), 2) : 0;
+                product.ReviewCount = validRatings.Count;
+                product.AverageRating = validRatings.Any() ? Math.Round(validRatings.Average(), 2) : 0m;
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
         }
 
         public async Task<List<Category>> GetActiveCategoriesAsync()
@@ -183,7 +179,81 @@ namespace SHOP.CO.Infrastructure.Repositories
                 .Include(oi => oi.ProductVariant)
                 .AnyAsync(oi => oi.Order.UserId == userId 
                              && oi.ProductVariant.ProductId == productId 
-                             && (oi.Order.OrderStatus == "Completed" || oi.Order.OrderStatus == "Delivered"));
+                             && oi.Order.OrderStatus != "Canceled");
+        }
+
+        public async Task<bool> HasUserAlreadyReviewedProductAsync(int userId, int productId)
+        {
+            return await _context.CustomerActivities
+                .AnyAsync(a => a.UserId == userId 
+                             && a.ProductId == productId 
+                             && a.ActivityType == "Review" 
+                             && a.IsActive);
+        }
+
+        public async Task<int> GetCompletedPurchaseCountAsync(int userId, int productId)
+        {
+            return await _context.OrderItems
+                .Include(oi => oi.Order)
+                .Include(oi => oi.ProductVariant)
+                .Where(oi => oi.Order.UserId == userId 
+                          && oi.ProductVariant.ProductId == productId 
+                          && oi.Order.OrderStatus == "Completed")
+                .Select(oi => oi.OrderId)
+                .Distinct()
+                .CountAsync();
+        }
+
+        public async Task<int> GetUserReviewCountForProductAsync(int userId, int productId)
+        {
+            return await _context.CustomerActivities
+                .CountAsync(a => a.UserId == userId 
+                              && a.ProductId == productId 
+                              && a.ActivityType == "Review" 
+                              && a.IsActive);
+        }
+
+        public async Task SyncAllProductRatingsAsync()
+        {
+            var products = await _context.Products.ToListAsync();
+            var allReviews = await _context.CustomerActivities
+                .Where(a => a.ProductId.HasValue && a.ActivityType == "Review" && a.IsActive && a.Rating.HasValue)
+                .ToListAsync();
+
+            var reviewsByProduct = allReviews
+                .GroupBy(r => r.ProductId!.Value)
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            bool isModified = false;
+            foreach (var product in products)
+            {
+                if (reviewsByProduct.TryGetValue(product.ProductId, out var reviews) && reviews.Any())
+                {
+                    var count = reviews.Count;
+                    var avg = Math.Round((decimal)reviews.Average(r => r.Rating!.Value), 2);
+
+                    if (product.ReviewCount != count || product.AverageRating != avg)
+                    {
+                        product.ReviewCount = count;
+                        product.AverageRating = avg;
+                        isModified = true;
+                    }
+                }
+                else
+                {
+                    if (product.ReviewCount != 0 || product.AverageRating != 0m)
+                    {
+                        product.ReviewCount = 0;
+                        product.AverageRating = 0m;
+                        isModified = true;
+                    }
+                }
+            }
+
+            if (isModified)
+            {
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

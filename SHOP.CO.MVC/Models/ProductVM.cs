@@ -17,5 +17,9 @@ namespace SHOP.CO.MVC.Models
         public decimal BasePrice { get; set; }
 
         public decimal? SalePrice { get; set; }
+
+        public decimal AverageRating { get; set; }
+
+        public int ReviewCount { get; set; }
     }
 }

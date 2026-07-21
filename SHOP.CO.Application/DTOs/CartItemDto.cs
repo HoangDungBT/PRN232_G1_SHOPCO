@@ -27,6 +27,11 @@ namespace SHOP.CO.Application.DTOs
         public string ProductName { get; set; } = null!;
 
         /// <summary>
+        /// Product main image URL for display
+        /// </summary>
+        public string? ImageUrl { get; set; }
+
+        /// <summary>
         /// Product SKU (Stock Keeping Unit)
         /// </summary>
         public string Sku { get; set; } = null!;

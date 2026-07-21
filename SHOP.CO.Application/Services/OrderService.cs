@@ -277,7 +277,8 @@ namespace SHOP.CO.Application.Services
                         SkuSnapshot = variant.Sku,
                         SizeSnapshot = item.SelectedSize ?? variant.Size,
                         ColorSnapshot = item.SelectedColor ?? variant.Color,
-                        ImageUrlSnapshot = "",
+                        ImageUrlSnapshot = variant.Product?.ProductImages?.FirstOrDefault(img => img.IsThumbnail)?.ImageUrl 
+                            ?? variant.Product?.ProductImages?.FirstOrDefault()?.ImageUrl ?? "",
                         UnitPrice = item.UnitPrice,
                         Quantity = item.Quantity,
                         DiscountAmount = 0m,
@@ -661,6 +662,7 @@ namespace SHOP.CO.Application.Services
             await _orderRepository.ExecuteInTransactionAsync(async () =>
             {
                 order.OrderStatus = "Completed";
+                order.ShippingStatus = "Delivered";
                 order.CompletedAt = DateTime.UtcNow;
                 if (!string.Equals(order.PaymentStatus, "Paid", StringComparison.OrdinalIgnoreCase))
                 {

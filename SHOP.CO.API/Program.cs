@@ -218,5 +218,19 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// Tự động đồng bộ số sao và lượt đánh giá thực tế từ Database
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        var productRepo = scope.ServiceProvider.GetRequiredService<SHOP.CO.Application.Repositories.IProductRepository>();
+        await productRepo.SyncAllProductRatingsAsync();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error syncing product ratings on startup: {ex.Message}");
+    }
+}
+
 app.Run();
 #endregion

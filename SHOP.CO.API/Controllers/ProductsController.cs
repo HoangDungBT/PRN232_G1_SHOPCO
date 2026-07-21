@@ -99,7 +99,9 @@ namespace SHOP.CO.API.Controllers
                     ? p.ProductImages.FirstOrDefault(i => i.IsThumbnail)!.ImageUrl
                     : p.ProductImages.FirstOrDefault() != null ? p.ProductImages.FirstOrDefault()!.ImageUrl : "/images/heroimg.png",
                 Description = p.Description ?? "",
-                Category = p.Category != null ? p.Category.CategoryName : "Fashion"
+                Category = p.Category != null ? p.Category.CategoryName : "Fashion",
+                AverageRating = p.AverageRating,
+                ReviewCount = p.ReviewCount
             }).ToList();
             return Ok(products);
         }

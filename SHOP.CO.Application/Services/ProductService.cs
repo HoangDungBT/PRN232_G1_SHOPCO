@@ -36,6 +36,10 @@ namespace SHOP.CO.Application.Services
                 CategoryName = p.Category?.CategoryName,
                 BasePrice = p.BasePrice,
                 SalePrice = p.SalePrice,
+                AverageRating = p.AverageRating,
+                ReviewCount = p.ReviewCount,
+                ThumbnailUrl = p.ProductImages?.FirstOrDefault(i => i.IsThumbnail)?.ImageUrl 
+                    ?? p.ProductImages?.FirstOrDefault()?.ImageUrl
             }).ToList();
 
             //trả kq
@@ -96,10 +100,16 @@ namespace SHOP.CO.Application.Services
 
         public async Task AddReviewAsync(int userId, int productId, int rating, string comment)
         {
-            bool hasPurchased = await _repository.HasUserPurchasedProductAsync(userId, productId);
-            if (!hasPurchased)
+            int completedPurchaseCount = await _repository.GetCompletedPurchaseCountAsync(userId, productId);
+            if (completedPurchaseCount == 0)
             {
                 throw new InvalidOperationException("Chỉ người dùng đã mua và nhận sản phẩm này mới được phép đánh giá.");
+            }
+
+            int existingReviewCount = await _repository.GetUserReviewCountForProductAsync(userId, productId);
+            if (existingReviewCount >= completedPurchaseCount)
+            {
+                throw new InvalidOperationException("Bạn đã gửi đánh giá đủ số lần tương ứng với các đơn hàng đã nhận. Vui lòng mua lại sản phẩm ở đơn mới để tiếp tục đánh giá.");
             }
 
             var reviewActivity = new CustomerActivity

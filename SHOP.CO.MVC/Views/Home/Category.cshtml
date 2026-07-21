@@ -174,9 +174,8 @@
                 {
                     @foreach (var item in Model)
                     {
-                        // Calculate mock rating for premium aesthetics
-                        var displayRating = 4.0 + (item.Id % 10) * 0.1;
-                        if (displayRating > 5.0) displayRating = 5.0;
+                        var displayRating = item.ReviewCount > 0 ? item.AverageRating : 0m;
+                        var roundedRating = (int)Math.Round(displayRating);
 
                         var hasDiscount = item.SalePrice.HasValue && item.SalePrice < item.BasePrice;
                         var discountPercent = hasDiscount ? (int)Math.Round((1 - (item.SalePrice!.Value / item.BasePrice)) * 100) : 0;
@@ -202,7 +201,7 @@
                                     <div class="star-rating">
                                         @for (int i = 1; i <= 5; i++)
                                         {
-                                            if (i <= Math.Round(displayRating))
+                                            if (i <= roundedRating && item.ReviewCount > 0)
                                             {
                                                 <span class="star-filled">★</span>
                                             }
@@ -212,7 +211,14 @@
                                             }
                                         }
                                     </div>
-                                    <span class="rating-score">@displayRating.ToString("F1")/5</span>
+                                    @if (item.ReviewCount > 0)
+                                    {
+                                        <span class="rating-score">@displayRating.ToString("F1")/5 (@item.ReviewCount đánh giá)</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="rating-score" style="color: #888;">0/5 (0 đánh giá)</span>
+                                    }
                                 </div>
                                 <div class="price-row">
                                     <span class="sale-price">@item.Price.ToString("N0")đ</span>

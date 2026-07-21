@@ -53,6 +53,7 @@ namespace SHOP.CO.Infrastructure.Repositories
                 .Where(c => c.UserId == userId)
                 .Include(c => c.ProductVariant)
                     .ThenInclude(v => v.Product)
+                        .ThenInclude(p => p.ProductImages)
                 .OrderByDescending(c => c.CreatedAt)
                 .ToListAsync();
 
@@ -73,6 +74,7 @@ namespace SHOP.CO.Infrastructure.Repositories
                 .Where(c => c.UserId == userId && c.VariantId == variantId)
                 .Include(c => c.ProductVariant)
                     .ThenInclude(v => v.Product)
+                        .ThenInclude(p => p.ProductImages)
                 .Include(c => c.User)
                 .FirstOrDefaultAsync();
 
@@ -102,6 +104,7 @@ namespace SHOP.CO.Infrastructure.Repositories
         {
             return await _context.ProductVariants
                 .Include(pv => pv.Product)
+                    .ThenInclude(p => p.ProductImages)
                 .FirstOrDefaultAsync(pv => pv.VariantId == variantId);
         }
 
